@@ -8,6 +8,7 @@ using Eventualize.Domain.Core;
 
 namespace Eventualize.Console.Domain
 {
+    [AggregateTypeName("Task")]
     public class Task : AggregateBase
     {
         public Task(Guid id)
@@ -15,11 +16,16 @@ namespace Eventualize.Console.Domain
             this.Id = id;
         }
 
+        public Task(string title): this(Guid.NewGuid())
+        {
+            this.SetTitleAfterCreate(title);
+        }
+
         public string Title { get; private set; }
 
         public string Description { get; private set; }
 
-        public void SetTitleAfterCreate(string title)
+        private void SetTitleAfterCreate(string title)
         {
             this.RaiseEvent(new TaskCreatedEvent()
                                 {
@@ -44,15 +50,5 @@ namespace Eventualize.Console.Domain
         {
             this.Description = @event.Description;
         }
-    }
-
-    public class TaskCreatedEvent
-    {
-        public string Title { get; set; }
-    }
-
-    public class TaskDescriptionAddedEvent
-    {
-        public string Description { get; set; }
     }
 }

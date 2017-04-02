@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 using CommonDomain;
 using CommonDomain.Persistence;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Core;
 
 using NEventStore;
 using NEventStore.Persistence;
 
 using IAggregate = Eventualize.Domain.IAggregate;
+using IConstructAggregates = Eventualize.Persistence.IConstructAggregates;
 using IMemento = Eventualize.Domain.IMemento;
+using IRepository = Eventualize.Persistence.IRepository;
 
-namespace Eventualize.Persistence.EventStore
+namespace Eventualize.NEventStore.Persistence
 {
     public class EventStoreRepository : IRepository
     {
         private const string AggregateTypeHeader = "AggregateType";
 
-        private readonly IDetectConflicts conflictDetector;
+        private readonly Eventualize.Domain.Core.IDetectConflicts conflictDetector;
 
         private readonly IStoreEvents eventStore;
 
@@ -30,7 +32,7 @@ namespace Eventualize.Persistence.EventStore
 
         //private readonly IDictionary<string, IEventStream> streams = new Dictionary<string, IEventStream>();
 
-        public EventStoreRepository(IStoreEvents eventStore, IConstructAggregates factory, IDetectConflicts conflictDetector)
+        public EventStoreRepository(IStoreEvents eventStore, IConstructAggregates factory, Eventualize.Domain.Core.IDetectConflicts conflictDetector)
         {
             this.eventStore = eventStore;
             this.factory = factory;
@@ -159,7 +161,7 @@ namespace Eventualize.Persistence.EventStore
         private IAggregate GetAggregate<TAggregate>(ISnapshot snapshot, IEventStream stream)
         {
             IMemento memento = snapshot == null ? null : snapshot.Payload as IMemento;
-            return this.factory.Build(typeof(TAggregate), stream.StreamId.ToGuid(), memento);
+            return this.factory.Build(typeof(TAggregate).GetAggregtateTypeName(), stream.StreamId.ToGuid(), memento);
         }
 
         private ISnapshot GetSnapshot(string bucketId, Guid id, int version)
@@ -222,7 +224,7 @@ namespace Eventualize.Persistence.EventStore
         {
             var headers = new Dictionary<string, object>();
 
-            headers[AggregateTypeHeader] = aggregate.GetType().FullName;
+            headers[AggregateTypeHeader] = aggregate.GetAggregtateTypeName();
             if (updateHeaders != null)
             {
                 updateHeaders(headers);

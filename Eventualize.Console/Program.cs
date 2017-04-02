@@ -9,8 +9,9 @@ using Eventualize.Console.Domain;
 using Eventualize.Domain;
 using Eventualize.Domain.Core;
 using Eventualize.Materialization;
+using Eventualize.NEventStore.Materialization;
+using Eventualize.NEventStore.Persistence;
 using Eventualize.Persistence;
-using Eventualize.Persistence.EventStore;
 
 using NEventStore;
 
@@ -28,9 +29,10 @@ namespace Eventualize.Console
         {
             materializationStrategy = new InMemoryMaterialization();
             aggregateFactory = new AggregateFactory();
+            aggregateFactory.ScanAggregateTypes(Assembly.GetExecutingAssembly());
             var eventStore = CreateMemoryConnection();
             repository = new EventStoreRepository(eventStore, aggregateFactory, new ConflictDetector());
-            var materializer = new EventStoreMaterializer(aggregateFactory, eventStore, materializationStrategy, Assembly.GetExecutingAssembly());
+            var materializer = new EventStoreMaterializer(aggregateFactory, eventStore, materializationStrategy);
             materializer.Run();
 
             while (true)
@@ -85,9 +87,7 @@ namespace Eventualize.Console
             var taskTitle = commandArguments.First();
             var taskDescription = string.Join(" ", commandArguments.Skip(1));
 
-            var task = aggregateFactory.NewAggregate<Task>();
-            
-            task.SetTitleAfterCreate(taskTitle);
+            var task = new Task(taskTitle);
 
             if (!string.IsNullOrEmpty(taskDescription))
             {

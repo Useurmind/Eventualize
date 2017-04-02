@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Eventualize.Domain
 {
-    internal static class StringExtensions
+    public static class StringExtensions
     {
         public static Guid ToGuid(this string value)
         {
