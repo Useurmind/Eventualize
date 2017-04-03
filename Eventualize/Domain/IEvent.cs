@@ -5,11 +5,11 @@ namespace Eventualize.Domain
 {
     public interface IEvent
     {
-        string AggregateType { get; }
+        Guid EventId { get; }
 
         string EventType { get; }
 
-        DateTime Time { get; }
+        DateTime CreationTime { get; }
 
         object EventData { get; }
     }

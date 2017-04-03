@@ -5,10 +5,19 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
+using Autofac;
+
+using EventStore.ClientAPI.Embedded;
+using EventStore.Core;
+
+using Eventualize.Autofac.Infrastructure;
 using Eventualize.Console.Domain;
 using Eventualize.Domain;
 using Eventualize.Domain.Core;
+using Eventualize.EventStore.Infrastructure;
+using Eventualize.Infrastructure;
 using Eventualize.Materialization;
+using Eventualize.NEventStore.Infrastructure;
 using Eventualize.NEventStore.Materialization;
 using Eventualize.NEventStore.Persistence;
 using Eventualize.Persistence;
@@ -23,26 +32,68 @@ namespace Eventualize.Console
 
         private static InMemoryMaterialization materializationStrategy;
 
-        private static AggregateFactory aggregateFactory;
-
         static void Main(string[] args)
         {
-            materializationStrategy = new InMemoryMaterialization();
-            aggregateFactory = new AggregateFactory();
-            aggregateFactory.ScanAggregateTypes(Assembly.GetExecutingAssembly());
-            var eventStore = CreateMemoryConnection();
-            repository = new EventStoreRepository(eventStore, aggregateFactory, new ConflictDetector());
-            var materializer = new EventStoreMaterializer(aggregateFactory, eventStore, materializationStrategy);
-            materializer.Run();
-
-            while (true)
+            using (var container = SetupContainer(true))
             {
-                System.Console.WriteLine("Enter a command:");
+                var eventContainer = container.Eventualize();
 
-                var command = System.Console.ReadLine();
+                eventContainer.Materializer.Run();
 
-                HandleCommand(command);
+                repository = eventContainer.Repository;
+                materializationStrategy = eventContainer.MaterializationStrategies.OfType<InMemoryMaterialization>().First();
+
+                while (true)
+                {
+                    System.Console.WriteLine("Enter a command:");
+
+                    var command = System.Console.ReadLine();
+
+                    HandleCommand(command);
+                }
             }
+        }
+
+        private static IContainer SetupContainer(bool forEventStore)
+        {
+            var builder = new ContainerBuilder();
+
+            builder.Eventualize(
+                b =>
+                {
+                    b.SetDefaults(Assembly.GetExecutingAssembly());
+                    b.MaterializeInMemory();
+                });
+
+            if (forEventStore)
+            {
+                builder.Eventualize(
+                    b =>
+                    {
+                        b.RegisterSingleInstance(
+                             c =>
+                             {
+                                 var node = EmbeddedVNodeBuilder.AsSingleNode().OnDefaultEndpoints().RunInMemory().Build();
+                                 node.StartAndWaitUntilReady();
+                                 return node;
+                             })
+                         .ConnectEventStore(c => EmbeddedEventStoreConnection.Create(c.Resolve<ClusterVNode>()))
+                         .StoreAggregatesInEventStore()
+                         .MaterializeFromEventStore();
+                    });
+            }
+            else
+            {
+                builder.Eventualize(
+                    b =>
+                    {
+                        b.ConnectNEventStore(c => CreateMemoryConnection())
+                         .StoreAggregatesInNEventStore()
+                         .MaterializeFromNEventStore();
+                    });
+            }
+
+            return builder.Build();
         }
 
         static void HandleCommand(string command)

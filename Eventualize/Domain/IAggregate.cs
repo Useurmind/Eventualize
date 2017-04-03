@@ -8,6 +8,9 @@ namespace Eventualize.Domain
     public interface IAggregate
     {
         Guid Id { get; }
+
+        int CommittedVersion { get; }
+
         int Version { get; }
 
         void ApplyEvent(object @event);

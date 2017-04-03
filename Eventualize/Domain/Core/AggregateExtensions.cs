@@ -25,9 +25,9 @@ namespace Eventualize.Domain.Core
 
     public static class EventExtensions
     {
-        public static string GetEventTypeName(this IEvent @event)
+        public static string GetEventTypeName(this IEventData eventData)
         {
-            return GetEventTypeName(@event.GetType());
+            return GetEventTypeName(eventData.GetType());
         }
 
         public static string GetEventTypeName(this Type eventType)

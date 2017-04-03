@@ -12,13 +12,13 @@ using NEventStore;
 using NEventStore.Persistence;
 
 using IAggregate = Eventualize.Domain.IAggregate;
-using IConstructAggregates = Eventualize.Persistence.IConstructAggregates;
+using IConstructInstances = Eventualize.Persistence.IConstructInstances;
 using IMemento = Eventualize.Domain.IMemento;
 using IRepository = Eventualize.Persistence.IRepository;
 
 namespace Eventualize.NEventStore.Persistence
 {
-    public class EventStoreRepository : IRepository
+    public class NEventStoreRepository : IRepository
     {
         private const string AggregateTypeHeader = "AggregateType";
 
@@ -26,13 +26,13 @@ namespace Eventualize.NEventStore.Persistence
 
         private readonly IStoreEvents eventStore;
 
-        private readonly IConstructAggregates factory;
+        private readonly IConstructInstances factory;
 
         //private readonly IDictionary<string, ISnapshot> snapshots = new Dictionary<string, ISnapshot>();
 
         //private readonly IDictionary<string, IEventStream> streams = new Dictionary<string, IEventStream>();
 
-        public EventStoreRepository(IStoreEvents eventStore, IConstructAggregates factory, Eventualize.Domain.Core.IDetectConflicts conflictDetector)
+        public NEventStoreRepository(IStoreEvents eventStore, IConstructInstances factory, Eventualize.Domain.Core.IDetectConflicts conflictDetector)
         {
             this.eventStore = eventStore;
             this.factory = factory;
@@ -73,15 +73,15 @@ namespace Eventualize.NEventStore.Persistence
             }
         }
 
-        public virtual void Save(IAggregate aggregate, Guid commitId, Action<IDictionary<string, object>> updateHeaders)
+        public virtual void Save(IAggregate aggregate, Guid commitId)
         {
-            this.Save(Bucket.Default, aggregate, commitId, updateHeaders);
+            this.Save(Bucket.Default, aggregate, commitId);
 
         }
 
-        public void Save(string bucketId, IAggregate aggregate, Guid commitId, Action<IDictionary<string, object>> updateHeaders)
+        public void Save(string bucketId, IAggregate aggregate, Guid commitId)
         {
-            Dictionary<string, object> headers = PrepareHeaders(aggregate, updateHeaders);
+            Dictionary<string, object> headers = PrepareHeaders(aggregate);
             while (true)
             {
                 using (IEventStream stream = this.PrepareStream(bucketId, aggregate, headers))
@@ -161,7 +161,7 @@ namespace Eventualize.NEventStore.Persistence
         private IAggregate GetAggregate<TAggregate>(ISnapshot snapshot, IEventStream stream)
         {
             IMemento memento = snapshot == null ? null : snapshot.Payload as IMemento;
-            return this.factory.Build(typeof(TAggregate).GetAggregtateTypeName(), stream.StreamId.ToGuid(), memento);
+            return this.factory.BuildAggregate(typeof(TAggregate).GetAggregtateTypeName(), stream.StreamId.ToGuid(), memento);
         }
 
         private ISnapshot GetSnapshot(string bucketId, Guid id, int version)
@@ -220,16 +220,12 @@ namespace Eventualize.NEventStore.Persistence
         }
 
         private static Dictionary<string, object> PrepareHeaders(
-            IAggregate aggregate, Action<IDictionary<string, object>> updateHeaders)
+            IAggregate aggregate)
         {
             var headers = new Dictionary<string, object>();
 
             headers[AggregateTypeHeader] = aggregate.GetAggregtateTypeName();
-            if (updateHeaders != null)
-            {
-                updateHeaders(headers);
-            }
-
+           
             return headers;
         }
 

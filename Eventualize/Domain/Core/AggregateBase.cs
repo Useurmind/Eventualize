@@ -45,6 +45,14 @@ namespace Eventualize.Domain.Core
 
         public Guid Id { get; protected set; }
 
+        public int CommittedVersion
+        {
+            get
+            {
+                return this.Version - this.uncommittedEvents.Count;
+            }
+        }
+
         public int Version { get; protected set; }
 
         /// <summary>

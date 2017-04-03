@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
@@ -11,13 +12,13 @@ using NEventStore.Client;
 
 namespace Eventualize.NEventStore.Materialization
 {
-    public class EventStoreMaterializer
+    public class NEventStoreMaterializer : IMaterializer
     {
         private IStoreEvents eventStore;
 
-        private IMaterializationStrategy materializationStrategy;
+        private IEnumerable<IMaterializationStrategy> materializationStrategies;
 
-        private IConstructAggregates aggregateFactory;
+        private IConstructInstances aggregateFactory;
 
         private PollingClient pollingClient;
 
@@ -27,11 +28,11 @@ namespace Eventualize.NEventStore.Materialization
 
         private Assembly domainAssembly;
 
-        public EventStoreMaterializer(IConstructAggregates aggregateFactory, IStoreEvents eventStore, IMaterializationStrategy materializationStrategy)
+        public NEventStoreMaterializer(IConstructInstances aggregateFactory, IStoreEvents eventStore, IEnumerable<IMaterializationStrategy> materializationStrategies)
         {
             this.aggregateFactory = aggregateFactory;
             this.eventStore = eventStore;
-            this.materializationStrategy = materializationStrategy;
+            this.materializationStrategies = materializationStrategies;
         }
 
         public void Run()
@@ -47,12 +48,20 @@ namespace Eventualize.NEventStore.Materialization
 
                         foreach (var @event in events)
                         {
-                            this.materializationStrategy.HandleEvent(() => this.aggregateFactory.Build(aggregateTypeName, aggregateId, null), aggregateId, @event);
+                            foreach (var materializationStrategy in this.materializationStrategies)
+                            {
+                                materializationStrategy.HandleEvent(() => this.aggregateFactory.BuildAggregate(aggregateTypeName, aggregateId, null), aggregateId, @event);
+                            }
                         }
                     });
 
             this.observeCommits.Start();
         }
 
+        public void Dispose()
+        {
+            this.subscription.Dispose();
+            this.observeCommits.Dispose();
+        }
     }
 }
