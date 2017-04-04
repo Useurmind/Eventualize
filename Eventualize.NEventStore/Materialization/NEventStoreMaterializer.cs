@@ -43,14 +43,21 @@ namespace Eventualize.NEventStore.Materialization
                 commit =>
                     {
                         var aggregateId = commit.StreamId.ToGuid();
-                        var events = commit.Events.Select(x => x.Body);
                         var aggregateTypeName = commit.Headers["AggregateType"].ToString();
 
-                        foreach (var @event in events)
+                        var aggregateIdentity = new AggregateIdentity()
+                                                {
+                                                    Id = aggregateId,
+                                                    AggregateTypeName = aggregateTypeName
+                                                };
+
+                        foreach (var @event in commit.Events)
                         {
+                            var materializationEvent = new MaterializationEvent(commit.CommitSequence, commit.CommitStamp, aggregateIdentity, @event.Body as IEventData);
+
                             foreach (var materializationStrategy in this.materializationStrategies)
                             {
-                                materializationStrategy.HandleEvent(() => this.aggregateFactory.BuildAggregate(aggregateTypeName, aggregateId, null), aggregateId, @event);
+                                materializationStrategy.HandleEvent(materializationEvent);
                             }
                         }
                     });

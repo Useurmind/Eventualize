@@ -86,7 +86,7 @@ namespace Eventualize.Infrastructure
 
         public static IEventualizeContainerBuilder MaterializeInMemory(this IEventualizeContainerBuilder containerBuilder)
         {
-            return containerBuilder.AddMaterializationStrategyFactory(c => new InMemoryMaterialization());
+            return containerBuilder.AddMaterializationStrategyFactory(c => new InMemoryMaterialization(c.AggregateFactory));
         }
     }
 }

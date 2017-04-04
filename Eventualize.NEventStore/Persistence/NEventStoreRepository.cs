@@ -65,9 +65,8 @@ namespace Eventualize.NEventStore.Persistence
             ISnapshot snapshot = this.GetSnapshot(bucketId, id, versionToLoad);
             using (IEventStream stream = this.OpenStream(bucketId, id, versionToLoad, snapshot))
             {
-                IAggregate aggregate = this.GetAggregate<TAggregate>(snapshot, stream);
-
-                ApplyEventsToAggregate(versionToLoad, stream, aggregate);
+                var domainEvents = stream.CommittedEvents.Select(x => (IEventData)x.Body);
+                IAggregate aggregate = this.GetAggregate<TAggregate>(snapshot, stream, domainEvents);
 
                 return aggregate as TAggregate;
             }
@@ -147,21 +146,17 @@ namespace Eventualize.NEventStore.Persistence
             //}
         }
 
-        private static void ApplyEventsToAggregate(int versionToLoad, IEventStream stream, IAggregate aggregate)
-        {
-            if (versionToLoad == 0 || aggregate.Version < versionToLoad)
-            {
-                foreach (var @event in stream.CommittedEvents.Select(x => x.Body))
-                {
-                    aggregate.ApplyEvent(@event);
-                }
-            }
-        }
-
-        private IAggregate GetAggregate<TAggregate>(ISnapshot snapshot, IEventStream stream)
+        private IAggregate GetAggregate<TAggregate>(ISnapshot snapshot, IEventStream stream, IEnumerable<IEventData> domainEvents)
         {
             IMemento memento = snapshot == null ? null : snapshot.Payload as IMemento;
-            return this.factory.BuildAggregate(typeof(TAggregate).GetAggregtateTypeName(), stream.StreamId.ToGuid(), memento);
+
+            var aggregateIdentity = new AggregateIdentity()
+            {
+                AggregateTypeName = typeof(TAggregate).GetAggregtateTypeName(),
+                Id = stream.StreamId.ToGuid()
+            };
+
+            return this.factory.BuildAggregate(aggregateIdentity, memento, domainEvents);
         }
 
         private ISnapshot GetSnapshot(string bucketId, Guid id, int version)
@@ -206,7 +201,7 @@ namespace Eventualize.NEventStore.Persistence
             //{
             //    this.streams[streamId] = stream = this.eventStore.CreateStream(bucketId, aggregate.Id);
             //}
-            
+
             if (aggregate.Version > aggregate.GetUncommittedEvents().Count)
             {
                 stream = this.eventStore.OpenStream(bucketId, aggregate.Id);
@@ -225,7 +220,7 @@ namespace Eventualize.NEventStore.Persistence
             var headers = new Dictionary<string, object>();
 
             headers[AggregateTypeHeader] = aggregate.GetAggregtateTypeName();
-           
+
             return headers;
         }
 

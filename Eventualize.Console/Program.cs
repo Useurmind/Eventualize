@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 using Autofac;
 
+using EventStore.ClientAPI;
 using EventStore.ClientAPI.Embedded;
 using EventStore.Core;
 
@@ -70,14 +72,23 @@ namespace Eventualize.Console
                 builder.Eventualize(
                     b =>
                     {
-                        b.RegisterSingleInstance(
-                             c =>
-                             {
-                                 var node = EmbeddedVNodeBuilder.AsSingleNode().OnDefaultEndpoints().RunInMemory().Build();
-                                 node.StartAndWaitUntilReady();
-                                 return node;
-                             })
-                         .ConnectEventStore(c => EmbeddedEventStoreConnection.Create(c.Resolve<ClusterVNode>()))
+                        //b.RegisterSingleInstance(
+                        //     c =>
+                        //     {
+                        //         var notListening = new IPEndPoint(IPAddress.None, 0);
+
+                        //         var node = EmbeddedVNodeBuilder.AsSingleNode()
+                        //             .RunInMemory()
+                        //             .WithExternalHttpOn(notListening)
+                        //             .WithInternalHttpOn(notListening)
+                        //             .WithExternalTcpOn(notListening)
+                        //             .WithInternalTcpOn(notListening)
+                        //             .Build();
+
+                        //         node.StartAndWaitUntilReady();
+                        //         return node;
+                        //     })
+                         b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
                          .StoreAggregatesInEventStore()
                          .MaterializeFromEventStore();
                     });
@@ -156,7 +167,7 @@ namespace Eventualize.Console
 
             foreach (var task in tasks)
             {
-                System.Console.WriteLine($"{task.Id}: {task.Title} - {task.Description}");
+                System.Console.WriteLine($"{task.Id}({task.Version}): {task.Title} - {task.Description}");
             }
         }
 

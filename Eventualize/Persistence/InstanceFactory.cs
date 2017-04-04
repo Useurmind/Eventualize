@@ -30,15 +30,27 @@ namespace Eventualize.Persistence
             this.aggregateTypeRegister.ScanTypes(assembly, x => x.GetCustomAttribute<AggregateTypeNameAttribute>() != null, x => x.GetCustomAttribute<AggregateTypeNameAttribute>().Name);
         }
 
-        public IAggregate BuildAggregate(string aggregateTypeName, Guid id, IMemento snapshot)
+        public IAggregate BuildAggregate(AggregateIdentity aggregateIdentity, IMemento snapshot)
         {
             if (snapshot != null)
             {
                 throw new NotImplementedException();
             }
 
-            Type aggregateType = this.aggregateTypeRegister.GetType(aggregateTypeName, () => $"Could not find type for aggregate {aggregateTypeName} with id {id}");
-            IAggregate aggregate = (IAggregate)Activator.CreateInstance(aggregateType, id);
+            Type aggregateType = this.aggregateTypeRegister.GetType(aggregateIdentity.AggregateTypeName, () => $"Could not find type for aggregate {aggregateIdentity.AggregateTypeName} with id {aggregateIdentity.Id}");
+            IAggregate aggregate = (IAggregate)Activator.CreateInstance(aggregateType, aggregateIdentity.Id);
+
+            return aggregate;
+        }
+
+        public IAggregate BuildAggregate(AggregateIdentity aggregateIdentity, IMemento snapshot, IEnumerable<IEventData> events)
+        {
+            var aggregate = BuildAggregate(aggregateIdentity, snapshot);
+
+            foreach (var eventData in events)
+            {
+                aggregate.ApplyEvent(eventData);
+            }
 
             return aggregate;
         }

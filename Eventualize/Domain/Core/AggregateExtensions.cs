@@ -6,6 +6,15 @@ namespace Eventualize.Domain.Core
 {
     public static class AggregateExtensions
     {
+        public static AggregateIdentity GetAggregateIdentity(this IAggregate aggregate)
+        {
+            return new AggregateIdentity()
+            {
+                Id = aggregate.Id,
+                AggregateTypeName = aggregate.GetAggregtateTypeName()
+            };
+        }
+
         public static string GetAggregtateTypeName(this IAggregate aggregate)
         {
             return GetAggregtateTypeName(aggregate.GetType());

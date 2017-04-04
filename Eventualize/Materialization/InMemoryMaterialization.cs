@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Domain;
+using Eventualize.Persistence;
 
 namespace Eventualize.Materialization
 {
@@ -13,21 +14,28 @@ namespace Eventualize.Materialization
     {
         private ConcurrentDictionary<Guid, IAggregate> aggregates = new ConcurrentDictionary<Guid, IAggregate>();
 
+        private IConstructInstances aggregateFactory;
+
+        public InMemoryMaterialization(IConstructInstances aggregateFactory)
+        {
+            this.aggregateFactory = aggregateFactory;
+        }
+
         public IEnumerable<TAggregate> GetAggregates<TAggregate>() where TAggregate : IAggregate
         {
             return this.aggregates.Values.OfType<TAggregate>();
         }
 
-        public void HandleEvent(Func<IAggregate> createAggregate, Guid aggregateId, object @event)
+        public void HandleEvent(IMaterializationEvent materializationEvent)
         {
             IAggregate aggregate = null;
-            if (!this.aggregates.TryGetValue(aggregateId, out aggregate))
+            if (!this.aggregates.TryGetValue(materializationEvent.AggregateIdentity.Id, out aggregate))
             {
-                aggregate = createAggregate();
+                aggregate = this.aggregateFactory.BuildAggregate(materializationEvent.AggregateIdentity, null);
                 this.aggregates[aggregate.Id] = aggregate;
             }
 
-            aggregate.ApplyEvent(@event);
+            aggregate.ApplyEvent(materializationEvent.EventData);
         }
     }
 }

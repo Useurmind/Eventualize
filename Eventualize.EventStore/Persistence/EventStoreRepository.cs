@@ -18,6 +18,8 @@ namespace Eventualize.EventStore.Persistence
     {
         private const string DefaultBucketId = "Default";
 
+        private const int MaxPageSize = 4096; // limitation of event store
+
         private IEventStoreConnection connection;
 
         private IConstructInstances instanceFactory;
@@ -43,7 +45,7 @@ namespace Eventualize.EventStore.Persistence
 
         public TAggregate GetById<TAggregate>(string bucketId, Guid id) where TAggregate : class, IAggregate
         {
-            return this.GetById<TAggregate>(bucketId, id, 0);
+            return this.GetById<TAggregate>(bucketId, id, MaxPageSize);
         }
 
         public TAggregate GetById<TAggregate>(string bucketId, Guid id, int version) where TAggregate : class, IAggregate
@@ -52,23 +54,17 @@ namespace Eventualize.EventStore.Persistence
 
             var resultSlice = this.connection.ReadStreamEventsForwardAsync(streamName.ToString(), 0, version, true).Result;
 
-            var aggregate = (TAggregate)this.instanceFactory.BuildAggregate(typeof(TAggregate).GetAggregtateTypeName(), id, null);
+            var domainEvents = resultSlice.Events.Select(resolvedEvent => this.eventConverter.GetDomainEvent(resolvedEvent.Event));
 
-            this.ApplyEventsToAggregate(aggregate, resultSlice);
+            var aggregateIdentity = new AggregateIdentity()
+                                    {
+                                        Id = id,
+                                        AggregateTypeName = typeof(TAggregate).GetAggregtateTypeName()
+            };
+
+            var aggregate = (TAggregate)this.instanceFactory.BuildAggregate(aggregateIdentity, null, domainEvents);
 
             return aggregate;
-        }
-
-        private void ApplyEventsToAggregate(IAggregate aggregate, StreamEventsSlice resultSlice)
-        {
-            foreach (var @event in resultSlice.Events)
-            {
-                var storedEvent = @event.Event;
-
-                var eventData = this.eventConverter.GetDomainEvent(storedEvent);
-                
-                aggregate.ApplyEvent(eventData);
-            }
         }
 
         public void Save(IAggregate aggregate, Guid commitId)
@@ -82,9 +78,9 @@ namespace Eventualize.EventStore.Persistence
 
             var eventDatas = this.ExtractEventData(aggregate);
 
-            var expectedVersion = aggregate.CommittedVersion == 0 ? ExpectedVersion.NoStream : aggregate.CommittedVersion;
+            var expectedVersion = aggregate.CommittedVersion == 0 ? ExpectedVersion.NoStream : aggregate.CommittedVersion-1;
 
-            this.connection.AppendToStreamAsync(streamName.ToString(), expectedVersion, eventDatas).Wait();
+            var result = this.connection.AppendToStreamAsync(streamName.ToString(), expectedVersion, eventDatas).Result;
         }
 
         private IEnumerable<EventData> ExtractEventData(IAggregate aggregate)
