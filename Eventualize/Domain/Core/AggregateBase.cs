@@ -17,13 +17,13 @@ namespace Eventualize.Domain.Core
 
         protected AggregateBase(IRouteEvents handler)
         {
-            if (handler == null)
-            {
-                return;
-            }
+            this.Version = AggregateVersion.NotCreated;
 
-            this.RegisteredRoutes = handler;
-            this.RegisteredRoutes.Register(this);
+            if (handler != null)
+            {
+                this.RegisteredRoutes = handler;
+                this.RegisteredRoutes.Register(this);
+            }
         }
 
         protected IRouteEvents RegisteredRoutes
@@ -45,7 +45,7 @@ namespace Eventualize.Domain.Core
 
         public Guid Id { get; protected set; }
 
-        public int CommittedVersion
+        public long CommittedVersion
         {
             get
             {
@@ -53,7 +53,7 @@ namespace Eventualize.Domain.Core
             }
         }
 
-        public int Version { get; protected set; }
+        public long Version { get; protected set; }
 
         /// <summary>
         /// Called when loading an event with already commited events.

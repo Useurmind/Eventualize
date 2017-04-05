@@ -10,7 +10,7 @@ using Eventualize.Persistence;
 
 namespace Eventualize.Materialization
 {
-    public class InMemoryMaterialization : IMaterializationStrategy
+    public class InMemoryMaterialization : IAggregateMaterializationStrategy
     {
         private ConcurrentDictionary<Guid, IAggregate> aggregates = new ConcurrentDictionary<Guid, IAggregate>();
 
@@ -26,7 +26,7 @@ namespace Eventualize.Materialization
             return this.aggregates.Values.OfType<TAggregate>();
         }
 
-        public void HandleEvent(IMaterializationEvent materializationEvent)
+        public void HandleEvent(IAggregateEvent materializationEvent)
         {
             IAggregate aggregate = null;
             if (!this.aggregates.TryGetValue(materializationEvent.AggregateIdentity.Id, out aggregate))

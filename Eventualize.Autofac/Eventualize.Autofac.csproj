@@ -63,7 +63,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\AutofacComponentContext.cs" />
     <Compile Include="Infrastructure\AutofacContainer.cs" />
+    <Compile Include="Infrastructure\AutofacContainerBuilder.cs" />
+    <Compile Include="Infrastructure\AutofacExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

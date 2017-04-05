@@ -6,13 +6,14 @@ using System.Reflection;
 using Eventualize.Materialization;
 using Eventualize.Persistence;
 using Eventualize.Domain;
+using Eventualize.NEventStore.Persistence;
 
 using NEventStore;
 using NEventStore.Client;
 
 namespace Eventualize.NEventStore.Materialization
 {
-    public class NEventStoreMaterializer : IMaterializer
+    public class NEventStoreMaterializationEventPoller : IMaterializationEventPoller
     {
         private IStoreEvents eventStore;
 
@@ -28,7 +29,7 @@ namespace Eventualize.NEventStore.Materialization
 
         private Assembly domainAssembly;
 
-        public NEventStoreMaterializer(IConstructInstances aggregateFactory, IStoreEvents eventStore, IEnumerable<IMaterializationStrategy> materializationStrategies)
+        public NEventStoreMaterializationEventPoller(IConstructInstances aggregateFactory, IStoreEvents eventStore, IEnumerable<IMaterializationStrategy> materializationStrategies)
         {
             this.aggregateFactory = aggregateFactory;
             this.eventStore = eventStore;
@@ -38,7 +39,7 @@ namespace Eventualize.NEventStore.Materialization
         public void Run()
         {
             this.pollingClient = new PollingClient(this.eventStore.Advanced, 100);
-            this.observeCommits = this.pollingClient.ObserveFrom();
+            this.observeCommits = this.pollingClient.ObserveFromBucket(NEventStoreBuckets.Aggregates);
             this.subscription = this.observeCommits.Subscribe(
                 commit =>
                     {
@@ -53,7 +54,11 @@ namespace Eventualize.NEventStore.Materialization
 
                         foreach (var @event in commit.Events)
                         {
-                            var materializationEvent = new MaterializationEvent(commit.CommitSequence, commit.CommitStamp, aggregateIdentity, @event.Body as IEventData);
+                            var materializationEvent = NEventStoreEventConverter.CreateAggregateEvent(
+                                aggregateIdentity,
+                                commit.CommitId,
+                                @event,
+                                -1);
 
                             foreach (var materializationStrategy in this.materializationStrategies)
                             {

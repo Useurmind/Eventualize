@@ -43,9 +43,9 @@ namespace Eventualize.EventStore.Infrastructure
         {
             containerBuilder.RegisterSingleInstance(c => (IEventStoreEventConverter)new EventStoreEventConverter(c.EventConverter));
 
-            containerBuilder.SetRepositoryFactory(
+            containerBuilder.SetAggregateEventStoreFactory(
                 c =>
-                    new EventStoreRepository(c.Resolve<IEventStoreConnection>(), c.Resolve<IEventStoreEventConverter>(), c.AggregateFactory));
+                    new AggregateEventStoreImplementation(c.Resolve<IEventStoreConnection>(), c.Resolve<IEventStoreEventConverter>()));
 
             return containerBuilder;
         }
@@ -54,12 +54,13 @@ namespace Eventualize.EventStore.Infrastructure
         {
             containerBuilder.SetMaterializerFactory(
                    c =>
-                       (IMaterializer)
-                       new EventStoreMaterializer(
+                       (IMaterializationEventPoller)
+                       new EventStoreMaterializationEventPoller(
                            c.AggregateFactory,
                            c.Resolve<IEventStoreEventConverter>(),
                            c.Resolve<IEventStoreConnection>(),
-                           c.MaterializationStrategies));
+                           c.MaterializationStrategies,
+                           c.AggregateMaterializationStrategies));
 
             return containerBuilder;
         }

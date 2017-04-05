@@ -80,8 +80,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Infrastructure\ContainerExtensions.cs" />
-    <Compile Include="Materialization\NEventStoreMaterializer.cs" />
-    <Compile Include="Persistence\NEventStoreRepository.cs" />
+    <Compile Include="Materialization\NEventStoreMaterializationEventPoller.cs" />
+    <Compile Include="Persistence\AggregateNEventStoreImplementation.cs" />
+    <Compile Include="Persistence\NEventStoreBuckets.cs" />
+    <Compile Include="Persistence\NEventStoreEventConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

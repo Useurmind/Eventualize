@@ -23,9 +23,9 @@ namespace Eventualize.NEventStore.Infrastructure
 
         public static IEventualizeContainerBuilder StoreAggregatesInNEventStore(this IEventualizeContainerBuilder containerBuilder)
         {
-            containerBuilder.SetRepositoryFactory(
+            containerBuilder.SetAggregateEventStoreFactory(
                 c =>
-                    new NEventStoreRepository(c.Resolve<IStoreEvents>(), c.AggregateFactory, new ConflictDetector()));
+                    new AggregateNEventStoreImplementation(c.Resolve<IStoreEvents>()));
 
             return containerBuilder;
         }
@@ -34,8 +34,8 @@ namespace Eventualize.NEventStore.Infrastructure
         {
             containerBuilder.SetMaterializerFactory(
                    c =>
-                       (IMaterializer)
-                       new NEventStoreMaterializer(
+                       (IMaterializationEventPoller)
+                       new NEventStoreMaterializationEventPoller(
                            c.AggregateFactory,
                            c.Resolve<IStoreEvents>(),
                            c.MaterializationStrategies));

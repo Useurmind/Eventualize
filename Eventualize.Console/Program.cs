@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.OleDb;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Net;
 using System.Reflection;
@@ -8,12 +11,16 @@ using System.Text;
 
 using Autofac;
 
+using Dapper;
+
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.Embedded;
 using EventStore.Core;
 
 using Eventualize.Autofac.Infrastructure;
 using Eventualize.Console.Domain;
+using Eventualize.Console.ReadModel;
+using Eventualize.Dapper.Materialization;
 using Eventualize.Domain;
 using Eventualize.Domain.Core;
 using Eventualize.EventStore.Infrastructure;
@@ -30,20 +37,23 @@ namespace Eventualize.Console
 {
     class Program
     {
-        private static IRepository repository;
+        private static IAggregateRepository aggregateRepository;
 
         private static InMemoryMaterialization materializationStrategy;
 
+        private static IContainer container;
+
         static void Main(string[] args)
         {
-            using (var container = SetupContainer(true))
+            container = SetupContainer(true);
+            using (container)
             {
                 var eventContainer = container.Eventualize();
 
-                eventContainer.Materializer.Run();
+                eventContainer.MaterializationEventPoller.Run();
 
-                repository = eventContainer.Repository;
-                materializationStrategy = eventContainer.MaterializationStrategies.OfType<InMemoryMaterialization>().First();
+                aggregateRepository = eventContainer.AggregateRepository;
+                //materializationStrategy = eventContainer.AggregateMaterializationStrategies.OfType<InMemoryMaterialization>().First();
 
                 while (true)
                 {
@@ -60,11 +70,26 @@ namespace Eventualize.Console
         {
             var builder = new ContainerBuilder();
 
+            builder.Register(c => new Func<IDbConnection>(() => new SqlConnection(@"Server=.\SQLEXPRESS;Database=EventualizeTest;Integrated Security=True;")))
+                   .As<Func<IDbConnection>>();
+
+            builder.Register(
+                c =>
+                    new SimpleAggregateMaterializer<Task, TaskReadModel>(
+                        c.Resolve<Func<IDbConnection>>(),
+                        (task, @event) => new TaskReadModel()
+                        {
+                            Id = task.Id,
+                            Title = task.Title,
+                            Description = task.Description,
+                            Version = task.Version
+                        })).As<IAggregateMaterializer>();
+
             builder.Eventualize(
                 b =>
                 {
                     b.SetDefaults(Assembly.GetExecutingAssembly());
-                    b.MaterializeInMemory();
+                    b.MaterializePerAggregate();
                 });
 
             if (forEventStore)
@@ -88,9 +113,9 @@ namespace Eventualize.Console
                         //         node.StartAndWaitUntilReady();
                         //         return node;
                         //     })
-                         b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
-                         .StoreAggregatesInEventStore()
-                         .MaterializeFromEventStore();
+                        b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
+                        .StoreAggregatesInEventStore()
+                        .MaterializeFromEventStore();
                     });
             }
             else
@@ -135,11 +160,11 @@ namespace Eventualize.Console
             var taskId = new Guid(commandArguments.First());
             var taskDescription = string.Join(" ", commandArguments.Skip(1));
 
-            var task = repository.GetById<Task>(taskId);
+            var task = aggregateRepository.GetById<Task>(taskId);
 
             task.Describe(taskDescription);
-            
-            repository.Save(task, Guid.NewGuid());
+
+            aggregateRepository.Save(task, Guid.NewGuid());
 
             System.Console.WriteLine($"Description for task {task.Id} set");
         }
@@ -156,18 +181,23 @@ namespace Eventualize.Console
                 task.Describe(taskDescription);
             }
 
-            repository.Save(task, Guid.NewGuid());
+            aggregateRepository.Save(task, Guid.NewGuid());
 
             System.Console.WriteLine($"Task {task.Id} created");
         }
 
         static void ListAllTasks()
         {
-            var tasks = materializationStrategy.GetAggregates<Task>();
+            //var tasks = materializationStrategy.GetAggregates<Task>();
 
-            foreach (var task in tasks)
+            using (var connection = container.Resolve<Func<IDbConnection>>()())
             {
-                System.Console.WriteLine($"{task.Id}({task.Version}): {task.Title} - {task.Description}");
+                var tasks = connection.Query<TaskReadModel>($"select * from {typeof(TaskReadModel).GetTableName()}");
+                
+                foreach (var task in tasks)
+                {
+                    System.Console.WriteLine($"{task.Id}({task.Version}): {task.Title} - {task.Description}");
+                }
             }
         }
 

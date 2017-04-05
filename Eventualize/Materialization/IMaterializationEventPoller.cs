@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Eventualize.Materialization
 {
-    public interface IMaterializer : IDisposable
+    public interface IMaterializationEventPoller : IDisposable
     {
         void Run();
     }

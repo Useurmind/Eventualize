@@ -7,6 +7,6 @@ namespace Eventualize.Domain
     {
         Guid Id { get; set; }
 
-        int Version { get; set; }
+        long Version { get; set; }
     }
 }

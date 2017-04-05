@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="2e2d548e-0566-4c54-b064-b1246e1a9f79" ChangeDateTime="04/05/2017 13:33:39">
+    <Property Name="ElementName" Value="[dbo].[Tasks].[StoreIndex]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Tasks]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LastEventStoreIndex" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="93a63b47-471b-433b-ba2b-3ec03f596dd4" ChangeDateTime="04/05/2017 13:33:46">
+    <Property Name="ElementName" Value="[dbo].[Tasks].[LastModificationDate]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Tasks]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LastEvent" />
+  </Operation>
+</Operations>

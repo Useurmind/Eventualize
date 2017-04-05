@@ -69,10 +69,11 @@
   <ItemGroup>
     <Compile Include="Infrastructure\ConnectionEventHandler.cs" />
     <Compile Include="Infrastructure\ContainerExtensions.cs" />
-    <Compile Include="Materialization\EventStoreMaterializer.cs" />
-    <Compile Include="Persistence\EventConverter.cs" />
-    <Compile Include="Persistence\EventStoreRepository.cs" />
-    <Compile Include="Persistence\StreamNameHelper.cs" />
+    <Compile Include="Materialization\EventStoreMaterializationEventPoller.cs" />
+    <Compile Include="Persistence\EventStoreEventConverter.cs" />
+    <Compile Include="Persistence\AggregateEventStoreImplementation.cs" />
+    <Compile Include="Persistence\IEventStoreEventConverter.cs" />
+    <Compile Include="Persistence\StreamName.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

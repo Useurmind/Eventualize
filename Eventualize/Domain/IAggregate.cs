@@ -9,9 +9,9 @@ namespace Eventualize.Domain
     {
         Guid Id { get; }
 
-        int CommittedVersion { get; }
+        long CommittedVersion { get; }
 
-        int Version { get; }
+        long Version { get; }
 
         void ApplyEvent(object @event);
 

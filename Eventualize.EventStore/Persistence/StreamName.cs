@@ -9,9 +9,10 @@ namespace Eventualize.EventStore.Persistence
 {
     public class StreamName
     {
-        public StreamName(string buckedIt, string aggregateTypeName, Guid aggregateId)
+        public const string AggregatePrefix = "Agg-";
+
+        public StreamName(string aggregateTypeName, Guid aggregateId)
         {
-            this.BucketId = buckedIt;
             this.AggregateTypeName = aggregateTypeName;
             this.AggregateId = aggregateId;
         }
@@ -19,9 +20,7 @@ namespace Eventualize.EventStore.Persistence
         public Guid AggregateId { get; }
 
         public string AggregateTypeName { get; }
-
-        public string BucketId { get; }
-
+        
         public static StreamName FromStreamName(string streamName)
         {
             var streamNameParts = streamName.Split('-');
@@ -33,22 +32,22 @@ namespace Eventualize.EventStore.Persistence
                 throw new Exception($"Stream name {streamName} is not valid. A stream name must have the form <BucketId>-<AggregateTypeName>-<AggregateGuid>");
             }
 
-            return new StreamName(streamNameParts[0], streamNameParts[1], aggregateId);
+            return new StreamName(streamNameParts[1], aggregateId);
         }
 
-        public static StreamName FromAggregateType<TAggregate>(string bucketId, Guid id) where TAggregate : class, IAggregate
+        public static StreamName FromAggregateType(Type aggregateType, Guid id)
         {
-            return new StreamName(bucketId, typeof(TAggregate).GetAggregtateTypeName(), id);
+            return new StreamName(aggregateType.GetAggregtateTypeName(), id);
         }
 
         public static bool IsAggregateStreamName(string streamId)
         {
-            return Regex.IsMatch(streamId, @"^[^\-]*-[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
+            return Regex.IsMatch(streamId, "^" + AggregatePrefix + @"[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
         }
 
         public string ToString()
         {
-            return $"{this.BucketId}-{this.AggregateTypeName}-{this.AggregateId}";
+            return $"{AggregatePrefix}{this.AggregateTypeName}-{this.AggregateId}";
         }
 
         public AggregateIdentity GetAggregateIdentity()
