@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventualize", "Eventualize\Eventualize.csproj", "{81FF36DE-C711-4FD5-B158-74502A8A2F71}"
 EndProject
@@ -75,7 +75,6 @@ Global
 		{269A7F7F-5889-4F12-8FD2-051F1924B646}.Release|x64.Build.0 = Release|Any CPU
 		{EB496CB7-546B-412D-B4AB-4ED8AD708912}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EB496CB7-546B-412D-B4AB-4ED8AD708912}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EB496CB7-546B-412D-B4AB-4ED8AD708912}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
 		{EB496CB7-546B-412D-B4AB-4ED8AD708912}.Debug|x64.ActiveCfg = Debug|Any CPU
 		{EB496CB7-546B-412D-B4AB-4ED8AD708912}.Debug|x64.Build.0 = Debug|Any CPU
 		{EB496CB7-546B-412D-B4AB-4ED8AD708912}.Debug|x64.Deploy.0 = Debug|Any CPU

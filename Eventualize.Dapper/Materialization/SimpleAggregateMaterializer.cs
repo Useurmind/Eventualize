@@ -28,6 +28,7 @@ namespace Eventualize.Dapper.Materialization
             var readModel = this.mapToReadModel(aggregate, materializationEvent);
             readModel.LastEventDate = materializationEvent.CreationTime;
             readModel.LastEventStoreIndex = materializationEvent.StoreIndex;
+            readModel.LastModifierId = materializationEvent.CreatorId;
 
             using (var connection = this.getConnection())
             {

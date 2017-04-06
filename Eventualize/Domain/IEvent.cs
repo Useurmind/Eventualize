@@ -16,6 +16,8 @@ namespace Eventualize.Domain
 
         DateTime CreationTime { get; }
 
+        string CreatorId { get; }
+
         IEventData EventData { get; }
     }
 }

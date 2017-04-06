@@ -16,6 +16,7 @@ namespace Eventualize.NEventStore.Persistence
                 eventId: Guid.Empty, 
                 eventType: ((IEventData)eventMessage.Body).GetEventTypeName(),
                 creationTime: DateTime.MinValue, 
+                creatorId: null,
                 eventData: (IEventData)eventMessage.Body,
                 aggregateIdentity: aggregateIdentity,
                 aggregateIndex: index

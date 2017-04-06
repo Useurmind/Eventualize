@@ -30,6 +30,7 @@ namespace Eventualize.EventStore.Persistence
                eventId: recordedEvent.EventId,
                eventType: recordedEvent.EventType,
                creationTime: recordedEvent.Created,
+               creatorId: null,
                eventData: eventData,
                aggregateIdentity: aggregateIdentity,
                aggregateIndex: recordedEvent.EventNumber
@@ -45,6 +46,7 @@ namespace Eventualize.EventStore.Persistence
                eventId: recordedEvent.EventId,
                eventType: recordedEvent.EventType,
                creationTime: recordedEvent.Created,
+               creatorId: null,
                eventData: eventData
                 );
         }

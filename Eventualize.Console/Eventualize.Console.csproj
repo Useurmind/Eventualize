@@ -84,6 +84,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\TaskList\TaskList.cs" />
     <Compile Include="Domain\Tasks\Task.cs" />
     <Compile Include="Domain\Tasks\TaskCreatedEvent.cs" />
     <Compile Include="Domain\Tasks\TaskDescriptionAddedEvent.cs" />

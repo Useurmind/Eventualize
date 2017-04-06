@@ -11,5 +11,7 @@ namespace Eventualize.Materialization
         long LastEventStoreIndex { get; set; }
 
         DateTime LastEventDate { get; set; }
+
+        string LastModifierId { get; set; }
     }
 }

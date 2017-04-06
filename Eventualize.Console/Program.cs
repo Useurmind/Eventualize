@@ -15,10 +15,12 @@ using Dapper;
 
 using EventStore.ClientAPI;
 using EventStore.ClientAPI.Embedded;
+using EventStore.ClientAPI.Exceptions;
 using EventStore.Core;
 
 using Eventualize.Autofac.Infrastructure;
 using Eventualize.Console.Domain;
+using Eventualize.Console.Domain.TaskList;
 using Eventualize.Console.ReadModel;
 using Eventualize.Dapper.Materialization;
 using Eventualize.Domain;
@@ -97,23 +99,19 @@ namespace Eventualize.Console
                 builder.Eventualize(
                     b =>
                     {
-                        //b.RegisterSingleInstance(
-                        //     c =>
-                        //     {
-                        //         var notListening = new IPEndPoint(IPAddress.None, 0);
+                        b.RegisterSingleInstance(
+                             c =>
+                             {
+                                 var node = EmbeddedVNodeBuilder.AsSingleNode()
+                                     .RunInMemory()
+                                     .OnDefaultEndpoints()
+                                     .Build();
 
-                        //         var node = EmbeddedVNodeBuilder.AsSingleNode()
-                        //             .RunInMemory()
-                        //             .WithExternalHttpOn(notListening)
-                        //             .WithInternalHttpOn(notListening)
-                        //             .WithExternalTcpOn(notListening)
-                        //             .WithInternalTcpOn(notListening)
-                        //             .Build();
-
-                        //         node.StartAndWaitUntilReady();
-                        //         return node;
-                        //     })
-                        b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
+                                 node.StartAndWaitUntilReady();
+                                 return node;
+                             })
+                        //b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
+                        .ConnectEventStore(c => EmbeddedEventStoreConnection.Create(c.Resolve<ClusterVNode>()))
                         .StoreAggregatesInEventStore()
                         .MaterializeFromEventStore();
                     });
@@ -135,24 +133,61 @@ namespace Eventualize.Console
         static void HandleCommand(string command)
         {
             var commandParts = command.Split(' ');
-            var commandName = commandParts[0];
-            var commandArguments = commandParts.Skip(1);
 
-            switch (commandName)
+            if (command.StartsWith("list all"))
             {
-                case "list":
-                    ListAllTasks();
-                    break;
-                case "create":
-                    CreateTask(commandArguments);
-                    break;
-                case "describe":
-                    DescribeTask(commandArguments);
-                    break;
-                default:
-                    System.Console.WriteLine("Unkown command");
-                    break;
+                ListAllTasks();
             }
+            else if(command.StartsWith("list"))
+            {
+                ListTasksInList(commandParts.Skip(1));
+            }
+            else if (command.StartsWith("create list"))
+            {
+                CreateTaskList(commandParts.Skip(2));
+            }
+            else if (command.StartsWith("add task to list"))
+            {
+                AddTaskToList(commandParts.Skip(4));
+            }
+            else if (command.StartsWith("create task"))
+            {
+                CreateTask(commandParts.Skip(2));
+            }
+            else if (command.StartsWith("describe task"))
+            {
+                DescribeTask(commandParts.Skip(2));
+            }
+            else
+            {
+                System.Console.WriteLine("Unkown command");
+            }
+        }
+
+        private static void ListTasksInList(IEnumerable<string> commandArguments)
+        {
+            var listId= Guid.Parse(commandArguments.First());
+
+
+        }
+
+        private static void AddTaskToList(IEnumerable<string> commandArguments)
+        {
+            var listId = new Guid(commandArguments.First());
+            var taskId = new Guid(commandArguments.Skip(1).First());
+
+            var taskList = aggregateRepository.GetById<TaskList>(listId);
+            var task = aggregateRepository.GetById<Task>(taskId);
+
+            taskList.AddTaskAtEnd(taskId);
+        }
+
+        private static void CreateTaskList(IEnumerable<string> commandArguments)
+        {
+            var listName = commandArguments.First();
+            var taskList = new TaskList(listName);
+            aggregateRepository.Save(taskList, Guid.NewGuid());
+            System.Console.WriteLine($"Created task list {taskList.Id}");
         }
 
         private static void DescribeTask(IEnumerable<string> commandArguments)
@@ -193,7 +228,7 @@ namespace Eventualize.Console
             using (var connection = container.Resolve<Func<IDbConnection>>()())
             {
                 var tasks = connection.Query<TaskReadModel>($"select * from {typeof(TaskReadModel).GetTableName()}");
-                
+
                 foreach (var task in tasks)
                 {
                     System.Console.WriteLine($"{task.Id}({task.Version}): {task.Title} - {task.Description}");
