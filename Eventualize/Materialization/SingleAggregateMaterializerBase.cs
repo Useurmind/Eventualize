@@ -1,18 +1,19 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Eventualize.Domain;
 
 namespace Eventualize.Materialization
 {
-    public abstract class AggregateMaterializerBase<TAggregate> : IAggregateMaterializer
+    public abstract class SingleAggregateMaterializerBase<TAggregate> : IAggregateMaterializer
         where TAggregate : class, IAggregate
     {
-        public Type AggregateType
+        public IEnumerable<Type> AggregateTypes
         {
             get
             {
-                return typeof(TAggregate);
+                return new [] { typeof(TAggregate) };
             }
         }
 

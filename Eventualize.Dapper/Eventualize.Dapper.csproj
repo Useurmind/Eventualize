@@ -65,7 +65,7 @@
   <ItemGroup>
     <Compile Include="Materialization\KeyAttribute.cs" />
     <Compile Include="Materialization\ReadModelExtensions.cs" />
-    <Compile Include="Materialization\SimpleAggregateMaterializer.cs" />
+    <Compile Include="Materialization\SimpleSingleAggregateMaterializer.cs" />
     <Compile Include="Materialization\TableAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

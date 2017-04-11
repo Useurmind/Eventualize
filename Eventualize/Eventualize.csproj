@@ -113,7 +113,10 @@
     <Compile Include="Infrastructure\IEventualizeContainerBuilder.cs" />
     <Compile Include="Infrastructure\IEventualizeLogger.cs" />
     <Compile Include="Materialization\AggregateMaterializationDistributor.cs" />
-    <Compile Include="Materialization\AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\Multi2AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\Multi3AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\Multi4AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\SingleAggregateMaterializerBase.cs" />
     <Compile Include="Materialization\IAggregateMaterializationStrategy.cs" />
     <Compile Include="Materialization\IAggregateMaterializer.cs" />
     <Compile Include="Materialization\IMaterializationStrategy.cs" />
@@ -131,6 +134,9 @@
     <Compile Include="Persistence\ISerializer.cs" />
     <Compile Include="Persistence\JsonSerializer.cs" />
     <Compile Include="Persistence\TypeRegister.cs" />
+    <Compile Include="Security\EventualizeContext.cs" />
+    <Compile Include="Security\EventualizeUser.cs" />
+    <Compile Include="Security\IEventualizeContext.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

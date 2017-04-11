@@ -41,7 +41,7 @@ namespace Eventualize.EventStore.Infrastructure
 
         public static IEventualizeContainerBuilder StoreAggregatesInEventStore(this IEventualizeContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterSingleInstance(c => (IEventStoreEventConverter)new EventStoreEventConverter(c.EventConverter));
+            containerBuilder.RegisterSingleInstance(c => (IEventStoreEventConverter)new EventStoreEventConverter(c.EventConverter, c.Serializer));
 
             containerBuilder.SetAggregateEventStoreFactory(
                 c =>

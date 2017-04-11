@@ -6,5 +6,6 @@
 	[Description] varchar(200) null,
 	[Version] int not null,
 	[LastEventDate] datetime2 not null, 
-    [LastEventStoreIndex] BIGINT NOT NULL
+    [LastEventStoreIndex] BIGINT NOT NULL, 
+    [LastModifierId] VARCHAR(50) NOT NULL
 )

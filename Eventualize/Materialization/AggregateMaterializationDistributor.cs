@@ -15,7 +15,15 @@ namespace Eventualize.Materialization
         public AggregateMaterializationDistributor(IAggregateRepository aggregateRepository, IEnumerable<IAggregateMaterializer> aggregateMaterializers)
         {
             this.aggregateRepository = aggregateRepository;
-            this.materializerByAggregateType = aggregateMaterializers.GroupBy(x => x.AggregateType).ToDictionary(x => x.Key.GetAggregtateTypeName(), x => x as IEnumerable<IAggregateMaterializer>);
+
+            var allAggregateTypes = aggregateMaterializers.SelectMany(x => x.AggregateTypes).Distinct().ToArray();
+
+            this.materializerByAggregateType = new Dictionary<string, IEnumerable<IAggregateMaterializer>>();
+            foreach (var aggregateType in allAggregateTypes)
+            {
+                this.materializerByAggregateType[aggregateType.GetAggregtateTypeName()] =
+                    aggregateMaterializers.Where(x => x.AggregateTypes.Contains(aggregateType)).ToArray();
+            }
         }
 
         public void HandleEvent(IAggregateEvent materializationEvent)

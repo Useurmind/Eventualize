@@ -32,6 +32,7 @@ using Eventualize.NEventStore.Infrastructure;
 using Eventualize.NEventStore.Materialization;
 using Eventualize.NEventStore.Persistence;
 using Eventualize.Persistence;
+using Eventualize.Security;
 
 using NEventStore;
 
@@ -45,8 +46,13 @@ namespace Eventualize.Console
 
         private static IContainer container;
 
+        private static string userName;
+
         static void Main(string[] args)
         {
+            userName = "Jochen";
+            EventualizeContext.Init(userName);
+
             container = SetupContainer(true);
             using (container)
             {
@@ -77,15 +83,7 @@ namespace Eventualize.Console
 
             builder.Register(
                 c =>
-                    new SimpleAggregateMaterializer<Task, TaskReadModel>(
-                        c.Resolve<Func<IDbConnection>>(),
-                        (task, @event) => new TaskReadModel()
-                        {
-                            Id = task.Id,
-                            Title = task.Title,
-                            Description = task.Description,
-                            Version = task.Version
-                        })).As<IAggregateMaterializer>();
+                    new SimpleSingleAggregateMaterializer<Task, TaskReadModel>(c.Resolve<Func<IDbConnection>>())).As<IAggregateMaterializer>();
 
             builder.Eventualize(
                 b =>
@@ -99,19 +97,19 @@ namespace Eventualize.Console
                 builder.Eventualize(
                     b =>
                     {
-                        b.RegisterSingleInstance(
-                             c =>
-                             {
-                                 var node = EmbeddedVNodeBuilder.AsSingleNode()
-                                     .RunInMemory()
-                                     .OnDefaultEndpoints()
-                                     .Build();
+                        //b.RegisterSingleInstance(
+                        //     c =>
+                        //     {
+                        //         var node = EmbeddedVNodeBuilder.AsSingleNode()
+                        //             .RunInMemory()
+                        //             .OnDefaultEndpoints()
+                        //             .Build();
 
-                                 node.StartAndWaitUntilReady();
-                                 return node;
-                             })
-                        //b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
-                        .ConnectEventStore(c => EmbeddedEventStoreConnection.Create(c.Resolve<ClusterVNode>()))
+                        //         node.StartAndWaitUntilReady();
+                        //         return node;
+                        //     })
+                        //.ConnectEventStore(c => EmbeddedEventStoreConnection.Create(c.Resolve<ClusterVNode>()))
+                        b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
                         .StoreAggregatesInEventStore()
                         .MaterializeFromEventStore();
                     });
