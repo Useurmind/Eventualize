@@ -17,7 +17,7 @@ namespace Eventualize.Infrastructure
         public static IEventualizeContainerBuilder MaterializeSnapShots<TAggregate>(this IEventualizeContainerBuilder containerBuilder, EventNamespace? eventNamespace = null)
             where TAggregate : class, IAggregate
         {
-            return containerBuilder.RegisterSingleInstance<IAggregateMaterializer>(c => new SnapShotMaterializer<TAggregate>(c.SnapShotStore, EventualizeContext.TakeThisOrDefault(eventNamespace)));
+            return containerBuilder.RegisterSingleInstance<IAggregateMaterializer>(c => new SnapShotMaterializer(c.SnapShotStore, EventualizeContext.TakeThisOrDefault(eventNamespace)));
         }
 
         public static IEventualizeContainerBuilder SetDefaults(this IEventualizeContainerBuilder containerBuilder, params Assembly[] domainAssemblies)

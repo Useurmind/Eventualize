@@ -10,11 +10,11 @@ namespace Eventualize.Materialization
         where TAggregate1 : class, IAggregate
         where TAggregate2 : class, IAggregate
     {
-        public IEnumerable<Type> AggregateTypes
+        public ChosenAggregateTypes ChosenAggregateTypes
         {
             get
             {
-                return new[] { typeof(TAggregate1), typeof(TAggregate2) };
+                return new ChosenAggregateTypes(new[] { typeof(TAggregate1), typeof(TAggregate2) });
             }
         }
 

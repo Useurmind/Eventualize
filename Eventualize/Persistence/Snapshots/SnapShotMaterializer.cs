@@ -10,8 +10,7 @@ using Eventualize.Materialization;
 
 namespace Eventualize.Persistence.Snapshots
 {
-    public class SnapShotMaterializer<TAggregate> : SingleAggregateMaterializerBase<TAggregate>
-        where TAggregate : class, IAggregate
+    public class SnapShotMaterializer : IAggregateMaterializer
     {
         private ISnapShotStore snapShotStore;
 
@@ -23,10 +22,12 @@ namespace Eventualize.Persistence.Snapshots
             this.eventNamespace = eventNamespace;
         }
 
-        protected override void HandleAggregateEvent(TAggregate aggregate, IAggregateEvent materializationEvent)
+        public void HandleAggregateEvent(IAggregate aggregate, IAggregateEvent materializationEvent)
         {
             var snapShot = aggregate.GetSnapshot();
             this.snapShotStore.SaveSnapshot(aggregate.GetAggregateIdentity(this.eventNamespace), snapShot);
         }
+
+        public ChosenAggregateTypes ChosenAggregateTypes { get { return new ChosenAggregateTypes(); } }
     }
 }

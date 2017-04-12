@@ -10,6 +10,7 @@ namespace Eventualize.Materialization
 {
     public class AggregateMaterializationDistributor : IAggregateMaterializationStrategy
     {
+        private IEnumerable<IAggregateMaterializer> materializersForAllTypes;
         private Dictionary<string, IEnumerable<IAggregateMaterializer>> materializerByAggregateType;
         private IAggregateRepository aggregateRepository;
 
@@ -17,25 +18,36 @@ namespace Eventualize.Materialization
         {
             this.aggregateRepository = aggregateRepository;
 
-            var allAggregateTypes = aggregateMaterializers.SelectMany(x => x.AggregateTypes).Distinct().ToArray();
+            var allAggregateTypes = aggregateMaterializers.SelectMany(x => x.ChosenAggregateTypes.AggregateTypes).Distinct().ToArray();
 
+            this.materializersForAllTypes = aggregateMaterializers.Where(x => x.ChosenAggregateTypes.AllAggregateTypesChosen);
             this.materializerByAggregateType = new Dictionary<string, IEnumerable<IAggregateMaterializer>>();
             foreach (var aggregateType in allAggregateTypes)
             {
                 this.materializerByAggregateType[aggregateType.GetAggregtateTypeName().Value] =
-                    aggregateMaterializers.Where(x => x.AggregateTypes.Contains(aggregateType)).ToArray();
+                    aggregateMaterializers.Where(x => x.ChosenAggregateTypes.AggregateTypes.Contains(aggregateType)).ToArray();
             }
         }
 
         public void HandleEvent(IAggregateEvent materializationEvent)
         {
-            IEnumerable<IAggregateMaterializer> materializers = null;
+            IEnumerable<IAggregateMaterializer> materializers = Enumerable.Empty<IAggregateMaterializer>();
 
-            var aggregate = this.aggregateRepository.GetById(materializationEvent.AggregateIdentity);
-
-            if (this.materializerByAggregateType.TryGetValue(materializationEvent.AggregateIdentity.AggregateTypeName.Value, out materializers))
+            this.materializerByAggregateType.TryGetValue(
+                materializationEvent.AggregateIdentity.AggregateTypeName.Value,
+                out materializers);
+            
+            if(materializers.Any() || this.materializersForAllTypes.Any())
             {
+                // only get aggregate if there are materializers waiting
+                var aggregate = this.aggregateRepository.GetById(materializationEvent.AggregateIdentity);
+
                 foreach (var materializer in materializers)
+                {
+                    materializer.HandleAggregateEvent(aggregate, materializationEvent);
+                }
+
+                foreach (var materializer in this.materializersForAllTypes)
                 {
                     materializer.HandleAggregateEvent(aggregate, materializationEvent);
                 }

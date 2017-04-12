@@ -9,11 +9,11 @@ namespace Eventualize.Materialization
     public abstract class SingleAggregateMaterializerBase<TAggregate> : IAggregateMaterializer
         where TAggregate : class, IAggregate
     {
-        public IEnumerable<Type> AggregateTypes
+        public ChosenAggregateTypes ChosenAggregateTypes
         {
             get
             {
-                return new [] { typeof(TAggregate) };
+                return new ChosenAggregateTypes(new [] { typeof(TAggregate) });
             }
         }
 
