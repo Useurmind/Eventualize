@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Eventualize.Domain;
+
+using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Core;
 
 namespace Eventualize.Console.Domain
 {
     [AggregateTypeName("Task")]
-    public class Task : AggregateBase
+    public class Task : StateBackedAggregateBase<TaskState>
     {
-        public Task(Guid id)
+        public Task( )
         {
-            this.Id = id;
+        }
+
+        public Task(Guid id) : base(id)
+        {
         }
 
         public Task(string title): this(Guid.NewGuid())
@@ -21,9 +25,9 @@ namespace Eventualize.Console.Domain
             this.SetTitleAfterCreate(title);
         }
 
-        public string Title { get; private set; }
+        public string Title => this.State.Title;
 
-        public string Description { get; private set; }
+        public string Description => this.State.Description;
 
         private void SetTitleAfterCreate(string title)
         {
@@ -43,12 +47,12 @@ namespace Eventualize.Console.Domain
 
         private void Apply(TaskCreatedEvent @event)
         {
-            this.Title = @event.Title;
+            this.State.Title = @event.Title;
         }
 
         private void Apply(TaskDescriptionAddedEvent @event)
         {
-            this.Description = @event.Description;
+            this.State.Description = @event.Description;
         }
     }
 }

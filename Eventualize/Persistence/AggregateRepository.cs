@@ -2,7 +2,9 @@ using System;
 using System.Linq;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Core;
+using Eventualize.Persistence.Snapshots;
 using Eventualize.Security;
 
 namespace Eventualize.Persistence
@@ -13,10 +15,13 @@ namespace Eventualize.Persistence
 
         private IConstructInstances aggregateFactory;
 
-        public AggregateRepository(IAggregateEventStore eventStore, IConstructInstances aggregateFactory)
+        private ISnapShotStore snapShotStore;
+
+        public AggregateRepository(IAggregateEventStore eventStore, IConstructInstances aggregateFactory, ISnapShotStore snapShotStore)
         {
             this.eventStore = eventStore;
             this.aggregateFactory = aggregateFactory;
+            this.snapShotStore = snapShotStore;
         }
 
         public void Dispose()
@@ -43,8 +48,10 @@ namespace Eventualize.Persistence
 
         public IAggregate GetById(AggregateIdentity aggregateIdentity, int version)
         {
-            var events = this.eventStore.GetEvents(aggregateIdentity, 0, version);
-            return this.aggregateFactory.BuildAggregate(aggregateIdentity, null, events.Select(x => x.EventData));
+            var snapShot = this.snapShotStore.GetSnapshot(aggregateIdentity);
+            var startVersion = snapShot == null ? 0 : snapShot.Version + 1;
+            var events = this.eventStore.GetEvents(aggregateIdentity, startVersion, version);
+            return this.aggregateFactory.BuildAggregate(aggregateIdentity, snapShot, events.Select(x => x.EventData));
         }
 
         public void Save(IAggregate aggregate, Guid replayGuid)

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
-namespace Eventualize.Domain.Core
+using Eventualize.Domain.Core;
+
+namespace Eventualize.Domain.Aggregates
 {
     public class ConventionEventRouter : IRouteEvents
     {

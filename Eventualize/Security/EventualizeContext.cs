@@ -25,5 +25,10 @@ namespace Eventualize.Security
         }
 
         public static IEventualizeContext Current { get; private set; }
+
+        public static EventNamespace TakeThisOrDefault(EventNamespace? eventNamespace)
+        {
+            return eventNamespace.HasValue ? eventNamespace.Value : Current.DefaultEventNamespace;
+        }
     }
 }

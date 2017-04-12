@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace Eventualize.Domain.Core
+namespace Eventualize.Domain.Aggregates
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class AggregateTypeNameAttribute : Attribute

@@ -7,6 +7,7 @@ using Eventualize.Infrastructure;
 using Eventualize.Materialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
+using Eventualize.Persistence.Snapshots;
 
 namespace Eventualize.Autofac.Infrastructure
 {
@@ -21,67 +22,78 @@ namespace Eventualize.Autofac.Infrastructure
 
         public IEventualizeContainerBuilder SetLoggerFactory(Func<IEventualizeContainer, IEventualizeLogger> createLogger)
         {
-            this.builder.Register(ctx => createLogger(ctx.Eventualize())).As<IEventualizeLogger>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createLogger);
         }
 
         public IEventualizeContainerBuilder SetRepositoryFactory(Func<IEventualizeContainer, IAggregateRepository> createRepository)
         {
-            this.builder.Register(ctx => createRepository(ctx.Eventualize())).As<IAggregateRepository>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createRepository);
         }
 
         public IEventualizeContainerBuilder SetMaterializerFactory(Func<IEventualizeContainer, IMaterializationEventPoller> createMaterializer)
         {
-            this.builder.Register(ctx => createMaterializer(ctx.Eventualize())).As<IMaterializationEventPoller>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createMaterializer);
         }
 
         public IEventualizeContainerBuilder SetAggregateFactoryFactory(Func<IEventualizeContainer, IConstructInstances> createAggregateFactory)
         {
-            this.builder.Register(ctx => createAggregateFactory(ctx.Eventualize())).As<IConstructInstances>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createAggregateFactory);
         }
 
         public IEventualizeContainerBuilder SetEventConverterFactory(Func<IEventualizeContainer, IEventConverter> createEventConverter)
         {
-            this.builder.Register(ctx => createEventConverter(ctx.Eventualize())).As<IEventConverter>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createEventConverter);
         }
 
         public IEventualizeContainerBuilder SetSerializerFactory(Func<IEventualizeContainer, ISerializer> createSerializer)
         {
-            this.builder.Register(ctx => createSerializer(ctx.Eventualize())).As<ISerializer>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createSerializer);
         }
 
         public IEventualizeContainerBuilder AddMaterializationStrategyFactory(Func<IEventualizeContainer, IMaterializationStrategy> createMaterializationStrategy)
         {
-            this.builder.Register(ctx => createMaterializationStrategy(ctx.Eventualize())).As<IMaterializationStrategy>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createMaterializationStrategy);
         }
 
         public IEventualizeContainerBuilder AddAggregateMaterializationStrategyFactory(Func<IEventualizeContainer, IAggregateMaterializationStrategy> createAggregateMaterializationStrategy)
         {
-            this.builder.Register(ctx => createAggregateMaterializationStrategy(ctx.Eventualize())).As<IAggregateMaterializationStrategy>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createAggregateMaterializationStrategy);
         }
 
         public IEventualizeContainerBuilder RegisterSingleInstance<TInterface>(Func<IEventualizeContainer, TInterface> createInstance)
         {
-            this.builder.Register(x => createInstance(x.Eventualize())).As<TInterface>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createInstance);
         }
 
         public IEventualizeContainerBuilder SetAggregateEventStoreFactory(Func<IEventualizeContainer, IAggregateEventStore> createAggregateEventStore)
         {
-            this.builder.Register(x => createAggregateEventStore(x.Eventualize())).As<IAggregateEventStore>().SingleInstance();
-            return this;
+            return this.RegisterFuncFactorySingleton(createAggregateEventStore);
         }
 
         public IEventualizeContainerBuilder SetMaterializationProgessStoreFactory(Func<IEventualizeContainer, IMaterializationProgessStore> createProgessStore)
         {
-            this.builder.Register(x => createProgessStore(x.Eventualize())).As<IMaterializationProgessStore>().SingleInstance();
+            return this.RegisterFuncFactorySingleton(createProgessStore);
+        }
+
+        public IEventualizeContainerBuilder SetSnapShotStoreFactory(Func<IEventualizeContainer, ISnapShotStore> createSnapShotStore)
+        {
+            return this.RegisterFuncFactorySingleton(createSnapShotStore);
+        }
+
+        public IEventualizeContainerBuilder SetSnapshotConverterFactory(Func<IEventualizeContainer, ISnapshotConverter> createSnapshotConverter)
+        {
+            return this.RegisterFuncFactorySingleton(createSnapshotConverter);
+        }
+
+        private IEventualizeContainerBuilder RegisterFuncFactorySingleton<T>(Func<IEventualizeContainer, T> create)
+        {
+            this.builder.Register(x => create(x.Eventualize())).As<T>().SingleInstance();
+            return this;
+        }
+
+        public IEventualizeContainerBuilder RegisterNamedFactory<TInterface>(string name, Func<IEventualizeContainer, TInterface> createInstance)
+        {
+            this.builder.Register(x => createInstance(x.Eventualize())).Named<TInterface>(name);
             return this;
         }
     }

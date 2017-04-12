@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Eventualize.Domain.Core
+namespace Eventualize.Domain.Aggregates
 {
     public static class AggregateVersion
     {

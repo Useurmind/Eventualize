@@ -7,13 +7,14 @@ using Eventualize.Infrastructure;
 using Eventualize.Materialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
+using Eventualize.Persistence.Snapshots;
 
 namespace Eventualize.Autofac.Infrastructure
 {
     public class AutofacComponentContext : IEventualizeContainer
     {
         private IComponentContext componentContext;
-        
+
         public AutofacComponentContext(IComponentContext componentContext)
         {
             this.componentContext = componentContext;
@@ -101,6 +102,22 @@ namespace Eventualize.Autofac.Infrastructure
             get
             {
                 return this.componentContext.Resolve<IAggregateEventStore>();
+            }
+        }
+
+        public ISnapShotStore SnapShotStore
+        {
+            get
+            {
+                return this.componentContext.Resolve<ISnapShotStore>();
+            }
+        }
+
+        public ISnapshotConverter SnapshotConverter
+        {
+            get
+            {
+                return this.componentContext.Resolve<ISnapshotConverter>();
             }
         }
     }

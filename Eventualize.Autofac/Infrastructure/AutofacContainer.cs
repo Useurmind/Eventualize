@@ -9,6 +9,7 @@ using Eventualize.Infrastructure;
 using Eventualize.Materialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
+using Eventualize.Persistence.Snapshots;
 
 namespace Eventualize.Autofac.Infrastructure
 {
@@ -105,6 +106,22 @@ namespace Eventualize.Autofac.Infrastructure
             get
             {
                 return this.container.Resolve<IAggregateEventStore>();
+            }
+        }
+
+        public ISnapShotStore SnapShotStore
+        {
+            get
+            {
+                return this.container.Resolve<ISnapShotStore>();
+            }
+        }
+
+        public ISnapshotConverter SnapshotConverter
+        {
+            get
+            {
+                return this.container.Resolve<ISnapshotConverter>();
             }
         }
     }

@@ -3,15 +3,16 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Core;
 
 namespace Eventualize.EventStore.Persistence
 {
-    public class StreamName
+    public class AggregateStreamName
     {
         public const string AggregatePrefix = "Agg-";
 
-        public StreamName(EventNamespace eventNamespace, AggregateTypeName aggregateTypeName, Guid aggregateId)
+        public AggregateStreamName(EventNamespace eventNamespace, AggregateTypeName aggregateTypeName, Guid aggregateId)
         {
             this.EventNamespace = eventNamespace;
             this.AggregateTypeName = aggregateTypeName;
@@ -24,7 +25,7 @@ namespace Eventualize.EventStore.Persistence
 
         public AggregateTypeName AggregateTypeName { get; }
 
-        public static StreamName FromStreamName(string streamName)
+        public static AggregateStreamName FromStreamName(string streamName)
         {
             var streamNameParts = streamName.Split('-');
             var guidPart = string.Join("-", streamNameParts.Skip(3));
@@ -35,20 +36,20 @@ namespace Eventualize.EventStore.Persistence
                 throw new Exception($"Stream name {streamName} is not valid. A stream name must have the form Agg-<Namespace>-<AggregateTypeName>-<AggregateGuid>");
             }
 
-            return new StreamName(
+            return new AggregateStreamName(
                 new EventNamespace(streamNameParts[1]),
                 new AggregateTypeName(streamNameParts[2]),
                 aggregateId);
         }
 
-        public static StreamName FromAggregateType(Type aggregateType, Guid id, EventNamespace eventNameSpace)
+        public static AggregateStreamName FromAggregateType(Type aggregateType, Guid id, EventNamespace eventNameSpace)
         {
-            return new StreamName(eventNameSpace, aggregateType.GetAggregtateTypeName(), id);
+            return new AggregateStreamName(eventNameSpace, aggregateType.GetAggregtateTypeName(), id);
         }
 
-        public static StreamName FromAggregateIdentity(AggregateIdentity aggregateIdentity)
+        public static AggregateStreamName FromAggregateIdentity(AggregateIdentity aggregateIdentity)
         {
-            return new StreamName(aggregateIdentity.EventSpace, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
+            return new AggregateStreamName(aggregateIdentity.EventSpace, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
         }
 
         public static bool IsAggregateStreamName(string streamId, EventNamespace eventNameSpace)

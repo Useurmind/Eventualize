@@ -91,6 +91,8 @@ namespace Eventualize.Console
                     b.StoreMaterializationProgessInFileSystem();
                     b.SetDefaults(Assembly.GetExecutingAssembly());
                     b.MaterializePerAggregate();
+                    b.MaterializeSnapShots<Task>();
+                    b.MaterializeSnapShots<TaskList>();
                 });
 
             if (forEventStore)
@@ -112,6 +114,7 @@ namespace Eventualize.Console
                         //.ConnectEventStore(c => EmbeddedEventStoreConnection.Create(c.Resolve<ClusterVNode>()))
                         b.ConnectEventStore(new Uri(@"tcp://admin:changeit@127.0.0.1:1113"), ConnectionSettings.Default)
                         .StoreAggregatesInEventStore()
+                        .StoreSnapShotsInEventStore()
                         .MaterializeFromEventStore();
                     });
             }

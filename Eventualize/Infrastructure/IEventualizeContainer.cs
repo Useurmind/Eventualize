@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Eventualize.Materialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
+using Eventualize.Persistence.Snapshots;
 
 namespace Eventualize.Infrastructure
 {
@@ -21,7 +22,11 @@ namespace Eventualize.Infrastructure
 
         IAggregateRepository AggregateRepository { get; }
 
+        ISnapShotStore SnapShotStore{ get; }
+
         IConstructInstances AggregateFactory { get; }
+
+        ISnapshotConverter SnapshotConverter { get; }
 
         IEventConverter EventConverter { get; }
 

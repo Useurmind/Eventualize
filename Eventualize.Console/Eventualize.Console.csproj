@@ -85,9 +85,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\TaskList\TaskList.cs" />
+    <Compile Include="Domain\TaskList\TaskListCreatedEvent.cs" />
+    <Compile Include="Domain\TaskList\TaskListState.cs" />
+    <Compile Include="Domain\TaskList\TaskListTaskAddedAtEndEvent.cs" />
     <Compile Include="Domain\Tasks\Task.cs" />
     <Compile Include="Domain\Tasks\TaskCreatedEvent.cs" />
     <Compile Include="Domain\Tasks\TaskDescriptionAddedEvent.cs" />
+    <Compile Include="Domain\Tasks\TaskState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadModel\TaskReadModel.cs" />

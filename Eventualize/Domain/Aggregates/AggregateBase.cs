@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
-namespace Eventualize.Domain.Core
+namespace Eventualize.Domain.Aggregates
 {
     public abstract class AggregateBase : IAggregate, IEquatable<IAggregate>
     {
@@ -17,8 +17,6 @@ namespace Eventualize.Domain.Core
 
         protected AggregateBase(IRouteEvents handler)
         {
-            this.Version = AggregateVersion.NotCreated;
-
             if (handler != null)
             {
                 this.RegisteredRoutes = handler;
@@ -42,8 +40,9 @@ namespace Eventualize.Domain.Core
                 this.registeredRoutes = value;
             }
         }
+        public abstract Guid Id { get; protected set; }
 
-        public Guid Id { get; protected set; }
+        public abstract long Version { get; protected set; }
 
         public long CommittedVersion
         {
@@ -52,8 +51,7 @@ namespace Eventualize.Domain.Core
                 return this.Version - this.uncommittedEvents.Count;
             }
         }
-
-        public long Version { get; protected set; }
+        
 
         /// <summary>
         /// Called when loading an event with already commited events.
@@ -83,6 +81,11 @@ namespace Eventualize.Domain.Core
             return snapshot;
         }
 
+        void IAggregate.ApplySnapshot(IMemento snapshot)
+        {
+            this.ApplySnapshot(snapshot);
+        }
+
         public virtual bool Equals(IAggregate other)
         {
             return null != other && other.Id == this.Id;
@@ -106,6 +109,10 @@ namespace Eventualize.Domain.Core
         protected virtual IMemento GetSnapshot()
         {
             return null;
+        }
+        protected virtual void ApplySnapshot(IMemento snapshot)
+        {
+            
         }
 
         public override int GetHashCode()

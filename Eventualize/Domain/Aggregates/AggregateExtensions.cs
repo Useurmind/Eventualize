@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 
-namespace Eventualize.Domain.Core
+namespace Eventualize.Domain.Aggregates
 {
     public static class AggregateExtensions
     {

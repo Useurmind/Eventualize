@@ -73,9 +73,9 @@ namespace Eventualize.EventStore.Materialization
                 (subscription, resolvedevent) =>
                 {
                     var recordedEvent = resolvedevent.Event;
-                    if (StreamName.IsAggregateStreamName(recordedEvent.EventStreamId, this.eventNamespace))
+                    if (AggregateStreamName.IsAggregateStreamName(recordedEvent.EventStreamId, this.eventNamespace))
                     {
-                        var streamName = StreamName.FromStreamName(recordedEvent.EventStreamId);
+                        var streamName = AggregateStreamName.FromStreamName(recordedEvent.EventStreamId);
                         var aggregateEvent = eventConverter.GetDomainEvent(streamName.GetAggregateIdentity(), recordedEvent);
 
                         foreach (var aStrat in this.aggregateMaterializationStrategies)

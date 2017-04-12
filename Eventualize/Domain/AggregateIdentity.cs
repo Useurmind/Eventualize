@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Core;
 
 namespace Eventualize.Domain

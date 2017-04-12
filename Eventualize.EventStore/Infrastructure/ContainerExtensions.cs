@@ -8,6 +8,7 @@ using EventStore.ClientAPI;
 
 using Eventualize.EventStore.Materialization;
 using Eventualize.EventStore.Persistence;
+using Eventualize.EventStore.Persistence.SnapShots;
 using Eventualize.Infrastructure;
 using Eventualize.Materialization;
 using Eventualize.Materialization.Progress;
@@ -39,6 +40,11 @@ namespace Eventualize.EventStore.Infrastructure
         public static IEventualizeContainerBuilder ConnectEventStore(this IEventualizeContainerBuilder containerBuilder, Uri uri, ConnectionSettings connectionSettings)
         {
             return containerBuilder.ConnectEventStore(c => EventStoreConnection.Create(connectionSettings, uri));
+        }
+
+        public static IEventualizeContainerBuilder StoreSnapShotsInEventStore(this IEventualizeContainerBuilder containerBuilder)
+        {
+            return containerBuilder.SetSnapShotStoreFactory(c => new EventStoreSnapShotStore(c.Resolve<IEventStoreConnection>(), c.SnapshotConverter));
         }
 
         public static IEventualizeContainerBuilder StoreAggregatesInEventStore(this IEventualizeContainerBuilder containerBuilder)

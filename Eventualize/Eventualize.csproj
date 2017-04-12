@@ -86,14 +86,16 @@
   <ItemGroup>
     <Compile Include="Domain\AggregateEvent.cs" />
     <Compile Include="Domain\AggregateIdentity.cs" />
+    <Compile Include="Domain\Aggregates\SelfContainedAggregateBase.cs" />
+    <Compile Include="Domain\Aggregates\StateBackedAggregateBase.cs" />
     <Compile Include="Domain\AggregateTypeName.cs" />
-    <Compile Include="Domain\Core\AggregateBase.cs" />
-    <Compile Include="Domain\Core\AggregateExtensions.cs" />
-    <Compile Include="Domain\Core\AggregateTypeNameAttribute.cs" />
-    <Compile Include="Domain\Core\AggregateVersion.cs" />
+    <Compile Include="Domain\Aggregates\AggregateBase.cs" />
+    <Compile Include="Domain\Aggregates\AggregateExtensions.cs" />
+    <Compile Include="Domain\Aggregates\AggregateTypeNameAttribute.cs" />
+    <Compile Include="Domain\Aggregates\AggregateVersion.cs" />
     <Compile Include="Domain\Core\ConflictDelegate.cs" />
     <Compile Include="Domain\Core\ConflictDetector.cs" />
-    <Compile Include="Domain\Core\ConventionEventRouter.cs" />
+    <Compile Include="Domain\Aggregates\ConventionEventRouter.cs" />
     <Compile Include="Domain\Core\EventExtensions.cs" />
     <Compile Include="Domain\Core\EventTypeNameAttribute.cs" />
     <Compile Include="Domain\Core\ExtensionMethods.cs" />
@@ -109,6 +111,7 @@
     <Compile Include="Domain\IEventData.cs" />
     <Compile Include="Domain\IMemento.cs" />
     <Compile Include="Domain\IRouteEvents.cs" />
+    <Compile Include="Domain\MementoBase.cs" />
     <Compile Include="Domain\StringExtensions.cs" />
     <Compile Include="Domain\UserId.cs" />
     <Compile Include="Infrastructure\ConsoleLogger.cs" />
@@ -136,11 +139,15 @@
     <Compile Include="Persistence\EventConverter.cs" />
     <Compile Include="Persistence\IAggregateEventStore.cs" />
     <Compile Include="Persistence\IEventConverter.cs" />
-    <Compile Include="Persistence\InstanceFactory.cs" />
     <Compile Include="Persistence\IConstructInstances.cs" />
     <Compile Include="Persistence\IAggregateRepository.cs" />
     <Compile Include="Persistence\ISerializer.cs" />
     <Compile Include="Persistence\JsonSerializer.cs" />
+    <Compile Include="Persistence\InstanceFactory.cs" />
+    <Compile Include="Persistence\Snapshots\ISnapshotConverter.cs" />
+    <Compile Include="Persistence\Snapshots\ISnapShotStore.cs" />
+    <Compile Include="Persistence\Snapshots\SnapshotConverter.cs" />
+    <Compile Include="Persistence\Snapshots\SnapShotMaterializer.cs" />
     <Compile Include="Persistence\TypeRegister.cs" />
     <Compile Include="Security\EventualizeContext.cs" />
     <Compile Include="Security\EventualizeUser.cs" />

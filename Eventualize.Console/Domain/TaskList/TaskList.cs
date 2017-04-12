@@ -2,22 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Eventualize.Domain;
-using Eventualize.Domain.Core;
+using Eventualize.Domain.Aggregates;
 
 namespace Eventualize.Console.Domain.TaskList
 {
-    public class TaskList : AggregateBase
+    [AggregateTypeName("TaskList")]
+    public class TaskList : StateBackedAggregateBase<TaskListState>
     {
+        public TaskList()
+        {
+        }
+
+        public TaskList(Guid id)
+            : base(id)
+        {
+
+        }
+
         public TaskList(string name)
-            : base(null)
         {
             this.RaiseEvent(new TaskListCreatedEvent(name));
         }
 
-        public string Name { get; private set; }
+        public string Name => this.State.Name;
 
-        public IEnumerable<Guid> Tasks { get; private set; }
+        public IEnumerable<Guid> Tasks => this.State.Tasks;
 
         public void AddTaskAtEnd(Guid taskId)
         {
@@ -26,35 +35,13 @@ namespace Eventualize.Console.Domain.TaskList
 
         private void Apply(TaskListCreatedEvent @event)
         {
-            this.Name = @event.Name;
-            this.Tasks = Enumerable.Empty<Guid>();
+            this.State.Name = @event.Name;
+            this.State.Tasks = Enumerable.Empty<Guid>();
         }
 
         private void Apply(TaskListTaskAddedAtEndEvent @event)
         {
-            this.Tasks = this.Tasks.Union(new[] { @event.TaskId });
+            this.State.Tasks = this.Tasks.Union(new[] { @event.TaskId });
         }
-    }
-
-    [EventTypeName("TaskListCreated")]
-    public class TaskListCreatedEvent : IEventData
-    {
-        public TaskListCreatedEvent(string name)
-        {
-            this.Name = name;
-        }
-
-        public string Name { get; }
-    }
-
-    [EventTypeName("TaskListTaskAddedAtEnd")]
-    public class TaskListTaskAddedAtEndEvent : IEventData
-    {
-        public TaskListTaskAddedAtEndEvent(Guid taskId)
-        {
-            this.TaskId = taskId;
-        }
-
-        public Guid TaskId { get; }
     }
 }

@@ -20,5 +20,7 @@ namespace Eventualize.Domain
         void ClearUncommittedEvents();
 
         IMemento GetSnapshot();
+
+        void ApplySnapshot(IMemento snapshot);
     }
 }

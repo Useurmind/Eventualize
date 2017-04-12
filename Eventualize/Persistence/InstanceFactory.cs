@@ -4,7 +4,7 @@ using System.Linq;
 using System.Reflection;
 
 using Eventualize.Domain;
-using Eventualize.Domain.Core;
+using Eventualize.Domain.Aggregates;
 
 namespace Eventualize.Persistence
 {
@@ -24,6 +24,7 @@ namespace Eventualize.Persistence
                 this.ScanAggregateTypes(assembly);
             }
         }
+        
 
         public void ScanAggregateTypes(Assembly assembly)
         {
@@ -32,20 +33,24 @@ namespace Eventualize.Persistence
 
         public IAggregate BuildAggregate(AggregateIdentity aggregateIdentity, IMemento snapshot)
         {
+            Type aggregateType = this.aggregateTypeRegister.GetType(aggregateIdentity.AggregateTypeName.Value, () => $"Could not find type for aggregate {aggregateIdentity.AggregateTypeName} with id {aggregateIdentity.Id}");
+            IAggregate aggregate = null;
             if (snapshot != null)
             {
-                throw new NotImplementedException();
+                aggregate = (IAggregate)Activator.CreateInstance(aggregateType);
+                aggregate.ApplySnapshot(snapshot);
             }
-
-            Type aggregateType = this.aggregateTypeRegister.GetType(aggregateIdentity.AggregateTypeName.Value, () => $"Could not find type for aggregate {aggregateIdentity.AggregateTypeName} with id {aggregateIdentity.Id}");
-            IAggregate aggregate = (IAggregate)Activator.CreateInstance(aggregateType, aggregateIdentity.Id);
+            else
+            {
+                aggregate = (IAggregate)Activator.CreateInstance(aggregateType, aggregateIdentity.Id);
+            }
 
             return aggregate;
         }
 
         public IAggregate BuildAggregate(AggregateIdentity aggregateIdentity, IMemento snapshot, IEnumerable<IEventData> events)
         {
-            var aggregate = BuildAggregate(aggregateIdentity, snapshot);
+            var aggregate = this.BuildAggregate(aggregateIdentity, snapshot);
 
             foreach (var eventData in events)
             {

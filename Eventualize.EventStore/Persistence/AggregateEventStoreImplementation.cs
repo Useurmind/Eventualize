@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Core;
 using Eventualize.Persistence;
 
@@ -33,7 +34,7 @@ namespace Eventualize.EventStore.Persistence
 
         public IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, long start, long end)
         {
-            var streamName = StreamName.FromAggregateIdentity(aggregateIdentity);
+            var streamName = AggregateStreamName.FromAggregateIdentity(aggregateIdentity);
 
             if (end == AggregateVersion.Latest)
             {
@@ -55,7 +56,7 @@ namespace Eventualize.EventStore.Persistence
 
         public void AppendEvents(AggregateIdentity aggregateIdentity, long expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId)
         {
-            var streamName = StreamName.FromAggregateIdentity(aggregateIdentity);
+            var streamName = AggregateStreamName.FromAggregateIdentity(aggregateIdentity);
             
             var eventDatas = newAggregateEvents.Select(x => this.eventConverter.GetEventData(x));
 
