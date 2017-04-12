@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Materialization;
+using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 
 namespace Eventualize.Infrastructure
@@ -15,6 +16,8 @@ namespace Eventualize.Infrastructure
         IEventualizeLogger Logger { get; }
 
         IMaterializationEventPoller MaterializationEventPoller { get; }
+
+        IMaterializationProgessStore MaterializationProgessStore { get; }
 
         IAggregateRepository AggregateRepository { get; }
 

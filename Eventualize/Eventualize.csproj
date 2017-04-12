@@ -86,6 +86,7 @@
   <ItemGroup>
     <Compile Include="Domain\AggregateEvent.cs" />
     <Compile Include="Domain\AggregateIdentity.cs" />
+    <Compile Include="Domain\AggregateTypeName.cs" />
     <Compile Include="Domain\Core\AggregateBase.cs" />
     <Compile Include="Domain\Core\AggregateExtensions.cs" />
     <Compile Include="Domain\Core\AggregateTypeNameAttribute.cs" />
@@ -100,6 +101,8 @@
     <Compile Include="Domain\Core\IDetectConflicts.cs" />
     <Compile Include="Domain\Core\RegistrationEventRouter.cs" />
     <Compile Include="Domain\Event.cs" />
+    <Compile Include="Domain\EventNamespace.cs" />
+    <Compile Include="Domain\EventType.cs" />
     <Compile Include="Domain\IAggregate.cs" />
     <Compile Include="Domain\IAggregateEvent.cs" />
     <Compile Include="Domain\IEvent.cs" />
@@ -107,15 +110,20 @@
     <Compile Include="Domain\IMemento.cs" />
     <Compile Include="Domain\IRouteEvents.cs" />
     <Compile Include="Domain\StringExtensions.cs" />
+    <Compile Include="Domain\UserId.cs" />
     <Compile Include="Infrastructure\ConsoleLogger.cs" />
     <Compile Include="Infrastructure\EventualizeContainerExtensions.cs" />
     <Compile Include="Infrastructure\IEventualizeContainer.cs" />
     <Compile Include="Infrastructure\IEventualizeContainerBuilder.cs" />
     <Compile Include="Infrastructure\IEventualizeLogger.cs" />
     <Compile Include="Materialization\AggregateMaterializationDistributor.cs" />
+    <Compile Include="Materialization\Progress\FileMaterializationProgessStore.cs" />
+    <Compile Include="Materialization\Progress\IMaterializationProgess.cs" />
     <Compile Include="Materialization\Multi2AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\Multi3AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\Multi4AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\Progress\IMaterializationProgessStore.cs" />
+    <Compile Include="Materialization\Progress\KeyedMaterializationProgess.cs" />
     <Compile Include="Materialization\SingleAggregateMaterializerBase.cs" />
     <Compile Include="Materialization\IAggregateMaterializationStrategy.cs" />
     <Compile Include="Materialization\IAggregateMaterializer.cs" />

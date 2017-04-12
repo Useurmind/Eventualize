@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 
 using Eventualize.Materialization;
+using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 
 namespace Eventualize.Infrastructure
@@ -33,6 +34,12 @@ namespace Eventualize.Infrastructure
         public static IEventualizeContainerBuilder MaterializeInMemory(this IEventualizeContainerBuilder containerBuilder)
         {
             return containerBuilder.AddAggregateMaterializationStrategyFactory(c => new InMemoryMaterialization(c.AggregateFactory));
+        }
+
+        public static IEventualizeContainerBuilder StoreMaterializationProgessInFileSystem(
+            this IEventualizeContainerBuilder containerBuilder)
+        {
+            return containerBuilder.SetMaterializationProgessStoreFactory(c => new FileMaterializationProgessStore(c.Serializer));
         }
 
         public static IEventualizeContainerBuilder MaterializePerAggregate(this IEventualizeContainerBuilder containerBuilder)

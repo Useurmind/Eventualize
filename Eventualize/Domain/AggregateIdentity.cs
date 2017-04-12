@@ -12,20 +12,25 @@ namespace Eventualize.Domain
     {
         public Guid Id;
 
-        public string AggregateTypeName;
+        public EventNamespace EventSpace;
 
-        public static AggregateIdentity FromAggregate(IAggregate aggregate)
+        public AggregateTypeName AggregateTypeName;
+
+        public AggregateIdentity(EventNamespace eventNamespace, AggregateTypeName aggregateTypeName, Guid aggregateId)
         {
-            return aggregate.GetAggregateIdentity();
+            this.AggregateTypeName = aggregateTypeName;
+            this.EventSpace = eventNamespace;
+            this.Id = aggregateId;
         }
 
-        public static AggregateIdentity FromAggregateType(Type aggregateType, Guid id)
+        public static AggregateIdentity FromAggregate(IAggregate aggregate, EventNamespace eventNamespace)
         {
-            return new AggregateIdentity()
-                   {
-                       Id = id,
-                       AggregateTypeName = aggregateType.GetAggregtateTypeName()
-                   };
+            return aggregate.GetAggregateIdentity(eventNamespace);
+        }
+
+        public static AggregateIdentity FromAggregateType(Type aggregateType, Guid id, EventNamespace eventNamespace)
+        {
+            return new AggregateIdentity(eventNamespace, aggregateType.GetAggregtateTypeName(), id);
         }
     }
 }

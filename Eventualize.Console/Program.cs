@@ -51,7 +51,7 @@ namespace Eventualize.Console
         static void Main(string[] args)
         {
             userName = "Jochen";
-            EventualizeContext.Init(userName);
+            EventualizeContext.Init(new UserId(userName), new EventNamespace("EventualizeTest"));
 
             container = SetupContainer(true);
             using (container)
@@ -88,6 +88,7 @@ namespace Eventualize.Console
             builder.Eventualize(
                 b =>
                 {
+                    b.StoreMaterializationProgessInFileSystem();
                     b.SetDefaults(Assembly.GetExecutingAssembly());
                     b.MaterializePerAggregate();
                 });

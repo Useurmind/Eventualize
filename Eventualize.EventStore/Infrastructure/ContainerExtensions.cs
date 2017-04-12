@@ -10,6 +10,8 @@ using Eventualize.EventStore.Materialization;
 using Eventualize.EventStore.Persistence;
 using Eventualize.Infrastructure;
 using Eventualize.Materialization;
+using Eventualize.Materialization.Progress;
+using Eventualize.Security;
 
 namespace Eventualize.EventStore.Infrastructure
 {
@@ -60,7 +62,9 @@ namespace Eventualize.EventStore.Infrastructure
                            c.Resolve<IEventStoreEventConverter>(),
                            c.Resolve<IEventStoreConnection>(),
                            c.MaterializationStrategies,
-                           c.AggregateMaterializationStrategies));
+                           new KeyedMaterializationProgess(c.MaterializationProgessStore, "All"),
+                           c.AggregateMaterializationStrategies,
+                           EventualizeContext.Current.DefaultEventNamespace));
 
             return containerBuilder;
         }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 
 using Eventualize.Materialization;
+using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 
 namespace Eventualize.Infrastructure
@@ -16,6 +17,8 @@ namespace Eventualize.Infrastructure
         IEventualizeContainerBuilder SetLoggerFactory(Func<IEventualizeContainer, IEventualizeLogger> createLogger);
 
         IEventualizeContainerBuilder SetRepositoryFactory(Func<IEventualizeContainer, IAggregateRepository> createRepository);
+
+        IEventualizeContainerBuilder SetMaterializationProgessStoreFactory(Func<IEventualizeContainer, IMaterializationProgessStore> createProgessStore);
 
         IEventualizeContainerBuilder SetMaterializerFactory(Func<IEventualizeContainer, IMaterializationEventPoller> createMaterializer);
 

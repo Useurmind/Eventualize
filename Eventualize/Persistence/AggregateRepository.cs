@@ -3,6 +3,7 @@ using System.Linq;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Core;
+using Eventualize.Security;
 
 namespace Eventualize.Persistence
 {
@@ -29,12 +30,10 @@ namespace Eventualize.Persistence
 
         public TAggregate GetById<TAggregate>(Guid id, int version) where TAggregate : class, IAggregate
         {
-            return (TAggregate)this.GetById(
-                new AggregateIdentity
-                {
-                    Id = id,
-                    AggregateTypeName = typeof(TAggregate).GetAggregtateTypeName()
-                });
+            return
+                (TAggregate)
+                this.GetById(
+                    new AggregateIdentity(EventualizeContext.Current.DefaultEventNamespace, typeof(TAggregate).GetAggregtateTypeName(), id));
         }
 
         public IAggregate GetById(AggregateIdentity aggregateIdentity)
@@ -50,9 +49,10 @@ namespace Eventualize.Persistence
 
         public void Save(IAggregate aggregate, Guid replayGuid)
         {
+            var aggregateIdentity = aggregate.GetAggregateIdentity(EventualizeContext.Current.DefaultEventNamespace);
             var uncommitedEvents = aggregate.GetUncommittedEvents().Cast<IEventData>();
 
-            this.eventStore.AppendEvents(aggregate.GetAggregateIdentity(), aggregate.CommittedVersion, uncommitedEvents, replayGuid);
+            this.eventStore.AppendEvents(aggregateIdentity, aggregate.CommittedVersion, uncommitedEvents, replayGuid);
 
             aggregate.ClearUncommittedEvents();
         }

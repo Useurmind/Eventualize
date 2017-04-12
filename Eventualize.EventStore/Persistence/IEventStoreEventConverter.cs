@@ -10,7 +10,7 @@ namespace Eventualize.EventStore.Persistence
     {
         IAggregateEvent GetDomainEvent(AggregateIdentity aggregateIdentity, RecordedEvent recordedEvent);
 
-        IEvent GetDomainEvent(RecordedEvent recordedEvent);
+        IEvent GetDomainEvent(RecordedEvent recordedEvent, EventNamespace eventNamespace);
 
         EventData GetEventData(IEventData eventData);
     }

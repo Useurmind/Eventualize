@@ -5,6 +5,7 @@ using Autofac;
 
 using Eventualize.Infrastructure;
 using Eventualize.Materialization;
+using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 
 namespace Eventualize.Autofac.Infrastructure
@@ -23,6 +24,14 @@ namespace Eventualize.Autofac.Infrastructure
             get
             {
                 return this.componentContext.Resolve<IEventualizeLogger>();
+            }
+        }
+
+        public IMaterializationProgessStore MaterializationProgessStore
+        {
+            get
+            {
+                return this.componentContext.Resolve<IMaterializationProgessStore>();
             }
         }
 

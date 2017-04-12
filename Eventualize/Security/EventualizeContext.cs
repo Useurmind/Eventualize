@@ -5,17 +5,22 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
+using Eventualize.Domain;
+
 namespace Eventualize.Security
 {
     public class EventualizeContext : IEventualizeContext
     {
         public EventualizeUser CurrentUser { get; set; }
 
-        public static void Init(string userId)
+        public EventNamespace DefaultEventNamespace { get; set; }
+
+        public static void Init(UserId userId, EventNamespace defaultEventNamespace)
         {
             Current = new EventualizeContext()
             {
-                CurrentUser = new EventualizeUser(userId)
+                CurrentUser = new EventualizeUser(userId),
+                DefaultEventNamespace = defaultEventNamespace
             };
         }
 

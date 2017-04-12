@@ -37,7 +37,7 @@ namespace Eventualize.Persistence
                 throw new NotImplementedException();
             }
 
-            Type aggregateType = this.aggregateTypeRegister.GetType(aggregateIdentity.AggregateTypeName, () => $"Could not find type for aggregate {aggregateIdentity.AggregateTypeName} with id {aggregateIdentity.Id}");
+            Type aggregateType = this.aggregateTypeRegister.GetType(aggregateIdentity.AggregateTypeName.Value, () => $"Could not find type for aggregate {aggregateIdentity.AggregateTypeName} with id {aggregateIdentity.Id}");
             IAggregate aggregate = (IAggregate)Activator.CreateInstance(aggregateType, aggregateIdentity.Id);
 
             return aggregate;

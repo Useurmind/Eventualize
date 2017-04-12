@@ -13,10 +13,11 @@ namespace Eventualize.NEventStore.Persistence
         {
             return new AggregateEvent(
                 storeIndex: 0,
+                eventSpace: aggregateIdentity.EventSpace,
                 eventId: Guid.Empty, 
                 eventType: ((IEventData)eventMessage.Body).GetEventTypeName(),
                 creationTime: DateTime.MinValue, 
-                creatorId: null,
+                creatorId: new UserId(), 
                 eventData: (IEventData)eventMessage.Body,
                 aggregateIdentity: aggregateIdentity,
                 aggregateIndex: index

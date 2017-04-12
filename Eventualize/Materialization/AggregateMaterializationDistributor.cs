@@ -21,7 +21,7 @@ namespace Eventualize.Materialization
             this.materializerByAggregateType = new Dictionary<string, IEnumerable<IAggregateMaterializer>>();
             foreach (var aggregateType in allAggregateTypes)
             {
-                this.materializerByAggregateType[aggregateType.GetAggregtateTypeName()] =
+                this.materializerByAggregateType[aggregateType.GetAggregtateTypeName().Value] =
                     aggregateMaterializers.Where(x => x.AggregateTypes.Contains(aggregateType)).ToArray();
             }
         }
@@ -32,7 +32,7 @@ namespace Eventualize.Materialization
 
             var aggregate = this.aggregateRepository.GetById(materializationEvent.AggregateIdentity);
 
-            if (this.materializerByAggregateType.TryGetValue(materializationEvent.AggregateIdentity.AggregateTypeName, out materializers))
+            if (this.materializerByAggregateType.TryGetValue(materializationEvent.AggregateIdentity.AggregateTypeName.Value, out materializers))
             {
                 foreach (var materializer in materializers)
                 {

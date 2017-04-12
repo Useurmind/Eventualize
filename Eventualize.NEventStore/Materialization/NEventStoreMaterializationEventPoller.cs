@@ -46,11 +46,10 @@ namespace Eventualize.NEventStore.Materialization
                         var aggregateId = commit.StreamId.ToGuid();
                         var aggregateTypeName = commit.Headers["AggregateType"].ToString();
 
-                        var aggregateIdentity = new AggregateIdentity()
-                                                {
-                                                    Id = aggregateId,
-                                                    AggregateTypeName = aggregateTypeName
-                                                };
+                        var aggregateIdentity = new AggregateIdentity(
+                            new EventNamespace(commit.BucketId),
+                            new AggregateTypeName(aggregateTypeName),
+                            aggregateId);
 
                         foreach (var @event in commit.Events)
                         {

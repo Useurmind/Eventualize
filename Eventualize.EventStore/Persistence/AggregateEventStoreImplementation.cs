@@ -33,7 +33,7 @@ namespace Eventualize.EventStore.Persistence
 
         public IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, long start, long end)
         {
-            var streamName = new StreamName(aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
+            var streamName = StreamName.FromAggregateIdentity(aggregateIdentity);
 
             if (end == AggregateVersion.Latest)
             {
@@ -55,7 +55,7 @@ namespace Eventualize.EventStore.Persistence
 
         public void AppendEvents(AggregateIdentity aggregateIdentity, long expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId)
         {
-            var streamName = new StreamName(aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
+            var streamName = StreamName.FromAggregateIdentity(aggregateIdentity);
             
             var eventDatas = newAggregateEvents.Select(x => this.eventConverter.GetEventData(x));
 

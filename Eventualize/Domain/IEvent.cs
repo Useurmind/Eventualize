@@ -10,13 +10,15 @@ namespace Eventualize.Domain
         /// </summary>
         long StoreIndex { get; }
 
+        EventNamespace EventSpace { get; }
+
         Guid EventId { get; }
 
-        string EventType { get; }
+        EventType EventType { get; }
 
         DateTime CreationTime { get; }
 
-        string CreatorId { get; }
+        UserId CreatorId { get; }
 
         IEventData EventData { get; }
     }

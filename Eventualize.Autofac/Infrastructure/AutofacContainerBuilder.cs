@@ -5,6 +5,7 @@ using Autofac;
 
 using Eventualize.Infrastructure;
 using Eventualize.Materialization;
+using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 
 namespace Eventualize.Autofac.Infrastructure
@@ -75,6 +76,12 @@ namespace Eventualize.Autofac.Infrastructure
         public IEventualizeContainerBuilder SetAggregateEventStoreFactory(Func<IEventualizeContainer, IAggregateEventStore> createAggregateEventStore)
         {
             this.builder.Register(x => createAggregateEventStore(x.Eventualize())).As<IAggregateEventStore>().SingleInstance();
+            return this;
+        }
+
+        public IEventualizeContainerBuilder SetMaterializationProgessStoreFactory(Func<IEventualizeContainer, IMaterializationProgessStore> createProgessStore)
+        {
+            this.builder.Register(x => createProgessStore(x.Eventualize())).As<IMaterializationProgessStore>().SingleInstance();
             return this;
         }
     }

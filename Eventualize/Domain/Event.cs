@@ -5,9 +5,10 @@ namespace Eventualize.Domain
 {
     public class Event : IEvent
     {
-        public Event(long storeIndex, Guid eventId, string eventType, DateTime creationTime, string creatorId, IEventData eventData)
+        public Event(long storeIndex, EventNamespace eventSpace, Guid eventId, EventType eventType, DateTime creationTime, UserId creatorId, IEventData eventData)
         {
             this.StoreIndex = storeIndex;
+            this.EventSpace = eventSpace;
             this.EventId = eventId;
             this.EventType = eventType;
             this.CreationTime = creationTime;
@@ -17,13 +18,15 @@ namespace Eventualize.Domain
 
         public long StoreIndex { get; }
 
+        public EventNamespace EventSpace { get; }
+
         public Guid EventId { get; }
 
-        public string EventType { get; }
+        public EventType EventType { get; }
 
         public DateTime CreationTime { get; }
 
-        public string CreatorId { get; }
+        public UserId CreatorId { get; }
 
         public IEventData EventData { get; }
     }

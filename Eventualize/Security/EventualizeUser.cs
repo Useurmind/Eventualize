@@ -1,14 +1,16 @@
 using System.Linq;
 
+using Eventualize.Domain;
+
 namespace Eventualize.Security
 {
     public class EventualizeUser
     {
-        public EventualizeUser(string userId)
+        public EventualizeUser(UserId userId)
         {
             this.UserId = userId;
         }
 
-        public string UserId { get; }
+        public UserId UserId { get; }
     }
 }

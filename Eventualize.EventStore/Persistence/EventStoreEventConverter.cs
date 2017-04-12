@@ -37,27 +37,29 @@ namespace Eventualize.EventStore.Persistence
 
             return new AggregateEvent(
                 storeIndex: -1,
+                eventSpace: aggregateIdentity.EventSpace,
                eventId: recordedEvent.EventId,
-               eventType: recordedEvent.EventType,
+               eventType: new EventType(recordedEvent.EventType),
                creationTime: recordedEvent.Created,
-               creatorId: metaData.CreatorId,
+               creatorId: new UserId(metaData.CreatorId),
                eventData: eventData,
                aggregateIdentity: aggregateIdentity,
                aggregateIndex: recordedEvent.EventNumber
                 );
         }
 
-        public IEvent GetDomainEvent(RecordedEvent recordedEvent)
+        public IEvent GetDomainEvent(RecordedEvent recordedEvent, EventNamespace eventNamespace)
         {
             var eventData = this.eventConverter.DeserializeEventData(recordedEvent.EventType, recordedEvent.EventId, recordedEvent.Data);
             var metaData = (EventMetaData)this.serializer.Deserialize(typeof(EventMetaData), recordedEvent.Metadata);
 
             return new Event(
                 storeIndex: -1,
+                eventSpace: eventNamespace,
                eventId: recordedEvent.EventId,
-               eventType: recordedEvent.EventType,
+               eventType: new EventType(recordedEvent.EventType), 
                creationTime: recordedEvent.Created,
-               creatorId: metaData.CreatorId,
+               creatorId: new UserId(metaData.CreatorId),
                eventData: eventData
                 );
         }
@@ -65,13 +67,13 @@ namespace Eventualize.EventStore.Persistence
         public EventData GetEventData(IEventData eventData)
         {
             var eventMetaData = new EventMetaData()
-                                {
-                                    CreatorId = EventualizeContext.Current.CurrentUser.UserId
-                                };
+            {
+                CreatorId = EventualizeContext.Current.CurrentUser.UserId.Value
+            };
 
             return new EventData(
                 Guid.NewGuid(),
-                eventData.GetEventTypeName(),
+                eventData.GetEventTypeName().Value,
                 true,
                 this.eventConverter.SerializeEventData(eventData),
                 this.serializer.Serialize(eventMetaData));

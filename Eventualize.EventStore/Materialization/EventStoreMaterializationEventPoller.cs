@@ -10,10 +10,29 @@ using EventStore.ClientAPI;
 using Eventualize.Domain;
 using Eventualize.EventStore.Persistence;
 using Eventualize.Materialization;
+using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 
 namespace Eventualize.EventStore.Materialization
 {
+    public class EventStoreAllStreamPosition
+    {
+        public EventStoreAllStreamPosition(Position position )
+        {
+            this.CommitPosition = position.CommitPosition;
+            this.PreparePosition =position.PreparePosition;
+        }
+
+        public Position ToPosition()
+        {
+            return new Position(this.CommitPosition, this.PreparePosition);
+        }
+
+        public long PreparePosition { get; set; }
+
+        public long CommitPosition { get; set; }
+    }
+
     public class EventStoreMaterializationEventPoller : IMaterializationEventPoller
     {
         private IConstructInstances aggregateFactory;
@@ -28,24 +47,33 @@ namespace Eventualize.EventStore.Materialization
 
         private IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies;
 
-        public EventStoreMaterializationEventPoller(IConstructInstances aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, IEnumerable<IMaterializationStrategy> materializationStrategies, IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies)
+        private EventNamespace eventNamespace;
+
+        private IMaterializationProgess materializationProgess;
+
+        public EventStoreMaterializationEventPoller(IConstructInstances aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, IEnumerable<IMaterializationStrategy> materializationStrategies, 
+            IMaterializationProgess materializationProgess, IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies, EventNamespace eventNamespace)
         {
             this.connection = connection;
             this.aggregateFactory = aggregateFactory;
             this.eventConverter = eventConverter;
             this.materializationStrategies = materializationStrategies;
             this.aggregateMaterializationStrategies = aggregateMaterializationStrategies;
+            this.materializationProgess = materializationProgess;
+            this.eventNamespace = eventNamespace;
         }
 
         public void Run()
         {
+            var currentProgess = this.materializationProgess.Get<EventStoreAllStreamPosition>();
+
             this.subscription = this.connection.SubscribeToAllFrom(
-                Position.Start,
+                currentProgess == null ? Position.Start : currentProgess.ToPosition(),
                 new CatchUpSubscriptionSettings(100, 50, false, true),
                 (subscription, resolvedevent) =>
                 {
                     var recordedEvent = resolvedevent.Event;
-                    if (StreamName.IsAggregateStreamName(recordedEvent.EventStreamId))
+                    if (StreamName.IsAggregateStreamName(recordedEvent.EventStreamId, this.eventNamespace))
                     {
                         var streamName = StreamName.FromStreamName(recordedEvent.EventStreamId);
                         var aggregateEvent = eventConverter.GetDomainEvent(streamName.GetAggregateIdentity(), recordedEvent);
@@ -65,13 +93,15 @@ namespace Eventualize.EventStore.Materialization
                         return;
 
                         // we do not support this yet
-                        var @event = eventConverter.GetDomainEvent(recordedEvent);
+                        var @event = eventConverter.GetDomainEvent(recordedEvent, this.eventNamespace);
 
                         foreach (var strat in this.materializationStrategies)
                         {
                             strat.HandleEvent(@event);
                         }
                     }
+
+                    this.materializationProgess.Set(new EventStoreAllStreamPosition(resolvedevent.OriginalPosition.Value));
                 });
         }
 
