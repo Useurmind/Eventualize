@@ -70,6 +70,7 @@
     <Reference Include="System.Reactive.Windows.Threading, Version=3.0.1000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reactive.Windows.Threading.3.1.1\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Caching" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -116,23 +117,25 @@
     <Compile Include="Domain\UserId.cs" />
     <Compile Include="Infrastructure\ConsoleLogger.cs" />
     <Compile Include="Infrastructure\EventualizeContainerExtensions.cs" />
+    <Compile Include="Infrastructure\ICache.cs" />
     <Compile Include="Infrastructure\IEventualizeContainer.cs" />
     <Compile Include="Infrastructure\IEventualizeContainerBuilder.cs" />
     <Compile Include="Infrastructure\IEventualizeLogger.cs" />
-    <Compile Include="Materialization\AggregateMaterializationDistributor.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\AggregateMaterializationDistributor.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\ChosenAggregateTypes.cs" />
     <Compile Include="Materialization\Progress\FileMaterializationProgessStore.cs" />
     <Compile Include="Materialization\Progress\IMaterializationProgess.cs" />
-    <Compile Include="Materialization\Multi2AggregateMaterializerBase.cs" />
-    <Compile Include="Materialization\Multi3AggregateMaterializerBase.cs" />
-    <Compile Include="Materialization\Multi4AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\Multi2AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\Multi3AggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\Multi4AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\Progress\IMaterializationProgessStore.cs" />
     <Compile Include="Materialization\Progress\KeyedMaterializationProgess.cs" />
-    <Compile Include="Materialization\SingleAggregateMaterializerBase.cs" />
-    <Compile Include="Materialization\IAggregateMaterializationStrategy.cs" />
-    <Compile Include="Materialization\IAggregateMaterializer.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\SingleAggregateMaterializerBase.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\IAggregateMaterializationStrategy.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\IAggregateMaterializer.cs" />
     <Compile Include="Materialization\IMaterializationStrategy.cs" />
     <Compile Include="Materialization\IMaterializationEventPoller.cs" />
-    <Compile Include="Materialization\InMemoryMaterialization.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\InMemoryMaterialization.cs" />
     <Compile Include="Materialization\IReadModel.cs" />
     <Compile Include="Persistence\AggregateRefreshMode.cs" />
     <Compile Include="Persistence\AggregateRepository.cs" />

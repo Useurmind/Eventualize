@@ -27,6 +27,11 @@ namespace Eventualize.Dapper.Materialization
             return readModel.GetType().GetProperties().First(p => p.GetCustomAttribute<KeyAttribute>() != null);
         }
 
+        public static PropertyInfo GetEventNumberProperty(this IReadModel readModel)
+        {
+            return readModel.GetType().GetProperties().First(p => p.Name == "LastEventNumber");
+        }
+
         public static int Merge(this IDbConnection connection, IReadModel readModel)
         {
             var command = readModel.GetInsertOrUpdateCommand();
@@ -41,18 +46,34 @@ namespace Eventualize.Dapper.Materialization
 
             string mergeUpdateClause = GetMergeUpdateClause(readModel);
             string mergeInsertClause = GetMergeInsertClause(readModel);
-
+            string versionCheckClause = GetVersionCheckClause(readModel);
 
             string command = $@"merge {tableName} as target
 using (select @{keyPropertyName}) AS source ({keyPropertyName})
 on target.{keyPropertyName} = source.{keyPropertyName}
-when matched
+when matched {versionCheckClause}
 then {mergeUpdateClause}
 when not matched
 then {mergeInsertClause};
 ";
 
             return command;
+        }
+
+        /// <summary>
+        /// The returned version check prohibits updates to the table that would restore an older version.
+        /// That is good if stuff is replayed and we do not want to apply the replays.
+        /// If we want to return to a point in history we need to delete the entries first or turn of this version check.
+        /// </summary>
+        /// <param name="readModel"></param>
+        /// <returns></returns>
+        private static string GetVersionCheckClause(IReadModel readModel)
+        {
+            var eventNumberProperty = readModel.GetEventNumberProperty();
+            var eventNumberPropertyName = eventNumberProperty.Name;
+
+            return $"and source.{eventNumberPropertyName} > target.{eventNumberPropertyName}";
+
         }
 
         private static string GetMergeUpdateClause(IReadModel readModel)

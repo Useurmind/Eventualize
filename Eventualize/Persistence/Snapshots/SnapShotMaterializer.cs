@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.Materialization;
+using Eventualize.Materialization.AggregateMaterialization;
 
 namespace Eventualize.Persistence.Snapshots
 {

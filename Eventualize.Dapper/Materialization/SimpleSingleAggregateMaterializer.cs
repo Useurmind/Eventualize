@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Eventualize.Domain;
 using Eventualize.Materialization;
+using Eventualize.Materialization.AggregateMaterialization;
 
 namespace Eventualize.Dapper.Materialization
 {
@@ -33,7 +34,7 @@ namespace Eventualize.Dapper.Materialization
         {
             var readModel = this.MapToReadModel(aggregate, materializationEvent);
             readModel.LastEventDate = materializationEvent.CreationTime;
-            readModel.LastEventStoreIndex = materializationEvent.StoreIndex;
+            readModel.LastEventNumber = materializationEvent.StoreIndex;
             readModel.LastModifierId = materializationEvent.CreatorId.Value;
 
             using (var connection = this.getConnection())

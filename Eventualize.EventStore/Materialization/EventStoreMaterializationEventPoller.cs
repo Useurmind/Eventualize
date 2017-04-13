@@ -10,6 +10,7 @@ using EventStore.ClientAPI;
 using Eventualize.Domain;
 using Eventualize.EventStore.Persistence;
 using Eventualize.Materialization;
+using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 

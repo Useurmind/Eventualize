@@ -23,7 +23,7 @@ namespace Eventualize.Console.ReadModel
 
         public DateTime LastEventDate { get; set; }
 
-        public long LastEventStoreIndex { get; set; }
+        public long LastEventNumber { get; set; }
 
         public string LastModifierId { get; set; }
     }

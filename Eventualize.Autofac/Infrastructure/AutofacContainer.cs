@@ -7,6 +7,7 @@ using Autofac;
 
 using Eventualize.Infrastructure;
 using Eventualize.Materialization;
+using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 using Eventualize.Persistence.Snapshots;

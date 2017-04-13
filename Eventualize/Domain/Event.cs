@@ -3,9 +3,24 @@ using System.Linq;
 
 namespace Eventualize.Domain
 {
+    public struct EventStreamIndex
+    {
+        public EventStreamIndex(long value)
+        {
+            this.Value = value;
+        }
+
+        public long Value { get; }
+
+        public override string ToString()
+        {
+            return Value.ToString();
+        }
+    }
+
     public class Event : IEvent
     {
-        public Event(long storeIndex, EventNamespace eventSpace, Guid eventId, EventType eventType, DateTime creationTime, UserId creatorId, IEventData eventData)
+        public Event(long storeIndex, EventNamespace eventSpace, Guid eventId, EventType eventType, DateTime creationTime, UserId creatorId, IEventData eventData, EventStreamIndex streamIndex)
         {
             this.StoreIndex = storeIndex;
             this.EventSpace = eventSpace;
@@ -14,6 +29,7 @@ namespace Eventualize.Domain
             this.CreationTime = creationTime;
             this.CreatorId = creatorId;
             this.EventData = eventData;
+            this.StreamIndex = streamIndex;
         }
 
         public long StoreIndex { get; }
@@ -29,5 +45,7 @@ namespace Eventualize.Domain
         public UserId CreatorId { get; }
 
         public IEventData EventData { get; }
+
+        public EventStreamIndex StreamIndex { get; }
     }
 }

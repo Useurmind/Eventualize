@@ -8,7 +8,7 @@ namespace Eventualize.Materialization
 {
     public interface IReadModel
     {
-        long LastEventStoreIndex { get; set; }
+        long LastEventNumber { get; set; }
 
         DateTime LastEventDate { get; set; }
 

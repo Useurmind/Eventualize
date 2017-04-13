@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 
 using Eventualize.Materialization;
+using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 using Eventualize.Persistence.Snapshots;

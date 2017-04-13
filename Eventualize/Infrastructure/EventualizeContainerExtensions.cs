@@ -5,6 +5,7 @@ using System.Reflection;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.Materialization;
+using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 using Eventualize.Persistence.Snapshots;

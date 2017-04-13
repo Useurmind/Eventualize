@@ -28,6 +28,7 @@ using Eventualize.Domain.Core;
 using Eventualize.EventStore.Infrastructure;
 using Eventualize.Infrastructure;
 using Eventualize.Materialization;
+using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.NEventStore.Infrastructure;
 using Eventualize.NEventStore.Materialization;
 using Eventualize.NEventStore.Persistence;

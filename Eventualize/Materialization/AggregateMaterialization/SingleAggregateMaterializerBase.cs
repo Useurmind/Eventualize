@@ -1,10 +1,8 @@
-using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using Eventualize.Domain;
 
-namespace Eventualize.Materialization
+namespace Eventualize.Materialization.AggregateMaterialization
 {
     public abstract class SingleAggregateMaterializerBase<TAggregate> : IAggregateMaterializer
         where TAggregate : class, IAggregate

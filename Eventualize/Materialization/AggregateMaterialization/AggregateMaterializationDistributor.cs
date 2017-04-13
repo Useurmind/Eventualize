@@ -3,10 +3,9 @@ using System.Linq;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
-using Eventualize.Domain.Core;
 using Eventualize.Persistence;
 
-namespace Eventualize.Materialization
+namespace Eventualize.Materialization.AggregateMaterialization
 {
     public class AggregateMaterializationDistributor : IAggregateMaterializationStrategy
     {
