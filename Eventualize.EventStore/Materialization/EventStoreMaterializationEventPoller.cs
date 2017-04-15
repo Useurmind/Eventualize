@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
 using Eventualize.EventStore.Persistence;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Materialization;
 using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.Materialization.Progress;
@@ -36,7 +40,7 @@ namespace Eventualize.EventStore.Materialization
 
     public class EventStoreMaterializationEventPoller : IMaterializationEventPoller
     {
-        private IConstructInstances aggregateFactory;
+        private IAggregateFactory aggregateFactory;
 
         private IEventStoreConnection connection;
 
@@ -48,12 +52,12 @@ namespace Eventualize.EventStore.Materialization
 
         private IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies;
 
-        private EventNamespace eventNamespace;
+        private BoundedContext boundedContext;
 
         private IMaterializationProgess materializationProgess;
 
-        public EventStoreMaterializationEventPoller(IConstructInstances aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, IEnumerable<IMaterializationStrategy> materializationStrategies, 
-            IMaterializationProgess materializationProgess, IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies, EventNamespace eventNamespace)
+        public EventStoreMaterializationEventPoller(IAggregateFactory aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, IEnumerable<IMaterializationStrategy> materializationStrategies, 
+            IMaterializationProgess materializationProgess, IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies, BoundedContext boundedContext)
         {
             this.connection = connection;
             this.aggregateFactory = aggregateFactory;
@@ -61,7 +65,7 @@ namespace Eventualize.EventStore.Materialization
             this.materializationStrategies = materializationStrategies;
             this.aggregateMaterializationStrategies = aggregateMaterializationStrategies;
             this.materializationProgess = materializationProgess;
-            this.eventNamespace = eventNamespace;
+            this.boundedContext = boundedContext;
         }
 
         public void Run()
@@ -74,7 +78,7 @@ namespace Eventualize.EventStore.Materialization
                 (subscription, resolvedevent) =>
                 {
                     var recordedEvent = resolvedevent.Event;
-                    if (AggregateStreamName.IsAggregateStreamName(recordedEvent.EventStreamId, this.eventNamespace))
+                    if (AggregateStreamName.IsAggregateStreamName(recordedEvent.EventStreamId, this.boundedContext))
                     {
                         var streamName = AggregateStreamName.FromStreamName(recordedEvent.EventStreamId);
                         var aggregateEvent = eventConverter.GetDomainEvent(streamName.GetAggregateIdentity(), recordedEvent);
@@ -94,7 +98,7 @@ namespace Eventualize.EventStore.Materialization
                         return;
 
                         // we do not support this yet
-                        var @event = eventConverter.GetDomainEvent(recordedEvent, this.eventNamespace);
+                        var @event = eventConverter.GetDomainEvent(recordedEvent, this.boundedContext);
 
                         foreach (var strat in this.materializationStrategies)
                         {

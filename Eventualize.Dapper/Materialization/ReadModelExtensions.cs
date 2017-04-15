@@ -6,7 +6,7 @@ using System.Reflection;
 
 using Dapper;
 
-using Eventualize.Materialization;
+using Eventualize.Interfaces.Materialization;
 
 namespace Eventualize.Dapper.Materialization
 {

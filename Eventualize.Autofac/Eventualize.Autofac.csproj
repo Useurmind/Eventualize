@@ -70,9 +70,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Eventualize\Eventualize.csproj">
-      <Project>{81ff36de-c711-4fd5-b158-74502a8a2f71}</Project>
-      <Name>Eventualize</Name>
+    <ProjectReference Include="..\Eventualize.Interfaces\Eventualize.Interfaces.csproj">
+      <Project>{d1fd5b08-9da7-46e1-abf4-0f309ab9c9b2}</Project>
+      <Name>Eventualize.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

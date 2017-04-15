@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 
 using Eventualize.Domain;
-using Eventualize.Domain.Core;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
+using Eventualize.Infrastructure;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Persistence;
 using Eventualize.Security;
 
@@ -37,30 +42,31 @@ namespace Eventualize.EventStore.Persistence
 
             return new AggregateEvent(
                 storeIndex: -1,
-                eventSpace: aggregateIdentity.EventSpace,
+                boundedContext: aggregateIdentity.BoundedContext,
                eventId: recordedEvent.EventId,
                eventType: new EventType(recordedEvent.EventType),
                creationTime: recordedEvent.Created,
                creatorId: new UserId(metaData.CreatorId),
                eventData: eventData,
                aggregateIdentity: aggregateIdentity,
-               aggregateIndex: recordedEvent.EventNumber
+               eventStreamIndex: new EventStreamIndex(recordedEvent.EventNumber)
                 );
         }
 
-        public IEvent GetDomainEvent(RecordedEvent recordedEvent, EventNamespace eventNamespace)
+        public IEvent GetDomainEvent(RecordedEvent recordedEvent, BoundedContext boundedContext)
         {
             var eventData = this.eventConverter.DeserializeEventData(recordedEvent.EventType, recordedEvent.EventId, recordedEvent.Data);
             var metaData = (EventMetaData)this.serializer.Deserialize(typeof(EventMetaData), recordedEvent.Metadata);
 
             return new Event(
                 storeIndex: -1,
-                eventSpace: eventNamespace,
+                boundedContext: boundedContext,
                eventId: recordedEvent.EventId,
                eventType: new EventType(recordedEvent.EventType), 
                creationTime: recordedEvent.Created,
                creatorId: new UserId(metaData.CreatorId),
-               eventData: eventData
+               eventData: eventData,
+               streamIndex: new EventStreamIndex(recordedEvent.EventNumber)
                 );
         }
 

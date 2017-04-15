@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Linq;
 
+using Eventualize.Domain.Aggregates.EventRouting;
+using Eventualize.Interfaces;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Snapshots;
+using Eventualize.Snapshots;
+
 namespace Eventualize.Domain.Aggregates
 {
     public abstract class StateBackedAggregateBase<TState> : AggregateBase
-        where TState : class, IMemento, new()
+        where TState : class, ISnapShot, new()
     {
         protected StateBackedAggregateBase()
             : this(Guid.NewGuid())
@@ -53,12 +60,12 @@ namespace Eventualize.Domain.Aggregates
             }
         }
 
-        protected override IMemento GetSnapshot()
+        protected override ISnapShot GetSnapshot()
         {
             return this.State;
         }
 
-        protected override void ApplySnapshot(IMemento snapshot)
+        protected override void ApplySnapshot(ISnapShot snapshot)
         {
             this.State = snapshot as TState;
         }

@@ -1,7 +1,10 @@
 using System;
 
 using Eventualize.Domain;
-using Eventualize.Domain.Core;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
 
 using NEventStore;
 
@@ -13,14 +16,14 @@ namespace Eventualize.NEventStore.Persistence
         {
             return new AggregateEvent(
                 storeIndex: 0,
-                eventSpace: aggregateIdentity.EventSpace,
+                boundedContext: aggregateIdentity.BoundedContext,
                 eventId: Guid.Empty, 
                 eventType: ((IEventData)eventMessage.Body).GetEventTypeName(),
                 creationTime: DateTime.MinValue, 
                 creatorId: new UserId(), 
                 eventData: (IEventData)eventMessage.Body,
                 aggregateIdentity: aggregateIdentity,
-                aggregateIndex: index
+                eventStreamIndex: new EventStreamIndex(index)
             );
         }
     }

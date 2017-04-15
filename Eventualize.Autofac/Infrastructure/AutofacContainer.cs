@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 
 using Autofac;
 
-using Eventualize.Infrastructure;
-using Eventualize.Materialization;
-using Eventualize.Materialization.AggregateMaterialization;
-using Eventualize.Materialization.Progress;
-using Eventualize.Persistence;
-using Eventualize.Persistence.Snapshots;
+using Eventualize.Interfaces;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Infrastructure;
+using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Persistence;
+using Eventualize.Interfaces.Snapshots;
 
 namespace Eventualize.Autofac.Infrastructure
 {
@@ -57,11 +57,11 @@ namespace Eventualize.Autofac.Infrastructure
             }
         }
 
-        public IConstructInstances AggregateFactory
+        public IAggregateFactory AggregateFactory
         {
             get
             {
-                return this.container.Resolve<IConstructInstances>();
+                return this.container.Resolve<IAggregateFactory>();
             }
         }
 

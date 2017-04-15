@@ -3,9 +3,7 @@
 using CommonDomain;
 using CommonDomain.Persistence;
 
-using IAggregate = Eventualize.Domain.IAggregate;
-using IConstructInstances = Eventualize.Persistence.IConstructInstances;
-using IMemento = Eventualize.Domain.IMemento;
+using IAggregate = Eventualize.Interfaces.Aggregates.IAggregate;
 
 namespace Eventualize.NEventStore.Persistence
 {

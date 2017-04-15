@@ -4,8 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Eventualize.Domain.Core;
 using Eventualize.Infrastructure;
+using Eventualize.Interfaces.Infrastructure;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Materialization;
 using Eventualize.NEventStore.Materialization;
 using Eventualize.NEventStore.Persistence;

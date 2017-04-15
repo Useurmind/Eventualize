@@ -3,6 +3,10 @@ using System.Linq;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Persistence;
 using Eventualize.Persistence;
 
 namespace Eventualize.Materialization.AggregateMaterialization

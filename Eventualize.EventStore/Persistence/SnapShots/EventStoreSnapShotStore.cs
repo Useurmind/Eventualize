@@ -7,8 +7,13 @@ using System.Threading.Tasks;
 using EventStore.ClientAPI;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Interfaces;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Snapshots;
 using Eventualize.Persistence;
-using Eventualize.Persistence.Snapshots;
+using Eventualize.Snapshots;
 
 namespace Eventualize.EventStore.Persistence.SnapShots
 {
@@ -26,7 +31,7 @@ namespace Eventualize.EventStore.Persistence.SnapShots
             this.snapshotConverter = snapshotConverter;
         }
 
-        public IMemento GetSnapshot(AggregateIdentity aggregateIdentity)
+        public ISnapShot GetSnapshot(AggregateIdentity aggregateIdentity)
         {
             var streamId = SnapShotStreamName.FromAggregateIdentity(aggregateIdentity);
             var resultSlice = this.connection.ReadStreamEventsBackwardAsync(streamId.ToString(), StreamPosition.End, 1, true).Result;
@@ -49,16 +54,16 @@ namespace Eventualize.EventStore.Persistence.SnapShots
             return this.snapshotConverter.BuildSnapshot(snapShotTypeName, snapshotData);
         }
 
-        public void SaveSnapshot(AggregateIdentity aggregateIdentity, IMemento memento)
+        public void SaveSnapshot(AggregateIdentity aggregateIdentity, ISnapShot snapShot)
         {
             var streamId = SnapShotStreamName.FromAggregateIdentity(aggregateIdentity);
-            var snapShotTypeName = memento.GetType().FullName;
+            var snapShotTypeName = snapShot.GetType().FullName;
 
             var metaData = StreamMetadata.Build()
                 .SetCustomProperty(SnapShotTypeMetaDataKey, snapShotTypeName)
                 .SetMaxCount(3)
                 .Build();
-            var snapshotData = this.snapshotConverter.GetSnapshotData(memento);
+            var snapshotData = this.snapshotConverter.GetSnapshotData(snapShot);
             var eventData = new EventData(Guid.NewGuid(), "Snapshot", true, snapshotData, null);
 
             var metaResult = this.connection.SetStreamMetadataAsync(streamId.ToString(), ExpectedVersion.Any, metaData).Result;

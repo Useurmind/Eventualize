@@ -2,6 +2,9 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 
+using Eventualize.Infrastructure;
+using Eventualize.Interfaces.Infrastructure;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Persistence;
 
 namespace Eventualize.Materialization.Progress

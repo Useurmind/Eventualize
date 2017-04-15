@@ -4,6 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Persistence;
 
 namespace Eventualize.Materialization.AggregateMaterialization
@@ -12,9 +16,9 @@ namespace Eventualize.Materialization.AggregateMaterialization
     {
         private ConcurrentDictionary<Guid, IAggregate> aggregates = new ConcurrentDictionary<Guid, IAggregate>();
 
-        private IConstructInstances aggregateFactory;
+        private IAggregateFactory aggregateFactory;
 
-        public InMemoryMaterialization(IConstructInstances aggregateFactory)
+        public InMemoryMaterialization(IAggregateFactory aggregateFactory)
         {
             this.aggregateFactory = aggregateFactory;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 using EventStore.ClientAPI;
 
-using Eventualize.Infrastructure;
+using Eventualize.Interfaces.Infrastructure;
 
 namespace Eventualize.EventStore.Infrastructure
 {

@@ -4,7 +4,8 @@ using System.Text.RegularExpressions;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
-using Eventualize.Domain.Core;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
 
 namespace Eventualize.EventStore.Persistence
 {
@@ -12,14 +13,14 @@ namespace Eventualize.EventStore.Persistence
     {
         public const string AggregatePrefix = "Agg-";
 
-        public AggregateStreamName(EventNamespace eventNamespace, AggregateTypeName aggregateTypeName, Guid aggregateId)
+        public AggregateStreamName(BoundedContext boundedContext, AggregateTypeName aggregateTypeName, Guid aggregateId)
         {
-            this.EventNamespace = eventNamespace;
+            this.BoundedContext = boundedContext;
             this.AggregateTypeName = aggregateTypeName;
             this.AggregateId = aggregateId;
         }
 
-        public EventNamespace EventNamespace { get; }
+        public BoundedContext BoundedContext { get; }
 
         public Guid AggregateId { get; }
 
@@ -37,39 +38,34 @@ namespace Eventualize.EventStore.Persistence
             }
 
             return new AggregateStreamName(
-                new EventNamespace(streamNameParts[1]),
+                new BoundedContext(streamNameParts[1]),
                 new AggregateTypeName(streamNameParts[2]),
                 aggregateId);
         }
 
-        public static AggregateStreamName FromAggregateType(Type aggregateType, Guid id, EventNamespace eventNameSpace)
+        public static AggregateStreamName FromAggregateType(Type aggregateType, Guid id, BoundedContext eventNameSpace)
         {
             return new AggregateStreamName(eventNameSpace, aggregateType.GetAggregtateTypeName(), id);
         }
 
         public static AggregateStreamName FromAggregateIdentity(AggregateIdentity aggregateIdentity)
         {
-            return new AggregateStreamName(aggregateIdentity.EventSpace, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
+            return new AggregateStreamName(aggregateIdentity.BoundedContext, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
         }
 
-        public static bool IsAggregateStreamName(string streamId, EventNamespace eventNameSpace)
+        public static bool IsAggregateStreamName(string streamId, BoundedContext eventNameSpace)
         {
             return Regex.IsMatch(streamId, "^" + AggregatePrefix + eventNameSpace.Value + @"-[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
         }
 
         public string ToString()
         {
-            return $"{AggregatePrefix}{this.EventNamespace.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
+            return $"{AggregatePrefix}{this.BoundedContext.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
         }
 
         public AggregateIdentity GetAggregateIdentity()
         {
-            return new AggregateIdentity()
-            {
-                Id = this.AggregateId,
-                EventSpace = this.EventNamespace,
-                AggregateTypeName = this.AggregateTypeName
-            };
+            return new AggregateIdentity(this.BoundedContext, this.AggregateTypeName, this.AggregateId);
         }
     }
 }

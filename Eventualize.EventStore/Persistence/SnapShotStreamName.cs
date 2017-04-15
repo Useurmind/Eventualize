@@ -2,6 +2,9 @@ using System;
 using System.Linq;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
 
 namespace Eventualize.EventStore.Persistence
 {
@@ -9,9 +12,9 @@ namespace Eventualize.EventStore.Persistence
     {
         public const string SnapshotPrefix = "Snap-";
 
-        public SnapShotStreamName(EventNamespace eventNamespace, AggregateTypeName aggregateTypeName, Guid aggregateId)
+        public SnapShotStreamName(BoundedContext boundedContext, AggregateTypeName aggregateTypeName, Guid aggregateId)
         {
-            this.EventNamespace = eventNamespace;
+            this.BoundedContext = boundedContext;
             this.AggregateTypeName = aggregateTypeName;
             this.AggregateId = aggregateId;
         }
@@ -20,16 +23,16 @@ namespace Eventualize.EventStore.Persistence
 
         public AggregateTypeName AggregateTypeName { get; }
 
-        public EventNamespace EventNamespace { get; }
+        public BoundedContext BoundedContext { get; }
 
         public static SnapShotStreamName FromAggregateIdentity(AggregateIdentity aggregateIdentity)
         {
-            return new SnapShotStreamName(aggregateIdentity.EventSpace, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
+            return new SnapShotStreamName(aggregateIdentity.BoundedContext, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
         }
 
         public string ToString()
         {
-            return $"{SnapshotPrefix}{this.EventNamespace.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
+            return $"{SnapshotPrefix}{this.BoundedContext.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
         }
     }
 }

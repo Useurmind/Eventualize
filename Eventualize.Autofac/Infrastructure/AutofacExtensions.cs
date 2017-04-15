@@ -3,7 +3,7 @@ using System.Linq;
 
 using Autofac;
 
-using Eventualize.Infrastructure;
+using Eventualize.Interfaces.Infrastructure;
 
 namespace Eventualize.Autofac.Infrastructure
 {

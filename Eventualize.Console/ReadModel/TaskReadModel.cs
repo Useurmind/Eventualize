@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Dapper.Materialization;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Materialization;
 
 namespace Eventualize.Console.ReadModel

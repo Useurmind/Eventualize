@@ -85,77 +85,44 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\AggregateEvent.cs" />
-    <Compile Include="Domain\AggregateIdentity.cs" />
+    <Compile Include="Domain\Events\AggregateEvent.cs" />
     <Compile Include="Domain\Aggregates\SelfContainedAggregateBase.cs" />
     <Compile Include="Domain\Aggregates\StateBackedAggregateBase.cs" />
-    <Compile Include="Domain\AggregateTypeName.cs" />
     <Compile Include="Domain\Aggregates\AggregateBase.cs" />
-    <Compile Include="Domain\Aggregates\AggregateExtensions.cs" />
-    <Compile Include="Domain\Aggregates\AggregateTypeNameAttribute.cs" />
-    <Compile Include="Domain\Aggregates\AggregateVersion.cs" />
-    <Compile Include="Domain\Core\ConflictDelegate.cs" />
-    <Compile Include="Domain\Core\ConflictDetector.cs" />
-    <Compile Include="Domain\Aggregates\ConventionEventRouter.cs" />
-    <Compile Include="Domain\Core\EventExtensions.cs" />
-    <Compile Include="Domain\Core\EventTypeNameAttribute.cs" />
-    <Compile Include="Domain\Core\ExtensionMethods.cs" />
-    <Compile Include="Domain\Core\HandlerForDomainEventNotFoundException.cs" />
-    <Compile Include="Domain\Core\IDetectConflicts.cs" />
-    <Compile Include="Domain\Core\RegistrationEventRouter.cs" />
-    <Compile Include="Domain\Event.cs" />
-    <Compile Include="Domain\EventNamespace.cs" />
-    <Compile Include="Domain\EventType.cs" />
-    <Compile Include="Domain\IAggregate.cs" />
-    <Compile Include="Domain\IAggregateEvent.cs" />
-    <Compile Include="Domain\IEvent.cs" />
-    <Compile Include="Domain\IEventData.cs" />
-    <Compile Include="Domain\IMemento.cs" />
-    <Compile Include="Domain\IRouteEvents.cs" />
-    <Compile Include="Domain\MementoBase.cs" />
-    <Compile Include="Domain\StringExtensions.cs" />
-    <Compile Include="Domain\UserId.cs" />
-    <Compile Include="Infrastructure\ConsoleLogger.cs" />
-    <Compile Include="Infrastructure\EventualizeContainerExtensions.cs" />
-    <Compile Include="Infrastructure\ICache.cs" />
-    <Compile Include="Infrastructure\IEventualizeContainer.cs" />
-    <Compile Include="Infrastructure\IEventualizeContainerBuilder.cs" />
-    <Compile Include="Infrastructure\IEventualizeLogger.cs" />
-    <Compile Include="Materialization\AggregateMaterialization\AggregateMaterializationDistributor.cs" />
-    <Compile Include="Materialization\AggregateMaterialization\ChosenAggregateTypes.cs" />
-    <Compile Include="Materialization\Progress\FileMaterializationProgessStore.cs" />
-    <Compile Include="Materialization\Progress\IMaterializationProgess.cs" />
+    <Compile Include="ConflictDetection\ConflictDetector.cs" />
+    <Compile Include="Domain\Aggregates\EventRouting\ConventionEventRouter.cs" />
+    <Compile Include="Domain\Events\EventExtensions.cs" />
+    <Compile Include="Domain\Aggregates\EventRouting\ExtensionMethods.cs" />
+    <Compile Include="Domain\Aggregates\EventRouting\HandlerForDomainEventNotFoundException.cs" />
+    <Compile Include="Domain\Aggregates\EventRouting\RegistrationEventRouter.cs" />
+    <Compile Include="Domain\Events\Event.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi2AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi3AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi4AggregateMaterializerBase.cs" />
-    <Compile Include="Materialization\Progress\IMaterializationProgessStore.cs" />
-    <Compile Include="Materialization\Progress\KeyedMaterializationProgess.cs" />
     <Compile Include="Materialization\AggregateMaterialization\SingleAggregateMaterializerBase.cs" />
-    <Compile Include="Materialization\AggregateMaterialization\IAggregateMaterializationStrategy.cs" />
-    <Compile Include="Materialization\AggregateMaterialization\IAggregateMaterializer.cs" />
-    <Compile Include="Materialization\IMaterializationStrategy.cs" />
-    <Compile Include="Materialization\IMaterializationEventPoller.cs" />
+    <Compile Include="Snapshots\SnapShotBase.cs" />
+    <Compile Include="Domain\StringExtensions.cs" />
+    <Compile Include="Infrastructure\ConsoleLogger.cs" />
+    <Compile Include="Infrastructure\EventualizeContainerExtensions.cs" />
+    <Compile Include="Materialization\AggregateMaterialization\AggregateMaterializationDistributor.cs" />
+    <Compile Include="Materialization\Progress\FileMaterializationProgessStore.cs" />
+    <Compile Include="Materialization\Progress\KeyedMaterializationProgess.cs" />
     <Compile Include="Materialization\AggregateMaterialization\InMemoryMaterialization.cs" />
-    <Compile Include="Materialization\IReadModel.cs" />
     <Compile Include="Persistence\AggregateRefreshMode.cs" />
     <Compile Include="Persistence\AggregateRepository.cs" />
-    <Compile Include="Persistence\EventConverter.cs" />
-    <Compile Include="Persistence\IAggregateEventStore.cs" />
-    <Compile Include="Persistence\IEventConverter.cs" />
-    <Compile Include="Persistence\IConstructInstances.cs" />
-    <Compile Include="Persistence\IAggregateRepository.cs" />
-    <Compile Include="Persistence\ISerializer.cs" />
-    <Compile Include="Persistence\JsonSerializer.cs" />
-    <Compile Include="Persistence\InstanceFactory.cs" />
-    <Compile Include="Persistence\Snapshots\ISnapshotConverter.cs" />
-    <Compile Include="Persistence\Snapshots\ISnapShotStore.cs" />
-    <Compile Include="Persistence\Snapshots\SnapshotConverter.cs" />
-    <Compile Include="Persistence\Snapshots\SnapShotMaterializer.cs" />
-    <Compile Include="Persistence\TypeRegister.cs" />
+    <Compile Include="Domain\Events\EventConverter.cs" />
+    <Compile Include="Infrastructure\JsonSerializer.cs" />
+    <Compile Include="Domain\Aggregates\AggregateFactory.cs" />
+    <Compile Include="Snapshots\SnapshotConverter.cs" />
+    <Compile Include="Snapshots\SnapShotMaterializer.cs" />
+    <Compile Include="Infrastructure\TypeRegister.cs" />
     <Compile Include="Security\EventualizeContext.cs" />
-    <Compile Include="Security\EventualizeUser.cs" />
-    <Compile Include="Security\IEventualizeContext.cs" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Eventualize.Interfaces\Eventualize.Interfaces.csproj">
+      <Project>{d1fd5b08-9da7-46e1-abf4-0f309ab9c9b2}</Project>
+      <Name>Eventualize.Interfaces</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

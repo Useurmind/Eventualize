@@ -24,9 +24,12 @@ using Eventualize.Console.Domain.TaskList;
 using Eventualize.Console.ReadModel;
 using Eventualize.Dapper.Materialization;
 using Eventualize.Domain;
-using Eventualize.Domain.Core;
+using Eventualize.Domain.Aggregates;
 using Eventualize.EventStore.Infrastructure;
 using Eventualize.Infrastructure;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Persistence;
 using Eventualize.Materialization;
 using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.NEventStore.Infrastructure;
@@ -52,7 +55,7 @@ namespace Eventualize.Console
         static void Main(string[] args)
         {
             userName = "Jochen";
-            EventualizeContext.Init(new UserId(userName), new EventNamespace("EventualizeTest"));
+            EventualizeContext.Init(new UserId(userName), new BoundedContext("EventualizeTest"));
 
             container = SetupContainer(true);
             using (container)

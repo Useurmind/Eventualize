@@ -9,8 +9,8 @@ using EventStore.ClientAPI;
 using Eventualize.EventStore.Materialization;
 using Eventualize.EventStore.Persistence;
 using Eventualize.EventStore.Persistence.SnapShots;
-using Eventualize.Infrastructure;
-using Eventualize.Materialization;
+using Eventualize.Interfaces.Infrastructure;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Security;
 
@@ -70,7 +70,7 @@ namespace Eventualize.EventStore.Infrastructure
                            c.MaterializationStrategies,
                            new KeyedMaterializationProgess(c.MaterializationProgessStore, "All"),
                            c.AggregateMaterializationStrategies,
-                           EventualizeContext.Current.DefaultEventNamespace));
+                           EventualizeContext.Current.DefaultBoundedContext));
 
             return containerBuilder;
         }

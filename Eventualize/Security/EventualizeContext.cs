@@ -6,6 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Security;
 
 namespace Eventualize.Security
 {
@@ -13,22 +16,22 @@ namespace Eventualize.Security
     {
         public EventualizeUser CurrentUser { get; set; }
 
-        public EventNamespace DefaultEventNamespace { get; set; }
+        public BoundedContext DefaultBoundedContext { get; set; }
 
-        public static void Init(UserId userId, EventNamespace defaultEventNamespace)
+        public static void Init(UserId userId, BoundedContext defaultBoundedContext)
         {
             Current = new EventualizeContext()
             {
                 CurrentUser = new EventualizeUser(userId),
-                DefaultEventNamespace = defaultEventNamespace
+                DefaultBoundedContext = defaultBoundedContext
             };
         }
 
         public static IEventualizeContext Current { get; private set; }
 
-        public static EventNamespace TakeThisOrDefault(EventNamespace? eventNamespace)
+        public static BoundedContext TakeThisOrDefault(BoundedContext? boundedContext)
         {
-            return eventNamespace.HasValue ? eventNamespace.Value : Current.DefaultEventNamespace;
+            return boundedContext.HasValue ? boundedContext.Value : Current.DefaultBoundedContext;
         }
     }
 }

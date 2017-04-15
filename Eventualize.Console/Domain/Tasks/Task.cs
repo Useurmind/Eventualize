@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Domain.Aggregates;
-using Eventualize.Domain.Core;
+using Eventualize.Interfaces.Aggregates;
 
 namespace Eventualize.Console.Domain
 {

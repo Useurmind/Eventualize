@@ -3,12 +3,12 @@ using System.Linq;
 
 using Autofac;
 
-using Eventualize.Infrastructure;
-using Eventualize.Materialization;
-using Eventualize.Materialization.AggregateMaterialization;
-using Eventualize.Materialization.Progress;
-using Eventualize.Persistence;
-using Eventualize.Persistence.Snapshots;
+using Eventualize.Interfaces;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Infrastructure;
+using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Persistence;
+using Eventualize.Interfaces.Snapshots;
 
 namespace Eventualize.Autofac.Infrastructure
 {
@@ -36,7 +36,7 @@ namespace Eventualize.Autofac.Infrastructure
             return this.RegisterFuncFactorySingleton(createMaterializer);
         }
 
-        public IEventualizeContainerBuilder SetAggregateFactoryFactory(Func<IEventualizeContainer, IConstructInstances> createAggregateFactory)
+        public IEventualizeContainerBuilder SetAggregateFactoryFactory(Func<IEventualizeContainer, IAggregateFactory> createAggregateFactory)
         {
             return this.RegisterFuncFactorySingleton(createAggregateFactory);
         }

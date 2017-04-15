@@ -1,6 +1,8 @@
 using System;
 using System.Linq;
 
+using Eventualize.Interfaces.BaseTypes;
+
 namespace Eventualize.Domain.Aggregates
 {
     public abstract class SelfContainedAggregateBase : AggregateBase

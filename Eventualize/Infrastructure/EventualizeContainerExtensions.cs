@@ -4,21 +4,26 @@ using System.Reflection;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Infrastructure;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Materialization;
 using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
-using Eventualize.Persistence.Snapshots;
 using Eventualize.Security;
+using Eventualize.Snapshots;
 
 namespace Eventualize.Infrastructure
 {
     public static class EventualizeContainerExtensions
     {
-        public static IEventualizeContainerBuilder MaterializeSnapShots<TAggregate>(this IEventualizeContainerBuilder containerBuilder, EventNamespace? eventNamespace = null)
+        public static IEventualizeContainerBuilder MaterializeSnapShots<TAggregate>(this IEventualizeContainerBuilder containerBuilder, BoundedContext? boundedContext = null)
             where TAggregate : class, IAggregate
         {
-            return containerBuilder.RegisterSingleInstance<IAggregateMaterializer>(c => new SnapShotMaterializer(c.SnapShotStore, EventualizeContext.TakeThisOrDefault(eventNamespace)));
+            return containerBuilder.RegisterSingleInstance<IAggregateMaterializer>(c => new SnapShotMaterializer(c.SnapShotStore, EventualizeContext.TakeThisOrDefault(boundedContext)));
         }
 
         public static IEventualizeContainerBuilder SetDefaults(this IEventualizeContainerBuilder containerBuilder, params Assembly[] domainAssemblies)
@@ -26,7 +31,7 @@ namespace Eventualize.Infrastructure
             return containerBuilder.SetAggregateFactoryFactory(
                                        c =>
                                        {
-                                           var factory = new InstanceFactory(c.Serializer);
+                                           var factory = new AggregateFactory(c.Serializer);
                                            factory.ScanAggregateTypes(domainAssemblies);
                                            return factory;
                                        })

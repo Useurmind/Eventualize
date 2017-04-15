@@ -113,6 +113,10 @@
       <Project>{69b76f09-7a57-42d0-88d5-9b0be9e14f77}</Project>
       <Name>Eventualize.EventStore</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Eventualize.Interfaces\Eventualize.Interfaces.csproj">
+      <Project>{d1fd5b08-9da7-46e1-abf4-0f309ab9c9b2}</Project>
+      <Name>Eventualize.Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Eventualize.NEventStore\Eventualize.NEventStore.csproj">
       <Project>{7d0c42d2-0742-4dde-b1e4-f77f75536491}</Project>
       <Name>Eventualize.NEventStore</Name>

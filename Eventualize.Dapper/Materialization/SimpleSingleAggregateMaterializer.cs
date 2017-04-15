@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using Eventualize.Domain;
-using Eventualize.Materialization;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Materialization.AggregateMaterialization;
 
 namespace Eventualize.Dapper.Materialization

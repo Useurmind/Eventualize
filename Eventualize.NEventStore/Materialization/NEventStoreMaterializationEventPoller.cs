@@ -6,6 +6,10 @@ using System.Reflection;
 using Eventualize.Materialization;
 using Eventualize.Persistence;
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.NEventStore.Persistence;
 
 using NEventStore;
@@ -19,7 +23,7 @@ namespace Eventualize.NEventStore.Materialization
 
         private IEnumerable<IMaterializationStrategy> materializationStrategies;
 
-        private IConstructInstances aggregateFactory;
+        private IAggregateFactory aggregateFactory;
 
         private PollingClient pollingClient;
 
@@ -29,7 +33,7 @@ namespace Eventualize.NEventStore.Materialization
 
         private Assembly domainAssembly;
 
-        public NEventStoreMaterializationEventPoller(IConstructInstances aggregateFactory, IStoreEvents eventStore, IEnumerable<IMaterializationStrategy> materializationStrategies)
+        public NEventStoreMaterializationEventPoller(IAggregateFactory aggregateFactory, IStoreEvents eventStore, IEnumerable<IMaterializationStrategy> materializationStrategies)
         {
             this.aggregateFactory = aggregateFactory;
             this.eventStore = eventStore;
@@ -47,7 +51,7 @@ namespace Eventualize.NEventStore.Materialization
                         var aggregateTypeName = commit.Headers["AggregateType"].ToString();
 
                         var aggregateIdentity = new AggregateIdentity(
-                            new EventNamespace(commit.BucketId),
+                            new BoundedContext(commit.BucketId),
                             new AggregateTypeName(aggregateTypeName),
                             aggregateId);
 

@@ -3,6 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+using Eventualize.Domain.Aggregates.EventRouting;
+using Eventualize.Interfaces;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Snapshots;
+using Eventualize.Snapshots;
+
 namespace Eventualize.Domain.Aggregates
 {
     public abstract class AggregateBase : IAggregate, IEquatable<IAggregate>
@@ -73,15 +79,15 @@ namespace Eventualize.Domain.Aggregates
             this.uncommittedEvents.Clear();
         }
 
-        IMemento IAggregate.GetSnapshot()
+        ISnapShot IAggregate.GetSnapshot()
         {
-            IMemento snapshot = this.GetSnapshot();
+            ISnapShot snapshot = this.GetSnapshot();
             snapshot.Id = this.Id;
             snapshot.Version = this.Version;
             return snapshot;
         }
 
-        void IAggregate.ApplySnapshot(IMemento snapshot)
+        void IAggregate.ApplySnapshot(ISnapShot snapshot)
         {
             this.ApplySnapshot(snapshot);
         }
@@ -106,11 +112,11 @@ namespace Eventualize.Domain.Aggregates
             this.uncommittedEvents.Add(@event);
         }
 
-        protected virtual IMemento GetSnapshot()
+        protected virtual ISnapShot GetSnapshot()
         {
             return null;
         }
-        protected virtual void ApplySnapshot(IMemento snapshot)
+        protected virtual void ApplySnapshot(ISnapShot snapshot)
         {
             
         }

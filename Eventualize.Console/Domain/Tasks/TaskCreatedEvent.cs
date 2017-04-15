@@ -1,7 +1,9 @@
 using System.Linq;
 
 using Eventualize.Domain;
-using Eventualize.Domain.Core;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
+using Eventualize.Interfaces.Aggregates;
 
 namespace Eventualize.Console.Domain
 {

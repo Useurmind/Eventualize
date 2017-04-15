@@ -3,9 +3,13 @@ using System.Linq;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
-using Eventualize.Domain.Core;
-using Eventualize.Persistence.Snapshots;
+using Eventualize.Interfaces;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Persistence;
+using Eventualize.Interfaces.Snapshots;
 using Eventualize.Security;
+using Eventualize.Snapshots;
 
 namespace Eventualize.Persistence
 {
@@ -13,11 +17,11 @@ namespace Eventualize.Persistence
     {
         private IAggregateEventStore eventStore;
 
-        private IConstructInstances aggregateFactory;
+        private IAggregateFactory aggregateFactory;
 
         private ISnapShotStore snapShotStore;
 
-        public AggregateRepository(IAggregateEventStore eventStore, IConstructInstances aggregateFactory, ISnapShotStore snapShotStore)
+        public AggregateRepository(IAggregateEventStore eventStore, IAggregateFactory aggregateFactory, ISnapShotStore snapShotStore)
         {
             this.eventStore = eventStore;
             this.aggregateFactory = aggregateFactory;
@@ -38,7 +42,7 @@ namespace Eventualize.Persistence
             return
                 (TAggregate)
                 this.GetById(
-                    new AggregateIdentity(EventualizeContext.Current.DefaultEventNamespace, typeof(TAggregate).GetAggregtateTypeName(), id));
+                    new AggregateIdentity(EventualizeContext.Current.DefaultBoundedContext, typeof(TAggregate).GetAggregtateTypeName(), id));
         }
 
         public IAggregate GetById(AggregateIdentity aggregateIdentity)
@@ -56,7 +60,7 @@ namespace Eventualize.Persistence
 
         public void Save(IAggregate aggregate, Guid replayGuid)
         {
-            var aggregateIdentity = aggregate.GetAggregateIdentity(EventualizeContext.Current.DefaultEventNamespace);
+            var aggregateIdentity = aggregate.GetAggregateIdentity(EventualizeContext.Current.DefaultBoundedContext);
             var uncommitedEvents = aggregate.GetUncommittedEvents().Cast<IEventData>();
 
             this.eventStore.AppendEvents(aggregateIdentity, aggregate.CommittedVersion, uncommitedEvents, replayGuid);

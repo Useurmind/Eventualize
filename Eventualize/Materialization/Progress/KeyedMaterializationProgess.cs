@@ -1,5 +1,7 @@
 using System.Linq;
 
+using Eventualize.Interfaces.Materialization;
+
 namespace Eventualize.Materialization.Progress
 {
     public class KeyedMaterializationProgess : IMaterializationProgess

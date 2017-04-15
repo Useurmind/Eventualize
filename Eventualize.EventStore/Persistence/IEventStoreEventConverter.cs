@@ -3,6 +3,10 @@ using System.Linq;
 using EventStore.ClientAPI;
 
 using Eventualize.Domain;
+using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
+using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.BaseTypes;
 
 namespace Eventualize.EventStore.Persistence
 {
@@ -10,7 +14,7 @@ namespace Eventualize.EventStore.Persistence
     {
         IAggregateEvent GetDomainEvent(AggregateIdentity aggregateIdentity, RecordedEvent recordedEvent);
 
-        IEvent GetDomainEvent(RecordedEvent recordedEvent, EventNamespace eventNamespace);
+        IEvent GetDomainEvent(RecordedEvent recordedEvent, BoundedContext boundedContext);
 
         EventData GetEventData(IEventData eventData);
     }

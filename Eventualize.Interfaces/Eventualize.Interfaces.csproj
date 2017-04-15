@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{D1FD5B08-9DA7-46E1-ABF4-0F309AB9C9B2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Eventualize.Interfaces</RootNamespace>
+    <AssemblyName>Eventualize.Interfaces</AssemblyName>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Aggregates\AggregateExtensions.cs" />
+    <Compile Include="Aggregates\AggregateTypeNameAttribute.cs" />
+    <Compile Include="Aggregates\EventTypeNameAttribute.cs" />
+    <Compile Include="BaseTypes\AggregateIdentity.cs" />
+    <Compile Include="Aggregates\IAggregate.cs" />
+    <Compile Include="Aggregates\IAggregateEvent.cs" />
+    <Compile Include="Aggregates\IAggregateFactory.cs" />
+    <Compile Include="Aggregates\IEvent.cs" />
+    <Compile Include="Aggregates\IEventConverter.cs" />
+    <Compile Include="Aggregates\IEventData.cs" />
+    <Compile Include="Aggregates\IRouteEvents.cs" />
+    <Compile Include="BaseTypes\AggregateTypeName.cs" />
+    <Compile Include="BaseTypes\AggregateVersion.cs" />
+    <Compile Include="BaseTypes\BoundedContext.cs" />
+    <Compile Include="BaseTypes\EventStreamIndex.cs" />
+    <Compile Include="BaseTypes\EventType.cs" />
+    <Compile Include="BaseTypes\UserId.cs" />
+    <Compile Include="ConflictDetection\ConflictDelegate.cs" />
+    <Compile Include="ConflictDetection\IDetectConflicts.cs" />
+    <Compile Include="Infrastructure\ICache.cs" />
+    <Compile Include="Infrastructure\IEventualizeContainer.cs" />
+    <Compile Include="Infrastructure\IEventualizeContainerBuilder.cs" />
+    <Compile Include="Infrastructure\IEventualizeLogger.cs" />
+    <Compile Include="Infrastructure\ISerializer.cs" />
+    <Compile Include="Materialization\ChosenAggregateTypes.cs" />
+    <Compile Include="Materialization\IAggregateMaterializationStrategy.cs" />
+    <Compile Include="Materialization\IAggregateMaterializer.cs" />
+    <Compile Include="Materialization\IMaterializationEventPoller.cs" />
+    <Compile Include="Materialization\IMaterializationProgess.cs" />
+    <Compile Include="Materialization\IMaterializationProgessStore.cs" />
+    <Compile Include="Materialization\IMaterializationStrategy.cs" />
+    <Compile Include="Materialization\IReadModel.cs" />
+    <Compile Include="Materialization\ProgessValue.cs" />
+    <Compile Include="Security\EventualizeUser.cs" />
+    <Compile Include="Security\IEventualizeContext.cs" />
+    <Compile Include="Snapshots\ISnapShot.cs" />
+    <Compile Include="Snapshots\ISnapshotConverter.cs" />
+    <Compile Include="Snapshots\ISnapShotStore.cs" />
+    <Compile Include="Persistence\IAggregateEventStore.cs" />
+    <Compile Include="Persistence\IAggregateRepository.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
