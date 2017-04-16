@@ -20,16 +20,6 @@ namespace Eventualize.Interfaces.BaseTypes
             this.Id = aggregateId;
         }
 
-        public static AggregateIdentity FromAggregate(IAggregate aggregate, BoundedContext boundedContext)
-        {
-            return aggregate.GetAggregateIdentity(boundedContext);
-        }
-
-        public static AggregateIdentity FromAggregateType(Type aggregateType, Guid id, BoundedContext boundedContext)
-        {
-            return new AggregateIdentity(boundedContext, aggregateType.GetAggregtateTypeName(), id);
-        }
-
         public override string ToString()
         {
             return $"{this.BoundedContext}.{this.AggregateTypeName}.{this.Id}";

@@ -21,11 +21,14 @@ namespace Eventualize.Persistence
 
         private ISnapShotStore snapShotStore;
 
-        public AggregateRepository(IAggregateEventStore eventStore, IAggregateFactory aggregateFactory, ISnapShotStore snapShotStore)
+        private IDomainIdentityProvider domainIdentityProvider;
+
+        public AggregateRepository(IAggregateEventStore eventStore, IDomainIdentityProvider domainIdentityProvider, IAggregateFactory aggregateFactory, ISnapShotStore snapShotStore)
         {
             this.eventStore = eventStore;
             this.aggregateFactory = aggregateFactory;
             this.snapShotStore = snapShotStore;
+            this.domainIdentityProvider = domainIdentityProvider;
         }
 
         public void Dispose()
@@ -39,10 +42,9 @@ namespace Eventualize.Persistence
 
         public TAggregate GetById<TAggregate>(Guid id, int version) where TAggregate : class, IAggregate
         {
-            return
-                (TAggregate)
-                this.GetById(
-                    new AggregateIdentity(EventualizeContext.Current.DefaultBoundedContext, typeof(TAggregate).GetAggregtateTypeName(), id));
+            var aggregateIdentity = this.domainIdentityProvider.GetAggregateIdentity<TAggregate>(id);
+
+            return (TAggregate)this.GetById(aggregateIdentity);
         }
 
         public IAggregate GetById(AggregateIdentity aggregateIdentity)
@@ -60,7 +62,7 @@ namespace Eventualize.Persistence
 
         public void Save(IAggregate aggregate, Guid replayGuid)
         {
-            var aggregateIdentity = aggregate.GetAggregateIdentity(EventualizeContext.Current.DefaultBoundedContext);
+            var aggregateIdentity = this.domainIdentityProvider.GetAggregateIdentity(aggregate);
             var uncommitedEvents = aggregate.GetUncommittedEvents().Cast<IEventData>();
 
             this.eventStore.AppendEvents(aggregateIdentity, aggregate.CommittedVersion, uncommitedEvents, replayGuid);

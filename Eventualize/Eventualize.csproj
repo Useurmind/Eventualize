@@ -85,6 +85,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Aggregates\AggregateTypeNameAttribute.cs" />
+    <Compile Include="Domain\AttributeBasedIdentityProvider.cs" />
     <Compile Include="Domain\Events\AggregateEvent.cs" />
     <Compile Include="Domain\Aggregates\SelfContainedAggregateBase.cs" />
     <Compile Include="Domain\Aggregates\StateBackedAggregateBase.cs" />
@@ -96,6 +98,8 @@
     <Compile Include="Domain\Aggregates\EventRouting\HandlerForDomainEventNotFoundException.cs" />
     <Compile Include="Domain\Aggregates\EventRouting\RegistrationEventRouter.cs" />
     <Compile Include="Domain\Events\Event.cs" />
+    <Compile Include="Domain\Events\EventTypeNameAttribute.cs" />
+    <Compile Include="Domain\BoundedContextAttribute.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi2AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi3AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi4AggregateMaterializerBase.cs" />

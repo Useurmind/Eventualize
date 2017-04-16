@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
 using Eventualize.Interfaces.Aggregates;
 
 namespace Eventualize.Console.Domain.TaskList
 {
+    [BoundedContext("EventualizeTest")]
     [AggregateTypeName("TaskList")]
     public class TaskList : StateBackedAggregateBase<TaskListState>
     {

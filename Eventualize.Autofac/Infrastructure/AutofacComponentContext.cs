@@ -121,5 +121,13 @@ namespace Eventualize.Autofac.Infrastructure
                 return this.componentContext.Resolve<ISnapshotConverter>();
             }
         }
+
+        public IDomainIdentityProvider DomainIdentityProvider
+        {
+            get
+            {
+                return this.componentContext.Resolve<IDomainIdentityProvider>();
+            }
+        }
     }
 }

@@ -23,7 +23,12 @@ namespace Eventualize.Infrastructure
         public static IEventualizeContainerBuilder MaterializeSnapShots<TAggregate>(this IEventualizeContainerBuilder containerBuilder, BoundedContext? boundedContext = null)
             where TAggregate : class, IAggregate
         {
-            return containerBuilder.RegisterSingleInstance<IAggregateMaterializer>(c => new SnapShotMaterializer(c.SnapShotStore, EventualizeContext.TakeThisOrDefault(boundedContext)));
+            return containerBuilder.RegisterSingleInstance<IAggregateMaterializer>(c => new SnapShotMaterializer(c.SnapShotStore, c.DomainIdentityProvider));
+        }
+
+        public static IEventualizeContainerBuilder DeriveIdentitiesFromAttributes(this IEventualizeContainerBuilder containerBuilder)
+        {
+            return containerBuilder.SetDomainIdentityProviderFactory(x => new AttributeBasedIdentityProvider());
         }
 
         public static IEventualizeContainerBuilder SetDefaults(this IEventualizeContainerBuilder containerBuilder, params Assembly[] domainAssemblies)
@@ -51,7 +56,7 @@ namespace Eventualize.Infrastructure
                                        })
                                    .SetSerializerFactory(c => new JsonSerializer())
                                    .SetLoggerFactory(c => new ConsoleLogger())
-                                   .SetRepositoryFactory(c => new AggregateRepository(c.AggregateEventStore, c.AggregateFactory, c.SnapShotStore));
+                                   .SetRepositoryFactory(c => new AggregateRepository(c.AggregateEventStore, c.DomainIdentityProvider, c.AggregateFactory, c.SnapShotStore));
         }
 
         public static IEventualizeContainerBuilder MaterializeInMemory(this IEventualizeContainerBuilder containerBuilder)
@@ -67,7 +72,7 @@ namespace Eventualize.Infrastructure
 
         public static IEventualizeContainerBuilder MaterializePerAggregate(this IEventualizeContainerBuilder containerBuilder)
         {
-            return containerBuilder.AddAggregateMaterializationStrategyFactory(c => new AggregateMaterializationDistributor(c.AggregateRepository, c.Resolve<IEnumerable<IAggregateMaterializer>>()));
+            return containerBuilder.AddAggregateMaterializationStrategyFactory(c => new AggregateMaterializationDistributor(c.AggregateRepository, c.DomainIdentityProvider, c.Resolve<IEnumerable<IAggregateMaterializer>>()));
         }
     }
 }

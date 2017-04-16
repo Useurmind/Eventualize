@@ -1,12 +1,12 @@
-﻿using System;
+using System;
 using System.Linq;
 
-namespace Eventualize.Interfaces.Aggregates
+namespace Eventualize.Domain.Events
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-    public sealed class AggregateTypeNameAttribute : Attribute
+    public sealed class BoundedContextAttribute : Attribute
     {
-        public AggregateTypeNameAttribute(string name)
+        public BoundedContextAttribute(string name)
         {
             this.Name = name;
         }

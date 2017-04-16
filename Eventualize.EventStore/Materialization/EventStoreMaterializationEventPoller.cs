@@ -52,12 +52,10 @@ namespace Eventualize.EventStore.Materialization
 
         private IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies;
 
-        private BoundedContext boundedContext;
-
         private IMaterializationProgess materializationProgess;
 
         public EventStoreMaterializationEventPoller(IAggregateFactory aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, IEnumerable<IMaterializationStrategy> materializationStrategies, 
-            IMaterializationProgess materializationProgess, IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies, BoundedContext boundedContext)
+            IMaterializationProgess materializationProgess, IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies)
         {
             this.connection = connection;
             this.aggregateFactory = aggregateFactory;
@@ -65,7 +63,6 @@ namespace Eventualize.EventStore.Materialization
             this.materializationStrategies = materializationStrategies;
             this.aggregateMaterializationStrategies = aggregateMaterializationStrategies;
             this.materializationProgess = materializationProgess;
-            this.boundedContext = boundedContext;
         }
 
         public void Run()
@@ -78,7 +75,7 @@ namespace Eventualize.EventStore.Materialization
                 (subscription, resolvedevent) =>
                 {
                     var recordedEvent = resolvedevent.Event;
-                    if (AggregateStreamName.IsAggregateStreamName(recordedEvent.EventStreamId, this.boundedContext))
+                    if (AggregateStreamName.IsAggregateStreamName(recordedEvent.EventStreamId))
                     {
                         var streamName = AggregateStreamName.FromStreamName(recordedEvent.EventStreamId);
                         var aggregateEvent = eventConverter.GetDomainEvent(streamName.GetAggregateIdentity(), recordedEvent);
@@ -98,12 +95,12 @@ namespace Eventualize.EventStore.Materialization
                         return;
 
                         // we do not support this yet
-                        var @event = eventConverter.GetDomainEvent(recordedEvent, this.boundedContext);
+                        //var @event = eventConverter.GetDomainEvent(recordedEvent);
 
-                        foreach (var strat in this.materializationStrategies)
-                        {
-                            strat.HandleEvent(@event);
-                        }
+                        //foreach (var strat in this.materializationStrategies)
+                        //{
+                        //    strat.HandleEvent(@event);
+                        //}
                     }
 
                     this.materializationProgess.Set(new EventStoreAllStreamPosition(resolvedevent.OriginalPosition.Value));

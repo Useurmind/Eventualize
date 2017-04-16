@@ -17,18 +17,27 @@ namespace Eventualize.Materialization.AggregateMaterialization
         private Dictionary<string, IEnumerable<IAggregateMaterializer>> materializerByAggregateType;
         private IAggregateRepository aggregateRepository;
 
-        public AggregateMaterializationDistributor(IAggregateRepository aggregateRepository, IEnumerable<IAggregateMaterializer> aggregateMaterializers)
+        private IDomainIdentityProvider domainIdentityProvider;
+
+        public AggregateMaterializationDistributor(IAggregateRepository aggregateRepository, IDomainIdentityProvider domainIdentityProvider, IEnumerable<IAggregateMaterializer> aggregateMaterializers)
         {
             this.aggregateRepository = aggregateRepository;
+            this.domainIdentityProvider = domainIdentityProvider;
 
-            var allAggregateTypes = aggregateMaterializers.SelectMany(x => x.ChosenAggregateTypes.AggregateTypes).Distinct().ToArray();
+            var allAggregateTypes = aggregateMaterializers.Where(x => !x.ChosenAggregateTypes.AllAggregateTypesChosen)
+                .SelectMany(x => x.ChosenAggregateTypes.AggregateTypes)
+                .Distinct()
+                .ToArray();
 
             this.materializersForAllTypes = aggregateMaterializers.Where(x => x.ChosenAggregateTypes.AllAggregateTypesChosen);
             this.materializerByAggregateType = new Dictionary<string, IEnumerable<IAggregateMaterializer>>();
             foreach (var aggregateType in allAggregateTypes)
             {
-                this.materializerByAggregateType[aggregateType.GetAggregtateTypeName().Value] =
-                    aggregateMaterializers.Where(x => x.ChosenAggregateTypes.AggregateTypes.Contains(aggregateType)).ToArray();
+                var aggregateTypeName = this.domainIdentityProvider.GetAggregtateTypeName(aggregateType);
+                this.materializerByAggregateType[aggregateTypeName.Value] =
+                    aggregateMaterializers.Where(x => !x.ChosenAggregateTypes.AllAggregateTypesChosen && 
+                            x.ChosenAggregateTypes.AggregateTypes.Contains(aggregateType))
+                            .ToArray();
             }
         }
 

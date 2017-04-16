@@ -41,9 +41,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregates\AggregateExtensions.cs" />
-    <Compile Include="Aggregates\AggregateTypeNameAttribute.cs" />
-    <Compile Include="Aggregates\EventTypeNameAttribute.cs" />
+    <Compile Include="Aggregates\DomainIdentityProviderExtensions.cs" />
+    <Compile Include="Aggregates\IDomainIdentityProvider.cs" />
     <Compile Include="BaseTypes\AggregateIdentity.cs" />
     <Compile Include="Aggregates\IAggregate.cs" />
     <Compile Include="Aggregates\IAggregateEvent.cs" />

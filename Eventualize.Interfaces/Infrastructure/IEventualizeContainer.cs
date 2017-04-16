@@ -10,6 +10,8 @@ namespace Eventualize.Interfaces.Infrastructure
 {
     public interface IEventualizeContainer
     {
+        IDomainIdentityProvider DomainIdentityProvider { get; }
+
         IAggregateEventStore AggregateEventStore { get; }
 
         IEventualizeLogger Logger { get; }

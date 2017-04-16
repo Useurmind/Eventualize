@@ -16,22 +16,14 @@ namespace Eventualize.Security
     {
         public EventualizeUser CurrentUser { get; set; }
 
-        public BoundedContext DefaultBoundedContext { get; set; }
-
         public static void Init(UserId userId, BoundedContext defaultBoundedContext)
         {
             Current = new EventualizeContext()
             {
-                CurrentUser = new EventualizeUser(userId),
-                DefaultBoundedContext = defaultBoundedContext
+                CurrentUser = new EventualizeUser(userId)
             };
         }
 
         public static IEventualizeContext Current { get; private set; }
-
-        public static BoundedContext TakeThisOrDefault(BoundedContext? boundedContext)
-        {
-            return boundedContext.HasValue ? boundedContext.Value : Current.DefaultBoundedContext;
-        }
     }
 }

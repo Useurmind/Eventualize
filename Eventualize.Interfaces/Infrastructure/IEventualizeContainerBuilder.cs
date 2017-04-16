@@ -14,6 +14,9 @@ namespace Eventualize.Interfaces.Infrastructure
 
         IEventualizeContainerBuilder RegisterSingleInstance<TInterface>(Func<IEventualizeContainer, TInterface> createInstance);
 
+        IEventualizeContainerBuilder SetDomainIdentityProviderFactory(
+            Func<IEventualizeContainer, IDomainIdentityProvider> createDomainIdentityProvider);
+
         IEventualizeContainerBuilder SetAggregateEventStoreFactory(
             Func<IEventualizeContainer, IAggregateEventStore> createAggregateEventStore);
 

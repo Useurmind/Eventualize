@@ -69,8 +69,7 @@ namespace Eventualize.EventStore.Infrastructure
                            c.Resolve<IEventStoreConnection>(),
                            c.MaterializationStrategies,
                            new KeyedMaterializationProgess(c.MaterializationProgessStore, "All"),
-                           c.AggregateMaterializationStrategies,
-                           EventualizeContext.Current.DefaultBoundedContext));
+                           c.AggregateMaterializationStrategies));
 
             return containerBuilder;
         }

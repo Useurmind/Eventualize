@@ -15,18 +15,18 @@ namespace Eventualize.Snapshots
     {
         private ISnapShotStore snapShotStore;
 
-        private BoundedContext boundedContext;
+        private IDomainIdentityProvider domainIdentityProvider;
 
-        public SnapShotMaterializer(ISnapShotStore snapShotStore, BoundedContext boundedContext)
+        public SnapShotMaterializer(ISnapShotStore snapShotStore, IDomainIdentityProvider domainIdentityProvider)
         {
             this.snapShotStore = snapShotStore;
-            this.boundedContext = boundedContext;
+            this.domainIdentityProvider = domainIdentityProvider;
         }
 
         public void HandleAggregateEvent(IAggregate aggregate, IAggregateEvent materializationEvent)
         {
             var snapShot = aggregate.GetSnapshot();
-            this.snapShotStore.SaveSnapshot(aggregate.GetAggregateIdentity(this.boundedContext), snapShot);
+            this.snapShotStore.SaveSnapshot(this.domainIdentityProvider.GetAggregateIdentity(aggregate), snapShot);
         }
 
         public ChosenAggregateTypes ChosenAggregateTypes { get { return new ChosenAggregateTypes(); } }

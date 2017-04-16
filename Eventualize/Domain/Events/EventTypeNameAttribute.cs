@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace Eventualize.Interfaces.Aggregates
+namespace Eventualize.Domain.Events
 {
     [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
     public sealed class EventTypeNameAttribute : Attribute

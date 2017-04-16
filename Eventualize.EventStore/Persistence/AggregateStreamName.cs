@@ -43,11 +43,6 @@ namespace Eventualize.EventStore.Persistence
                 aggregateId);
         }
 
-        public static AggregateStreamName FromAggregateType(Type aggregateType, Guid id, BoundedContext eventNameSpace)
-        {
-            return new AggregateStreamName(eventNameSpace, aggregateType.GetAggregtateTypeName(), id);
-        }
-
         public static AggregateStreamName FromAggregateIdentity(AggregateIdentity aggregateIdentity)
         {
             return new AggregateStreamName(aggregateIdentity.BoundedContext, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
@@ -56,6 +51,11 @@ namespace Eventualize.EventStore.Persistence
         public static bool IsAggregateStreamName(string streamId, BoundedContext eventNameSpace)
         {
             return Regex.IsMatch(streamId, "^" + AggregatePrefix + eventNameSpace.Value + @"-[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
+        }
+
+        public static bool IsAggregateStreamName(string streamId)
+        {
+            return Regex.IsMatch(streamId, "^" + AggregatePrefix + @"[^\-]*-[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
         }
 
         public string ToString()

@@ -94,6 +94,7 @@ namespace Eventualize.Console
                 {
                     b.StoreMaterializationProgessInFileSystem();
                     b.SetDefaults(Assembly.GetExecutingAssembly());
+                    b.DeriveIdentitiesFromAttributes();
                     b.MaterializePerAggregate();
                     b.MaterializeSnapShots<Task>();
                     b.MaterializeSnapShots<TaskList>();
@@ -112,7 +113,7 @@ namespace Eventualize.Console
                         //             .OnDefaultEndpoints()
                         //             .Build();
 
-                        //         node.StartAndWaitUntilReady();
+                        //         node.Start();
                         //         return node;
                         //     })
                         //.ConnectEventStore(c => EmbeddedEventStoreConnection.Create(c.Resolve<ClusterVNode>()))

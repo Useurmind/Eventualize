@@ -97,5 +97,10 @@ namespace Eventualize.Autofac.Infrastructure
             this.builder.Register(x => createInstance(x.Eventualize())).Named<TInterface>(name);
             return this;
         }
+
+        public IEventualizeContainerBuilder SetDomainIdentityProviderFactory(Func<IEventualizeContainer, IDomainIdentityProvider> createDomainIdentityProvider)
+        {
+            return this.RegisterFuncFactorySingleton(createDomainIdentityProvider);
+        }
     }
 }
