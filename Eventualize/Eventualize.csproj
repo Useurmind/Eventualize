@@ -104,6 +104,10 @@
     <Compile Include="Materialization\AggregateMaterialization\Multi3AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi4AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\SingleAggregateMaterializerBase.cs" />
+    <Compile Include="Persistence\IPagedEventLoader.cs" />
+    <Compile Include="Persistence\PagedEventLoader.cs" />
+    <Compile Include="Persistence\PageEventLoaderOptions.cs" />
+    <Compile Include="Persistence\RepositoryOptions.cs" />
     <Compile Include="Snapshots\SnapShotBase.cs" />
     <Compile Include="Domain\StringExtensions.cs" />
     <Compile Include="Infrastructure\ConsoleLogger.cs" />

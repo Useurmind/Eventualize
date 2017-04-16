@@ -3,6 +3,7 @@ using System.Linq;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
+using Eventualize.Domain.Events;
 using Eventualize.Interfaces;
 using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
@@ -23,12 +24,15 @@ namespace Eventualize.Persistence
 
         private IDomainIdentityProvider domainIdentityProvider;
 
-        public AggregateRepository(IAggregateEventStore eventStore, IDomainIdentityProvider domainIdentityProvider, IAggregateFactory aggregateFactory, ISnapShotStore snapShotStore)
+        private RepositoryOptions repositoryOptions;
+
+        public AggregateRepository(IAggregateEventStore eventStore, IDomainIdentityProvider domainIdentityProvider, IAggregateFactory aggregateFactory, ISnapShotStore snapShotStore, RepositoryOptions repositoryOptions)
         {
             this.eventStore = eventStore;
             this.aggregateFactory = aggregateFactory;
             this.snapShotStore = snapShotStore;
             this.domainIdentityProvider = domainIdentityProvider;
+            this.repositoryOptions = repositoryOptions;
         }
 
         public void Dispose()
@@ -55,9 +59,28 @@ namespace Eventualize.Persistence
         public IAggregate GetById(AggregateIdentity aggregateIdentity, int version)
         {
             var snapShot = this.snapShotStore.GetSnapshot(aggregateIdentity);
+            var aggregate = this.aggregateFactory.BuildAggregate(aggregateIdentity, snapShot, Enumerable.Empty<IEventData>());
             var startVersion = snapShot == null ? 0 : snapShot.Version + 1;
-            var events = this.eventStore.GetEvents(aggregateIdentity, startVersion, version);
-            return this.aggregateFactory.BuildAggregate(aggregateIdentity, snapShot, events.Select(x => x.EventData));
+
+            var pagedEventLoader=  new PagedEventLoader();
+            var pagedEventLoaderOptions = new PageEventLoaderOptions()
+                                              {
+                                                  PageSize = this.repositoryOptions.PageSize,
+                                                  StartEventNumber = startVersion,
+                                                  EndEventNumber = version
+                                              };
+
+            // we load the events in pages because it is unreasonable to assume we can always load them in one chunk
+            pagedEventLoader.LoadAllPages(
+                this.eventStore,
+                aggregateIdentity, 
+                pagedEventLoaderOptions, 
+                aggregateEvent =>
+                    {
+                        aggregate.ApplyEvent(aggregateEvent.EventData);
+                    });
+
+            return aggregate;
         }
 
         public void Save(IAggregate aggregate, Guid replayGuid)

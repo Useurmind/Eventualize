@@ -73,6 +73,7 @@
     <Compile Include="Persistence\EventStoreEventConverter.cs" />
     <Compile Include="Persistence\AggregateEventStoreImplementation.cs" />
     <Compile Include="Persistence\IEventStoreEventConverter.cs" />
+    <Compile Include="Persistence\PagedEventLoader.cs" />
     <Compile Include="Persistence\SnapShotStreamName.cs" />
     <Compile Include="Persistence\SnapShots\EventStoreSnapShotStore.cs" />
     <Compile Include="Persistence\AggregateStreamName.cs" />

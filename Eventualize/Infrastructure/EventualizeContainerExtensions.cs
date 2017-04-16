@@ -33,6 +33,8 @@ namespace Eventualize.Infrastructure
 
         public static IEventualizeContainerBuilder SetDefaults(this IEventualizeContainerBuilder containerBuilder, params Assembly[] domainAssemblies)
         {
+            containerBuilder.RegisterSingleInstance(c => new RepositoryOptions() { PageSize = 1024 });
+
             return containerBuilder.SetAggregateFactoryFactory(
                                        c =>
                                        {
@@ -56,7 +58,7 @@ namespace Eventualize.Infrastructure
                                        })
                                    .SetSerializerFactory(c => new JsonSerializer())
                                    .SetLoggerFactory(c => new ConsoleLogger())
-                                   .SetRepositoryFactory(c => new AggregateRepository(c.AggregateEventStore, c.DomainIdentityProvider, c.AggregateFactory, c.SnapShotStore));
+                                   .SetRepositoryFactory(c => new AggregateRepository(c.AggregateEventStore, c.DomainIdentityProvider, c.AggregateFactory, c.SnapShotStore, c.Resolve<RepositoryOptions>()));
         }
 
         public static IEventualizeContainerBuilder MaterializeInMemory(this IEventualizeContainerBuilder containerBuilder)
