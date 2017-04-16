@@ -47,7 +47,7 @@ namespace Eventualize.EventStore.Persistence
             var count = (int)(end - start);
             if (count > MaxPageSize)
             {
-                throw new NotImplementedException($"Currently no paging is implemtend, so we cannot retrieve more than {MaxPageSize} events for an aggregate");
+                throw new NotImplementedException($"EventStore supports only a maximum page size of {MaxPageSize} for lading events. Please configure your RepositoryOptions accordingly.");
             }
 
             var resultSlice = this.connection.ReadStreamEventsForwardAsync(streamName.ToString(), start, count, true).Result;
