@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 using Eventualize.Interfaces.Snapshots;
@@ -16,7 +17,7 @@ namespace Eventualize.Interfaces.Aggregates
 
         void ApplyEvent(object @event);
 
-        ICollection GetUncommittedEvents();
+        ICollection<IEventData> GetUncommittedEvents();
 
         void ClearUncommittedEvents();
 

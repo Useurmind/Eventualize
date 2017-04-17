@@ -59,10 +59,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Domain\Aggregates\AggregateBaseTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Eventualize.Interfaces\Eventualize.Interfaces.csproj">
+      <Project>{d1fd5b08-9da7-46e1-abf4-0f309ab9c9b2}</Project>
+      <Name>Eventualize.Interfaces</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Eventualize\Eventualize.csproj">
+      <Project>{81FF36DE-C711-4FD5-B158-74502A8A2F71}</Project>
+      <Name>Eventualize</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

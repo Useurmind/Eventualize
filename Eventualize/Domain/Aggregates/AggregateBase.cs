@@ -13,7 +13,7 @@ namespace Eventualize.Domain.Aggregates
 {
     public abstract class AggregateBase : IAggregate, IEquatable<IAggregate>
     {
-        private readonly ICollection<object> uncommittedEvents = new LinkedList<object>();
+        private readonly ICollection<IEventData> uncommittedEvents = new LinkedList<IEventData>();
 
         private IRouteEvents registeredRoutes;
 
@@ -69,9 +69,9 @@ namespace Eventualize.Domain.Aggregates
             this.Version++;
         }
 
-        ICollection IAggregate.GetUncommittedEvents()
+        ICollection<IEventData> IAggregate.GetUncommittedEvents()
         {
-            return (ICollection)this.uncommittedEvents;
+            return this.uncommittedEvents;
         }
 
         void IAggregate.ClearUncommittedEvents()
@@ -106,7 +106,7 @@ namespace Eventualize.Domain.Aggregates
         /// Called when a new event is applied that changes the aggregate and needs to be commited.
         /// </summary>
         /// <param name="event"></param>
-        protected void RaiseEvent(object @event)
+        protected void RaiseEvent(IEventData @event)
         {
             ((IAggregate)this).ApplyEvent(@event);
             this.uncommittedEvents.Add(@event);
