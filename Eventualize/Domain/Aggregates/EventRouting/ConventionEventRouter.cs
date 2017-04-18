@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
 
 namespace Eventualize.Domain.Aggregates.EventRouting
 {

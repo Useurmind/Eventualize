@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Autofac;
 
 using Eventualize.Interfaces;
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Persistence;
@@ -131,6 +132,14 @@ namespace Eventualize.Autofac.Infrastructure
             get
             {
                 return this.container.Resolve<IDomainIdentityProvider>();
+            }
+        }
+
+        public IDomainMetaModel DomainMetaModel
+        {
+            get
+            {
+                return this.container.Resolve<IDomainMetaModel>();
             }
         }
     }

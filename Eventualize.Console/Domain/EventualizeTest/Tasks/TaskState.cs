@@ -1,10 +1,8 @@
 using System.Linq;
 
-using Eventualize.Domain;
-using Eventualize.Domain.Aggregates;
 using Eventualize.Snapshots;
 
-namespace Eventualize.Console.Domain
+namespace Eventualize.Console.Domain.EventualizeTest.Tasks
 {
     public class TaskState : SnapShotBase
     {

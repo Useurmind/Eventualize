@@ -9,7 +9,6 @@ using EventStore.ClientAPI;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.Interfaces;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Snapshots;
 using Eventualize.Persistence;

@@ -20,7 +20,8 @@ using EventStore.Core;
 
 using Eventualize.Autofac.Infrastructure;
 using Eventualize.Console.Domain;
-using Eventualize.Console.Domain.TaskList;
+using Eventualize.Console.Domain.EventualizeTest.TaskList;
+using Eventualize.Console.Domain.EventualizeTest.Tasks;
 using Eventualize.Console.ReadModel;
 using Eventualize.Dapper.Materialization;
 using Eventualize.Domain;
@@ -92,6 +93,7 @@ namespace Eventualize.Console
             builder.Eventualize(
                 b =>
                 {
+                    b.ConstructDomainModelViaReflection();
                     b.StoreMaterializationProgessInFileSystem();
                     b.SetDefaults(Assembly.GetExecutingAssembly());
                     b.DeriveIdentitiesFromAttributes();

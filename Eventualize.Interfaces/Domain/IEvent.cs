@@ -3,7 +3,7 @@ using System.Linq;
 
 using Eventualize.Interfaces.BaseTypes;
 
-namespace Eventualize.Interfaces.Aggregates
+namespace Eventualize.Interfaces.Domain
 {
     public interface IEvent
     {

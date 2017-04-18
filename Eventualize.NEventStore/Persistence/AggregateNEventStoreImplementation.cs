@@ -5,8 +5,8 @@ using System.Linq;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Persistence;
 using Eventualize.Persistence;
 

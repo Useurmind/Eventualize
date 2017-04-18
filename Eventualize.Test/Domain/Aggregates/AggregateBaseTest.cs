@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Domain.Aggregates;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Snapshots;
 
 using FluentAssertions;

@@ -5,8 +5,9 @@ using System.Reflection;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Domain.MetaModel;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Interfaces.Materialization;
 using Eventualize.Materialization;
@@ -20,6 +21,22 @@ namespace Eventualize.Infrastructure
 {
     public static class EventualizeContainerExtensions
     {
+        public static IEventualizeContainerBuilder ConstructDomainModelViaReflection(this IEventualizeContainerBuilder containerBuilder, IEnumerable<Assembly> assemblies = null)
+        {
+            if (assemblies == null)
+            {
+                assemblies = new Assembly[] {Assembly.GetCallingAssembly()};
+            }
+
+            return containerBuilder.SetDomainMetaModelFactory(
+                x =>
+                {
+                    var metaModelFactory = new ReflectionBasedMetaModelFactory(assemblies);
+
+                    return metaModelFactory.Build();
+                });
+        }
+
         public static IEventualizeContainerBuilder MaterializeSnapShots<TAggregate>(this IEventualizeContainerBuilder containerBuilder, BoundedContextName? boundedContextName = null)
             where TAggregate : class, IAggregate
         {
@@ -28,7 +45,7 @@ namespace Eventualize.Infrastructure
 
         public static IEventualizeContainerBuilder DeriveIdentitiesFromAttributes(this IEventualizeContainerBuilder containerBuilder)
         {
-            return containerBuilder.SetDomainIdentityProviderFactory(x => new AttributeBasedIdentityProvider());
+            return containerBuilder.SetDomainIdentityProviderFactory(x => new DomainModelIdentityProvider(x.DomainMetaModel));
         }
 
         public static IEventualizeContainerBuilder SetDefaults(this IEventualizeContainerBuilder containerBuilder, params Assembly[] domainAssemblies)
@@ -38,8 +55,7 @@ namespace Eventualize.Infrastructure
             return containerBuilder.SetAggregateFactoryFactory(
                                        c =>
                                        {
-                                           var factory = new AggregateFactory(c.Serializer);
-                                           factory.ScanAggregateTypes(domainAssemblies);
+                                           var factory = new AggregateFactory(c.DomainMetaModel);
                                            return factory;
                                        })
                                     .SetSnapshotConverterFactory(

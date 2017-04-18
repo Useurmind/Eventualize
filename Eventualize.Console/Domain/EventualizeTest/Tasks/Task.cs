@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
-using Eventualize.Interfaces.Aggregates;
 
-namespace Eventualize.Console.Domain
+namespace Eventualize.Console.Domain.EventualizeTest.Tasks
 {
     [BoundedContext("EventualizeTest")]
     [AggregateTypeName("Task")]

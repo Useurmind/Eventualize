@@ -6,8 +6,9 @@ using System.Reflection;
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
 using Eventualize.Infrastructure;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Domain.MetaModel;
 
 namespace Eventualize.Domain.MetaModel
 {
@@ -38,7 +39,7 @@ namespace Eventualize.Domain.MetaModel
             this.domainAssemblies = domainAssemblies;
         }
 
-        public DomainMetaModel Build()
+        public IDomainMetaModel Build()
         {
             var aggregateTypeRegister = new TypeRegister();
             var eventTypeRegister = new TypeRegister();

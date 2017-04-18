@@ -84,14 +84,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Domain\TaskList\TaskList.cs" />
-    <Compile Include="Domain\TaskList\TaskListCreatedEvent.cs" />
-    <Compile Include="Domain\TaskList\TaskListState.cs" />
-    <Compile Include="Domain\TaskList\TaskListTaskAddedAtEndEvent.cs" />
-    <Compile Include="Domain\Tasks\Task.cs" />
-    <Compile Include="Domain\Tasks\TaskCreatedEvent.cs" />
-    <Compile Include="Domain\Tasks\TaskDescriptionAddedEvent.cs" />
-    <Compile Include="Domain\Tasks\TaskState.cs" />
+    <Compile Include="Domain\EventualizeTest\TaskList\TaskList.cs" />
+    <Compile Include="Domain\EventualizeTest\TaskList\TaskListCreatedEvent.cs" />
+    <Compile Include="Domain\EventualizeTest\TaskList\TaskListState.cs" />
+    <Compile Include="Domain\EventualizeTest\TaskList\TaskListTaskAddedAtEndEvent.cs" />
+    <Compile Include="Domain\EventualizeTest\Tasks\Task.cs" />
+    <Compile Include="Domain\EventualizeTest\Tasks\TaskCreatedEvent.cs" />
+    <Compile Include="Domain\EventualizeTest\Tasks\TaskDescriptionAddedEvent.cs" />
+    <Compile Include="Domain\EventualizeTest\Tasks\TaskState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadModel\TaskReadModel.cs" />

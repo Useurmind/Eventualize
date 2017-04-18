@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Persistence;
 using Eventualize.Interfaces.Snapshots;
@@ -10,6 +11,8 @@ namespace Eventualize.Interfaces.Infrastructure
 {
     public interface IEventualizeContainer
     {
+        IDomainMetaModel DomainMetaModel { get; }
+
         IDomainIdentityProvider DomainIdentityProvider { get; }
 
         IAggregateEventStore AggregateEventStore { get; }

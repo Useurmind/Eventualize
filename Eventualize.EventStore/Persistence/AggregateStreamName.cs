@@ -4,7 +4,6 @@ using System.Text.RegularExpressions;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
 
 namespace Eventualize.EventStore.Persistence

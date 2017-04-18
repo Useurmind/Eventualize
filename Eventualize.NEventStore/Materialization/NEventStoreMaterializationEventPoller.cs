@@ -7,8 +7,8 @@ using Eventualize.Materialization;
 using Eventualize.Persistence;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Materialization;
 using Eventualize.NEventStore.Persistence;
 

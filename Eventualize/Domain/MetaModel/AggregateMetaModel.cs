@@ -4,13 +4,14 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain.MetaModel;
 
 namespace Eventualize.Domain.MetaModel
 {
     /// <summary>
     /// A model for an aggregate type.
     /// </summary>
-    public class AggregateMetaModel : BoundedContextRelatedMetaModel
+    public class AggregateMetaModel : BoundedContextRelatedMetaModel, IAggregateMetaModel
     {
         public AggregateMetaModel(BoundedContextName boundedContextName, AggregateTypeName typeName, Type modelType, Type snapshotType)
             : base(boundedContextName)

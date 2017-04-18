@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace Eventualize.Interfaces.Aggregates
+namespace Eventualize.Interfaces.Domain
 {
     public interface IEventData
     {

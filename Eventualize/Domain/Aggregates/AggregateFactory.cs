@@ -5,8 +5,9 @@ using System.Reflection;
 
 using Eventualize.Infrastructure;
 using Eventualize.Interfaces;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Interfaces.Snapshots;
 using Eventualize.Persistence;
@@ -16,30 +17,18 @@ namespace Eventualize.Domain.Aggregates
 {
     public class AggregateFactory : IAggregateFactory
     {
-        private TypeRegister aggregateTypeRegister;
+        private IDomainMetaModel metaModel;
 
-        public AggregateFactory(ISerializer serializer)
+        public AggregateFactory(IDomainMetaModel metaModel)
         {
-            this.aggregateTypeRegister = new TypeRegister();
-        }
-
-        public void ScanAggregateTypes(IEnumerable<Assembly> assemblies)
-        {
-            foreach (var assembly in assemblies)
-            {
-                this.ScanAggregateTypes(assembly);
-            }
-        }
-        
-
-        public void ScanAggregateTypes(Assembly assembly)
-        {
-            this.aggregateTypeRegister.ScanTypes(assembly, x => x.GetCustomAttribute<AggregateTypeNameAttribute>() != null, x => x.GetCustomAttribute<AggregateTypeNameAttribute>().Name);
+            this.metaModel = metaModel;
         }
 
         public IAggregate BuildAggregate(AggregateIdentity aggregateIdentity, ISnapShot snapshot)
         {
-            Type aggregateType = this.aggregateTypeRegister.GetType(aggregateIdentity.AggregateTypeName.Value, () => $"Could not find type for aggregate {aggregateIdentity.AggregateTypeName} with id {aggregateIdentity.Id}");
+            var aggregateMetaModel = metaModel.GetBoundedContext(aggregateIdentity.BoundedContextName).GetAggregateType(aggregateIdentity.AggregateTypeName);
+
+            Type aggregateType = aggregateMetaModel.ModelType;
             IAggregate aggregate = null;
             if (snapshot != null)
             {

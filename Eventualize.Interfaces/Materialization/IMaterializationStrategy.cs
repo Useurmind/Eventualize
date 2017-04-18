@@ -1,6 +1,6 @@
 using System.Linq;
 
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
 
 namespace Eventualize.Interfaces.Materialization
 {

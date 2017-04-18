@@ -5,7 +5,7 @@ using System.Linq;
 
 using Eventualize.Domain.Aggregates.EventRouting;
 using Eventualize.Interfaces;
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Snapshots;
 using Eventualize.Snapshots;
 

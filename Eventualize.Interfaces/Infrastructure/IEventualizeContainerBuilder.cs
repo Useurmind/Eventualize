@@ -1,7 +1,8 @@
 using System;
 using System.Linq;
 
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Persistence;
 using Eventualize.Interfaces.Snapshots;
@@ -13,6 +14,9 @@ namespace Eventualize.Interfaces.Infrastructure
         IEventualizeContainerBuilder RegisterNamedFactory<TInterface>(string name, Func<IEventualizeContainer, TInterface> createInstance);
 
         IEventualizeContainerBuilder RegisterSingleInstance<TInterface>(Func<IEventualizeContainer, TInterface> createInstance);
+
+        IEventualizeContainerBuilder SetDomainMetaModelFactory(
+           Func<IEventualizeContainer, IDomainMetaModel> createDomainMetaModel);
 
         IEventualizeContainerBuilder SetDomainIdentityProviderFactory(
             Func<IEventualizeContainer, IDomainIdentityProvider> createDomainIdentityProvider);

@@ -3,7 +3,6 @@ using System.Linq;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
 
 namespace Eventualize.EventStore.Persistence

@@ -5,7 +5,7 @@ using System.Reflection;
 
 using Eventualize.Domain.Aggregates;
 using Eventualize.Infrastructure;
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Persistence;
 

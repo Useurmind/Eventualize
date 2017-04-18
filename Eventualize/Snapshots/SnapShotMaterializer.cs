@@ -3,8 +3,8 @@
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
 using Eventualize.Interfaces;
-using Eventualize.Interfaces.Aggregates;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Snapshots;
 using Eventualize.Materialization.AggregateMaterialization;

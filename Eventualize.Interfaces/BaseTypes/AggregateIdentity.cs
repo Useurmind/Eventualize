@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Linq;
 
-using Eventualize.Interfaces.Aggregates;
-
 namespace Eventualize.Interfaces.BaseTypes
 {
     public struct AggregateIdentity

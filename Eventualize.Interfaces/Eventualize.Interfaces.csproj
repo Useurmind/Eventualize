@@ -41,16 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Aggregates\DomainIdentityProviderExtensions.cs" />
-    <Compile Include="Aggregates\IDomainIdentityProvider.cs" />
+    <Compile Include="Domain\DomainIdentityProviderExtensions.cs" />
+    <Compile Include="Domain\IDomainIdentityProvider.cs" />
     <Compile Include="BaseTypes\AggregateIdentity.cs" />
-    <Compile Include="Aggregates\IAggregate.cs" />
-    <Compile Include="Aggregates\IAggregateEvent.cs" />
-    <Compile Include="Aggregates\IAggregateFactory.cs" />
-    <Compile Include="Aggregates\IEvent.cs" />
-    <Compile Include="Aggregates\IEventConverter.cs" />
-    <Compile Include="Aggregates\IEventData.cs" />
-    <Compile Include="Aggregates\IRouteEvents.cs" />
+    <Compile Include="Domain\IAggregate.cs" />
+    <Compile Include="Domain\IAggregateEvent.cs" />
+    <Compile Include="Domain\IAggregateFactory.cs" />
+    <Compile Include="Domain\IEvent.cs" />
+    <Compile Include="Domain\IEventConverter.cs" />
+    <Compile Include="Domain\IEventData.cs" />
+    <Compile Include="Domain\IRouteEvents.cs" />
     <Compile Include="BaseTypes\AggregateTypeName.cs" />
     <Compile Include="BaseTypes\AggregateVersion.cs" />
     <Compile Include="BaseTypes\BoundedContextName.cs" />
@@ -59,6 +59,11 @@
     <Compile Include="BaseTypes\UserId.cs" />
     <Compile Include="ConflictDetection\ConflictDelegate.cs" />
     <Compile Include="ConflictDetection\IDetectConflicts.cs" />
+    <Compile Include="Domain\MetaModel\IAggregateMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\IBoundedContextMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\IDomainMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\IDomainMetaModelFactory.cs" />
+    <Compile Include="Domain\MetaModel\IEventMetaModel.cs" />
     <Compile Include="Infrastructure\ICache.cs" />
     <Compile Include="Infrastructure\IEventualizeContainer.cs" />
     <Compile Include="Infrastructure\IEventualizeContainerBuilder.cs" />

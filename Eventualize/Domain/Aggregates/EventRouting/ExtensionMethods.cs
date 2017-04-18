@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Linq;
 
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
 
 namespace Eventualize.Domain.Aggregates.EventRouting
 {

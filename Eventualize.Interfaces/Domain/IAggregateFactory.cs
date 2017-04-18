@@ -4,7 +4,7 @@ using System.Linq;
 using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Snapshots;
 
-namespace Eventualize.Interfaces.Aggregates
+namespace Eventualize.Interfaces.Domain
 {
     public interface IAggregateFactory
     {

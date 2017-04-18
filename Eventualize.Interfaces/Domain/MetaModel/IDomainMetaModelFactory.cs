@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Eventualize.Domain.MetaModel
+namespace Eventualize.Interfaces.Domain.MetaModel
 {
     /// <summary>
     /// Interface for a factory that will create a domain meta model.
@@ -11,6 +11,6 @@ namespace Eventualize.Domain.MetaModel
         /// Create the meta model for the domain.
         /// </summary>
         /// <returns></returns>
-        DomainMetaModel Build();
+        IDomainMetaModel Build();
     }
 }

@@ -2,18 +2,19 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain.MetaModel;
 
 namespace Eventualize.Domain.MetaModel
 {
     /// <summary>
     /// A meta model for a single bounded context with all aggregate and event types in it.
     /// </summary>
-    public class BoundedContextMetaModel : BoundedContextRelatedMetaModel
+    public class BoundedContextMetaModel : BoundedContextRelatedMetaModel, IBoundedContextMetaModel
     {
-        private IDictionary<AggregateTypeName, AggregateMetaModel> aggregateTypesByName;
-        private IDictionary<EventTypeName, EventMetaModel> eventTypesByName;
+        private IDictionary<AggregateTypeName, IAggregateMetaModel> aggregateTypesByName;
+        private IDictionary<EventTypeName, IEventMetaModel> eventTypesByName;
 
-        public BoundedContextMetaModel(BoundedContextName boundedContextName, IEnumerable<AggregateMetaModel> aggregateTypes, IEnumerable<EventMetaModel> eventTypes)
+        public BoundedContextMetaModel(BoundedContextName boundedContextName, IEnumerable<IAggregateMetaModel> aggregateTypes, IEnumerable<IEventMetaModel> eventTypes)
             : base(boundedContextName)
         {
             this.AggregateTypes = aggregateTypes;
@@ -26,19 +27,19 @@ namespace Eventualize.Domain.MetaModel
         /// <summary>
         /// The aggregate types in this bounded context.
         /// </summary>
-        public IEnumerable<AggregateMetaModel> AggregateTypes { get; }
+        public IEnumerable<IAggregateMetaModel> AggregateTypes { get; }
 
         /// <summary>
         /// The event types in this bounded context.
         /// </summary>
-        public IEnumerable<EventMetaModel> EventTypes { get; }
+        public IEnumerable<IEventMetaModel> EventTypes { get; }
 
         /// <summary>
         /// Get the aggregate type with the given name.
         /// </summary>
         /// <param name="name">The name of the aggregate type.</param>
         /// <returns>The meta model for the aggregate type or null.</returns>
-        public AggregateMetaModel GetAggregateType(AggregateTypeName name)
+        public IAggregateMetaModel GetAggregateType(AggregateTypeName name)
         {
             if (this.aggregateTypesByName.ContainsKey(name))
             {
@@ -53,7 +54,7 @@ namespace Eventualize.Domain.MetaModel
         /// </summary>
         /// <param name="name">The name of the event type.</param>
         /// <returns>The meta model for the aggregateevent type or null.</returns>
-        public EventMetaModel GetEventType(EventTypeName name)
+        public IEventMetaModel GetEventType(EventTypeName name)
         {
             if (this.eventTypesByName.ContainsKey(name))
             {

@@ -1,12 +1,10 @@
 using System;
 using System.Linq;
 
-using Eventualize.Domain;
-using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
-using Eventualize.Interfaces.Aggregates;
+using Eventualize.Interfaces.Domain;
 
-namespace Eventualize.Console.Domain.TaskList
+namespace Eventualize.Console.Domain.EventualizeTest.TaskList
 {
     [EventTypeName("TaskListTaskAddedAtEnd")]
     public class TaskListTaskAddedAtEndEvent : IEventData

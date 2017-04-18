@@ -4,9 +4,8 @@ using System.Linq;
 
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
-using Eventualize.Interfaces.Aggregates;
 
-namespace Eventualize.Console.Domain.TaskList
+namespace Eventualize.Console.Domain.EventualizeTest.TaskList
 {
     [BoundedContext("EventualizeTest")]
     [AggregateTypeName("TaskList")]
