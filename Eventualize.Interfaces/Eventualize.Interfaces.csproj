@@ -78,6 +78,7 @@
     <Compile Include="Materialization\IMaterializationStrategy.cs" />
     <Compile Include="Materialization\IReadModel.cs" />
     <Compile Include="Materialization\ProgessValue.cs" />
+    <Compile Include="Persistence\ExpectedAggregateVersionException.cs" />
     <Compile Include="Security\EventualizeUser.cs" />
     <Compile Include="Security\IEventualizeContext.cs" />
     <Compile Include="Snapshots\ISnapShot.cs" />

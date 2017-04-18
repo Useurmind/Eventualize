@@ -16,7 +16,7 @@ namespace Eventualize.Security
     {
         public EventualizeUser CurrentUser { get; set; }
 
-        public static void Init(UserId userId, BoundedContextName defaultBoundedContextName)
+        public static void Init(UserId userId)
         {
             Current = new EventualizeContext()
             {

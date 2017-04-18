@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Eventualize.Interfaces.BaseTypes
 {
@@ -7,6 +8,7 @@ namespace Eventualize.Interfaces.BaseTypes
     /// </summary>
     public struct AggregateVersion
     {
+        private const long AnyValue = -3;
         private const long LatestValue = -2;
         private const long NotCreatedValue = -1;
         private const long StartValue = 0;
@@ -71,6 +73,11 @@ namespace Eventualize.Interfaces.BaseTypes
         public static long operator -(AggregateVersion obj1, AggregateVersion obj2)
         {
             return obj1.Value - obj2.Value;
+        }
+
+        public static AggregateVersion Any()
+        {
+            return new AggregateVersion(AnyValue);
         }
 
         public static AggregateVersion Latest()

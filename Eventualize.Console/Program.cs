@@ -56,7 +56,7 @@ namespace Eventualize.Console
         static void Main(string[] args)
         {
             userName = "Jochen";
-            EventualizeContext.Init(new UserId(userName), new BoundedContextName("EventualizeTest"));
+            EventualizeContext.Init(new UserId(userName));
 
             container = SetupContainer(true);
             using (container)
