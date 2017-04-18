@@ -13,14 +13,14 @@ namespace Eventualize.EventStore.Persistence
     {
         public const string AggregatePrefix = "Agg-";
 
-        public AggregateStreamName(BoundedContext boundedContext, AggregateTypeName aggregateTypeName, Guid aggregateId)
+        public AggregateStreamName(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName, Guid aggregateId)
         {
-            this.BoundedContext = boundedContext;
+            this.BoundedContextName = boundedContextName;
             this.AggregateTypeName = aggregateTypeName;
             this.AggregateId = aggregateId;
         }
 
-        public BoundedContext BoundedContext { get; }
+        public BoundedContextName BoundedContextName { get; }
 
         public Guid AggregateId { get; }
 
@@ -38,17 +38,17 @@ namespace Eventualize.EventStore.Persistence
             }
 
             return new AggregateStreamName(
-                new BoundedContext(streamNameParts[1]),
+                new BoundedContextName(streamNameParts[1]),
                 new AggregateTypeName(streamNameParts[2]),
                 aggregateId);
         }
 
         public static AggregateStreamName FromAggregateIdentity(AggregateIdentity aggregateIdentity)
         {
-            return new AggregateStreamName(aggregateIdentity.BoundedContext, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
+            return new AggregateStreamName(aggregateIdentity.BoundedContextName, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
         }
 
-        public static bool IsAggregateStreamName(string streamId, BoundedContext eventNameSpace)
+        public static bool IsAggregateStreamName(string streamId, BoundedContextName eventNameSpace)
         {
             return Regex.IsMatch(streamId, "^" + AggregatePrefix + eventNameSpace.Value + @"-[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
         }
@@ -60,12 +60,12 @@ namespace Eventualize.EventStore.Persistence
 
         public string ToString()
         {
-            return $"{AggregatePrefix}{this.BoundedContext.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
+            return $"{AggregatePrefix}{this.BoundedContextName.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
         }
 
         public AggregateIdentity GetAggregateIdentity()
         {
-            return new AggregateIdentity(this.BoundedContext, this.AggregateTypeName, this.AggregateId);
+            return new AggregateIdentity(this.BoundedContextName, this.AggregateTypeName, this.AggregateId);
         }
     }
 }

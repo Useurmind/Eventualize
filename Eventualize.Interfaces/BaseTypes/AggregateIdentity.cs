@@ -9,20 +9,30 @@ namespace Eventualize.Interfaces.BaseTypes
     {
         public Guid Id { get; }
 
-        public BoundedContext BoundedContext { get; }
+        public BoundedContextName BoundedContextName { get; }
 
         public AggregateTypeName AggregateTypeName { get; }
 
-        public AggregateIdentity(BoundedContext boundedContext, AggregateTypeName aggregateTypeName, Guid aggregateId)
+        public AggregateIdentity(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName, Guid aggregateId)
         {
             this.AggregateTypeName = aggregateTypeName;
-            this.BoundedContext = boundedContext;
+            this.BoundedContextName = boundedContextName;
             this.Id = aggregateId;
         }
 
         public override string ToString()
         {
-            return $"{this.BoundedContext}.{this.AggregateTypeName}.{this.Id}";
+            return $"{this.BoundedContextName}.{this.AggregateTypeName}.{this.Id}";
+        }
+
+        public static bool operator ==(AggregateIdentity obj1, AggregateIdentity obj2)
+        {
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(AggregateIdentity obj1, AggregateIdentity obj2)
+        {
+            return !obj1.Equals(obj2);
         }
     }
 }

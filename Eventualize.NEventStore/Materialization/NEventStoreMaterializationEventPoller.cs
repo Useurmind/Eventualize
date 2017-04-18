@@ -51,7 +51,7 @@ namespace Eventualize.NEventStore.Materialization
                         var aggregateTypeName = commit.Headers["AggregateType"].ToString();
 
                         var aggregateIdentity = new AggregateIdentity(
-                            new BoundedContext(commit.BucketId),
+                            new BoundedContextName(commit.BucketId),
                             new AggregateTypeName(aggregateTypeName),
                             aggregateId);
 

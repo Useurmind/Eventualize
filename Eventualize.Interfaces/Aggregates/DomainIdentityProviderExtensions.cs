@@ -27,7 +27,7 @@ namespace Eventualize.Interfaces.Aggregates
             return identityProvider.GetAggregtateTypeName(aggregate.GetType());
         }
 
-        public static BoundedContext GetAggregateBoundedContext(this IDomainIdentityProvider identityProvider, IAggregate aggregate)
+        public static BoundedContextName GetAggregateBoundedContext(this IDomainIdentityProvider identityProvider, IAggregate aggregate)
         {
             return identityProvider.GetAggregateBoundedContext(aggregate.GetType());
         }

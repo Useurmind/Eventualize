@@ -100,6 +100,13 @@
     <Compile Include="Domain\Events\Event.cs" />
     <Compile Include="Domain\Events\EventTypeNameAttribute.cs" />
     <Compile Include="Domain\BoundedContextAttribute.cs" />
+    <Compile Include="Domain\MetaModel\AggregateMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\ReflectionBasedMetaModelFactory.cs" />
+    <Compile Include="Domain\MetaModel\BoundedContextMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\BoundedContextRelatedMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\DomainMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\EventMetaModel.cs" />
+    <Compile Include="Domain\MetaModel\IDomainMetaModelFactory.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi2AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi3AggregateMaterializerBase.cs" />
     <Compile Include="Materialization\AggregateMaterialization\Multi4AggregateMaterializerBase.cs" />

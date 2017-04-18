@@ -60,7 +60,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Aggregates\AggregateBaseTest.cs" />
+    <Compile Include="Domain\MetaModel\ReflectionBasedMetaModelFactoryTest.cs" />
+    <Compile Include="Domain\MetaModel\BoundedContextMetaModelTest.cs" />
+    <Compile Include="Domain\MetaModel\DomainMetaModelTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestDomain\DomainNames.cs" />
+    <Compile Include="TestDomain\FirstContext\MyFirstAggregates\MyFirstAggregate.cs" />
+    <Compile Include="TestDomain\FirstContext\MyFirstAggregates\MyFirstAggregateState.cs" />
+    <Compile Include="TestDomain\FirstContext\MyFirstAggregates\MyFirstEvent.cs" />
+    <Compile Include="TestDomain\FirstContext\MySecondAggregates\MySecondAggregate.cs" />
+    <Compile Include="TestDomain\FirstContext\MySecondAggregates\MySecondAggregateState.cs" />
+    <Compile Include="TestDomain\FirstContext\MySecondAggregates\MySecondEvent.cs" />
+    <Compile Include="TestDomain\SecondContext\MyThirdAggregate\MyThirdAggregate.cs" />
+    <Compile Include="TestDomain\SecondContext\MyThirdAggregate\MyThirdAggregateState.cs" />
+    <Compile Include="TestDomain\SecondContext\MyThirdAggregate\MyThirdEvent.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -12,11 +12,11 @@ namespace Eventualize.Interfaces.Aggregates
         /// </summary>
         long StoreIndex { get; }
 
-        BoundedContext BoundedContext { get; }
+        BoundedContextName BoundedContextName { get; }
 
         Guid EventId { get; }
 
-        EventType EventType { get; }
+        EventTypeName EventTypeName { get; }
 
         DateTime CreationTime { get; }
 

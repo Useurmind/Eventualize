@@ -16,9 +16,9 @@ namespace Eventualize.NEventStore.Persistence
         {
             return new AggregateEvent(
                 storeIndex: 0,
-                boundedContext: aggregateIdentity.BoundedContext,
+                boundedContextName: aggregateIdentity.BoundedContextName,
                 eventId: Guid.Empty, 
-                eventType: ((IEventData)eventMessage.Body).GetEventTypeName(),
+                eventTypeName: ((IEventData)eventMessage.Body).GetEventTypeName(),
                 creationTime: DateTime.MinValue, 
                 creatorId: new UserId(), 
                 eventData: (IEventData)eventMessage.Body,

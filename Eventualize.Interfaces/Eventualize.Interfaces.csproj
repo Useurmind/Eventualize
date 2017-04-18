@@ -53,9 +53,9 @@
     <Compile Include="Aggregates\IRouteEvents.cs" />
     <Compile Include="BaseTypes\AggregateTypeName.cs" />
     <Compile Include="BaseTypes\AggregateVersion.cs" />
-    <Compile Include="BaseTypes\BoundedContext.cs" />
+    <Compile Include="BaseTypes\BoundedContextName.cs" />
     <Compile Include="BaseTypes\EventStreamIndex.cs" />
-    <Compile Include="BaseTypes\EventType.cs" />
+    <Compile Include="BaseTypes\EventTypeName.cs" />
     <Compile Include="BaseTypes\UserId.cs" />
     <Compile Include="ConflictDetection\ConflictDelegate.cs" />
     <Compile Include="ConflictDetection\IDetectConflicts.cs" />

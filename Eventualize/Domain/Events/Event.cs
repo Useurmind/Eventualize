@@ -9,12 +9,12 @@ namespace Eventualize.Domain.Events
 {
     public class Event : IEvent
     {
-        public Event(long storeIndex, BoundedContext boundedContext, Guid eventId, EventType eventType, DateTime creationTime, UserId creatorId, IEventData eventData, EventStreamIndex streamIndex)
+        public Event(long storeIndex, BoundedContextName boundedContextName, Guid eventId, EventTypeName eventTypeName, DateTime creationTime, UserId creatorId, IEventData eventData, EventStreamIndex streamIndex)
         {
             this.StoreIndex = storeIndex;
-            this.BoundedContext = boundedContext;
+            this.BoundedContextName = boundedContextName;
             this.EventId = eventId;
-            this.EventType = eventType;
+            this.EventTypeName = eventTypeName;
             this.CreationTime = creationTime;
             this.CreatorId = creatorId;
             this.EventData = eventData;
@@ -23,11 +23,11 @@ namespace Eventualize.Domain.Events
 
         public long StoreIndex { get; }
 
-        public BoundedContext BoundedContext { get; }
+        public BoundedContextName BoundedContextName { get; }
 
         public Guid EventId { get; }
 
-        public EventType EventType { get; }
+        public EventTypeName EventTypeName { get; }
 
         public DateTime CreationTime { get; }
 

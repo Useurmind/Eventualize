@@ -12,9 +12,9 @@ namespace Eventualize.EventStore.Persistence
     {
         public const string SnapshotPrefix = "Snap-";
 
-        public SnapShotStreamName(BoundedContext boundedContext, AggregateTypeName aggregateTypeName, Guid aggregateId)
+        public SnapShotStreamName(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName, Guid aggregateId)
         {
-            this.BoundedContext = boundedContext;
+            this.BoundedContextName = boundedContextName;
             this.AggregateTypeName = aggregateTypeName;
             this.AggregateId = aggregateId;
         }
@@ -23,16 +23,16 @@ namespace Eventualize.EventStore.Persistence
 
         public AggregateTypeName AggregateTypeName { get; }
 
-        public BoundedContext BoundedContext { get; }
+        public BoundedContextName BoundedContextName { get; }
 
         public static SnapShotStreamName FromAggregateIdentity(AggregateIdentity aggregateIdentity)
         {
-            return new SnapShotStreamName(aggregateIdentity.BoundedContext, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
+            return new SnapShotStreamName(aggregateIdentity.BoundedContextName, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
         }
 
         public string ToString()
         {
-            return $"{SnapshotPrefix}{this.BoundedContext.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
+            return $"{SnapshotPrefix}{this.BoundedContextName.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
         }
     }
 }

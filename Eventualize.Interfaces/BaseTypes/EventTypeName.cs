@@ -2,9 +2,9 @@ using System.Linq;
 
 namespace Eventualize.Interfaces.BaseTypes
 {
-    public struct AggregateTypeName
+    public struct EventTypeName
     {
-        public AggregateTypeName(string value)
+        public EventTypeName(string value)
         {
             this.Value = value;
         }
@@ -16,12 +16,12 @@ namespace Eventualize.Interfaces.BaseTypes
             return this.Value;
         }
 
-        public static bool operator ==(AggregateTypeName obj1, AggregateTypeName obj2)
+        public static bool operator ==(EventTypeName obj1, EventTypeName obj2)
         {
             return obj1.Equals(obj2);
         }
 
-        public static bool operator !=(AggregateTypeName obj1, AggregateTypeName obj2)
+        public static bool operator !=(EventTypeName obj1, EventTypeName obj2)
         {
             return !obj1.Equals(obj2);
         }

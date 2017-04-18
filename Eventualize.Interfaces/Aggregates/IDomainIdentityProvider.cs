@@ -10,12 +10,12 @@ namespace Eventualize.Interfaces.Aggregates
 {
     public interface IDomainIdentityProvider
     {
-        BoundedContext GetAggregateBoundedContext(Type aggregateType);
+        BoundedContextName GetAggregateBoundedContext(Type aggregateType);
 
         AggregateTypeName GetAggregtateTypeName(Type aggregateType);
 
-        EventType GetEventTypeName(IEventData eventData);
+        EventTypeName GetEventTypeName(IEventData eventData);
 
-        EventType GetEventTypeName(Type eventType);
+        EventTypeName GetEventTypeName(Type eventType);
     }
 }

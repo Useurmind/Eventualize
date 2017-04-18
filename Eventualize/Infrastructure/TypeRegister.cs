@@ -34,5 +34,10 @@ namespace Eventualize.Infrastructure
 
             return type;
         }
+
+        public IEnumerable<Type> GetTypes()
+        {
+            return this.typesByName.Values;
+        }
     }
 }

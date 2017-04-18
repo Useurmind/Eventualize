@@ -20,7 +20,7 @@ namespace Eventualize.Infrastructure
 {
     public static class EventualizeContainerExtensions
     {
-        public static IEventualizeContainerBuilder MaterializeSnapShots<TAggregate>(this IEventualizeContainerBuilder containerBuilder, BoundedContext? boundedContext = null)
+        public static IEventualizeContainerBuilder MaterializeSnapShots<TAggregate>(this IEventualizeContainerBuilder containerBuilder, BoundedContextName? boundedContextName = null)
             where TAggregate : class, IAggregate
         {
             return containerBuilder.RegisterSingleInstance<IAggregateMaterializer>(c => new SnapShotMaterializer(c.SnapShotStore, c.DomainIdentityProvider));

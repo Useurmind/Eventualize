@@ -42,9 +42,9 @@ namespace Eventualize.EventStore.Persistence
 
             return new AggregateEvent(
                 storeIndex: -1,
-                boundedContext: aggregateIdentity.BoundedContext,
+                boundedContextName: aggregateIdentity.BoundedContextName,
                eventId: recordedEvent.EventId,
-               eventType: new EventType(recordedEvent.EventType),
+               eventTypeName: new EventTypeName(recordedEvent.EventType),
                creationTime: recordedEvent.Created,
                creatorId: new UserId(metaData.CreatorId),
                eventData: eventData,
@@ -53,16 +53,16 @@ namespace Eventualize.EventStore.Persistence
                 );
         }
 
-        public IEvent GetDomainEvent(RecordedEvent recordedEvent, BoundedContext boundedContext)
+        public IEvent GetDomainEvent(RecordedEvent recordedEvent, BoundedContextName boundedContextName)
         {
             var eventData = this.eventConverter.DeserializeEventData(recordedEvent.EventType, recordedEvent.EventId, recordedEvent.Data);
             var metaData = (EventMetaData)this.serializer.Deserialize(typeof(EventMetaData), recordedEvent.Metadata);
 
             return new Event(
                 storeIndex: -1,
-                boundedContext: boundedContext,
+                boundedContextName: boundedContextName,
                eventId: recordedEvent.EventId,
-               eventType: new EventType(recordedEvent.EventType), 
+               eventTypeName: new EventTypeName(recordedEvent.EventType), 
                creationTime: recordedEvent.Created,
                creatorId: new UserId(metaData.CreatorId),
                eventData: eventData,

@@ -10,5 +10,15 @@ namespace Eventualize.Interfaces.BaseTypes
         }
 
         public string Value { get; }
+
+        public static bool operator ==(UserId obj1, UserId obj2)
+        {
+            return obj1.Equals(obj2);
+        }
+
+        public static bool operator !=(UserId obj1, UserId obj2)
+        {
+            return !obj1.Equals(obj2);
+        }
     }
 }
