@@ -23,7 +23,7 @@ namespace Eventualize.Test.Domain.Aggregates
         private class TestAggregateState : ISnapShot
         {
             public Guid Id { get; set; }
-            public long Version { get; set; }
+            public AggregateVersion Version { get; set; }
 
             public int Count { get; set; }
         }
@@ -59,7 +59,7 @@ namespace Eventualize.Test.Domain.Aggregates
         {
             var aggregate = new TestAggregate();
 
-            aggregate.Version.Should().Be(AggregateVersion.NotCreated);
+            aggregate.Version.Should().Be(AggregateVersion.NotCreated());
         }
 
         [Fact]
@@ -145,7 +145,7 @@ namespace Eventualize.Test.Domain.Aggregates
         {
             var aggregate = GetAggregateWithNumberOfEvents(numberEventsApplied, false);
 
-            aggregate.As<IAggregate>().CommittedVersion.Should().Be(AggregateVersion.NotCreated);
+            aggregate.As<IAggregate>().CommittedVersion.Should().Be(AggregateVersion.NotCreated());
             aggregate.As<IAggregate>().GetUncommittedEvents().Count.Should().Be(numberEventsApplied);
         }
 
@@ -156,7 +156,7 @@ namespace Eventualize.Test.Domain.Aggregates
             {
                 Id = Guid.NewGuid(),
                 Count = 3,
-                Version = 2
+                Version = new AggregateVersion(2)
             };
 
             var aggregate = new TestAggregate();
@@ -190,7 +190,7 @@ namespace Eventualize.Test.Domain.Aggregates
             var snapshot = new TestAggregateState()
             {
                 Id = Guid.NewGuid(),
-                Version = 3,
+                Version = new AggregateVersion(3),
                 Count = 4
             };
 
@@ -212,7 +212,7 @@ namespace Eventualize.Test.Domain.Aggregates
             var snapshot = new TestAggregateState()
             {
                 Id = Guid.NewGuid(),
-                Version = 3,
+                Version = new AggregateVersion(3),
                 Count = 4
             };
 
@@ -225,7 +225,7 @@ namespace Eventualize.Test.Domain.Aggregates
             aggregate.ExecuteCommandForTestEvent1();
 
             aggregate.Id.Should().Be(snapshot.Id);
-            aggregate.Version.Should().Be(8);
+            aggregate.Version.Value.Should().Be(8);
             aggregate.Count.Should().Be(9);
             aggregate.CommittedVersion.Should().Be(aggregate.Version-3);
             aggregate.As<IAggregate>().GetUncommittedEvents().Count.Should().Be(3);

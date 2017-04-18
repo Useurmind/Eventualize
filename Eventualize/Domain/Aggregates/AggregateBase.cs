@@ -5,6 +5,7 @@ using System.Linq;
 
 using Eventualize.Domain.Aggregates.EventRouting;
 using Eventualize.Interfaces;
+using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Snapshots;
 using Eventualize.Snapshots;
@@ -48,9 +49,9 @@ namespace Eventualize.Domain.Aggregates
         }
         public abstract Guid Id { get; protected set; }
 
-        public abstract long Version { get; protected set; }
+        public abstract AggregateVersion Version { get; protected set; }
 
-        public long CommittedVersion
+        public AggregateVersion CommittedVersion
         {
             get
             {
@@ -66,7 +67,7 @@ namespace Eventualize.Domain.Aggregates
         void IAggregate.ApplyEvent(object @event)
         {
             this.RegisteredRoutes.Dispatch(@event);
-            this.Version++;
+            this.Version = this.Version + 1;
         }
 
         ICollection<IEventData> IAggregate.GetUncommittedEvents()

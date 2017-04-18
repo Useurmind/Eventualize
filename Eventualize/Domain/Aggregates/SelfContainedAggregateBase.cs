@@ -9,6 +9,6 @@ namespace Eventualize.Domain.Aggregates
     {
         public override Guid Id { get; protected set; }
 
-        public override long Version { get; protected set; } = AggregateVersion.NotCreated;
+        public override AggregateVersion Version { get; protected set; } = AggregateVersion.NotCreated();
     }
 }

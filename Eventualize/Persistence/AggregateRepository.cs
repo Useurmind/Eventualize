@@ -41,10 +41,10 @@ namespace Eventualize.Persistence
 
         public TAggregate GetById<TAggregate>(Guid id) where TAggregate : class, IAggregate
         {
-            return this.GetById<TAggregate>(id, AggregateVersion.Latest);
+            return this.GetById<TAggregate>(id, AggregateVersion.Latest());
         }
 
-        public TAggregate GetById<TAggregate>(Guid id, int version) where TAggregate : class, IAggregate
+        public TAggregate GetById<TAggregate>(Guid id, AggregateVersion version) where TAggregate : class, IAggregate
         {
             var aggregateIdentity = this.domainIdentityProvider.GetAggregateIdentity<TAggregate>(id);
 
@@ -53,21 +53,21 @@ namespace Eventualize.Persistence
 
         public IAggregate GetById(AggregateIdentity aggregateIdentity)
         {
-            return this.GetById(aggregateIdentity, AggregateVersion.Latest);
+            return this.GetById(aggregateIdentity, AggregateVersion.Latest());
         }
 
-        public IAggregate GetById(AggregateIdentity aggregateIdentity, int version)
+        public IAggregate GetById(AggregateIdentity aggregateIdentity, AggregateVersion version)
         {
-            var snapShot = this.snapShotStore.GetSnapshot(aggregateIdentity);
+            var snapShot = this.snapShotStore.GetSnapshot(aggregateIdentity, version);
             var aggregate = this.aggregateFactory.BuildAggregate(aggregateIdentity, snapShot, Enumerable.Empty<IEventData>());
-            var startVersion = snapShot == null ? 0 : snapShot.Version + 1;
+            var startVersion = snapShot == null ? AggregateVersion.Start() : snapShot.Version + 1;
 
             var pagedEventLoader=  new PagedEventLoader();
             var pagedEventLoaderOptions = new PageEventLoaderOptions()
                                               {
                                                   PageSize = this.repositoryOptions.PageSize,
-                                                  StartEventNumber = startVersion,
-                                                  EndEventNumber = version
+                                                  StartVersionEvent = startVersion,
+                                                  EndVersionEvent = version
                                               };
 
             // we load the events in pages because it is unreasonable to assume we can always load them in one chunk

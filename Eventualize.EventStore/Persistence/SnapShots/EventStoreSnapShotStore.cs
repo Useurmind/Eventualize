@@ -30,7 +30,7 @@ namespace Eventualize.EventStore.Persistence.SnapShots
             this.snapshotConverter = snapshotConverter;
         }
 
-        public ISnapShot GetSnapshot(AggregateIdentity aggregateIdentity)
+        public ISnapShot GetSnapshot(AggregateIdentity aggregateIdentity, AggregateVersion forVersion)
         {
             var streamId = SnapShotStreamName.FromAggregateIdentity(aggregateIdentity);
             var resultSlice = this.connection.ReadStreamEventsBackwardAsync(streamId.ToString(), StreamPosition.End, 1, true).Result;

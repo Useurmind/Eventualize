@@ -31,15 +31,15 @@ namespace Eventualize.NEventStore.Persistence
             
         }
 
-        public IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, long start, long end)
+        public IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, AggregateVersion start, AggregateVersion end)
         {
-            using (IEventStream stream = this.eventStore.OpenStream(NEventStoreBuckets.Aggregates, aggregateIdentity.Id, (int)start, (int)end))
+            using (IEventStream stream = this.eventStore.OpenStream(NEventStoreBuckets.Aggregates, aggregateIdentity.Id, (int)start.Value, (int)end.Value))
             {
                 return stream.CommittedEvents.Select((x, index) => NEventStoreEventConverter.CreateAggregateEvent(aggregateIdentity, Guid.Empty, x, index));
             }
         }
 
-        public void AppendEvents(AggregateIdentity aggregateIdentity, long expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId)
+        public void AppendEvents(AggregateIdentity aggregateIdentity, AggregateVersion expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId)
         {
             Dictionary<string, object> headers = PrepareHeaders(aggregateIdentity);
             while (true)
@@ -78,11 +78,11 @@ namespace Eventualize.NEventStore.Persistence
             }
         }
 
-        private IEventStream PrepareStream(string bucketId, AggregateIdentity aggregateIdentity, long expectedAggregateVersion, Dictionary<string, object> headers)
+        private IEventStream PrepareStream(string bucketId, AggregateIdentity aggregateIdentity, AggregateVersion expectedAggregateVersion, Dictionary<string, object> headers)
         {
             IEventStream stream;
 
-            if (expectedAggregateVersion != AggregateVersion.NotCreated)
+            if (expectedAggregateVersion != AggregateVersion.NotCreated())
             {
                 stream = this.eventStore.OpenStream(bucketId, aggregateIdentity.Id);
             }

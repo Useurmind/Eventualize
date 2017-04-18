@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
+using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Snapshots;
 
 namespace Eventualize.Interfaces.Domain
@@ -10,9 +11,9 @@ namespace Eventualize.Interfaces.Domain
     {
         Guid Id { get; }
 
-        long CommittedVersion { get; }
+        AggregateVersion CommittedVersion { get; }
 
-        long Version { get; }
+        AggregateVersion Version { get; }
 
         void ApplyEvent(object @event);
 

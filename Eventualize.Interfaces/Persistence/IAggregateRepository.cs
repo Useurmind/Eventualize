@@ -10,9 +10,9 @@ namespace Eventualize.Interfaces.Persistence
     {
         TAggregate GetById<TAggregate>(Guid id) where TAggregate : class, IAggregate;
 
-        TAggregate GetById<TAggregate>(Guid id, int version) where TAggregate : class, IAggregate;
+        TAggregate GetById<TAggregate>(Guid id, AggregateVersion version) where TAggregate : class, IAggregate;
 
-        IAggregate GetById(AggregateIdentity aggregateIdentity, int version);
+        IAggregate GetById(AggregateIdentity aggregateIdentity, AggregateVersion version);
 
         IAggregate GetById(AggregateIdentity aggregateIdentity);
 

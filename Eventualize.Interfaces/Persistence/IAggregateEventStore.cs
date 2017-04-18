@@ -9,8 +9,8 @@ namespace Eventualize.Interfaces.Persistence
 {
     public interface IAggregateEventStore : IDisposable
     {
-        IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, long start, long end);
+        IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, AggregateVersion start, AggregateVersion end);
 
-        void AppendEvents(AggregateIdentity aggregateIdentity, long expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId);
+        void AppendEvents(AggregateIdentity aggregateIdentity, AggregateVersion expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId);
     }
 }

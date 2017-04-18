@@ -2,6 +2,7 @@
 using System.Linq;
 
 using Eventualize.Interfaces;
+using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Snapshots;
 
 namespace Eventualize.Snapshots
@@ -15,6 +16,6 @@ namespace Eventualize.Snapshots
 
         public Guid Id { get; set; }
 
-        public long Version { get; set; }
+        public AggregateVersion Version { get; set; }
     }
 }

@@ -15,8 +15,8 @@ namespace Eventualize.Persistence
     {
         public void LoadAllPages(IAggregateEventStore eventStore, AggregateIdentity aggregateIdentity, PageEventLoaderOptions options, Action<IAggregateEvent> eventAction)
         {
-            long currentPageStart = options.StartEventNumber;
-            long currentPageEnd = GetEndEventNumber(options.EndEventNumber);
+            var currentPageStart = options.StartVersionEvent;
+            var currentPageEnd = GetEndEventNumber(options.EndVersionEvent);
             RestrictPageSize(currentPageStart, ref currentPageEnd, options.PageSize);
 
             while (currentPageEnd >= currentPageStart)
@@ -29,7 +29,7 @@ namespace Eventualize.Persistence
                 }
 
                 currentPageStart = currentPageEnd + 1;
-                currentPageEnd = GetEndEventNumber(options.EndEventNumber);
+                currentPageEnd = GetEndEventNumber(options.EndVersionEvent);
                 RestrictPageSize(currentPageStart, ref currentPageEnd, options.PageSize);
             }
 
@@ -40,10 +40,10 @@ namespace Eventualize.Persistence
         /// </summary>
         /// <param name="endEventNumber">The target end event number (which can be AggregateVersion.Latest)</param>
         /// <returns></returns>
-        private static long GetEndEventNumber(long endEventNumber)
+        private static AggregateVersion GetEndEventNumber(AggregateVersion endEventNumber)
         {
-            return endEventNumber == AggregateVersion.Latest
-                       ? long.MaxValue
+            return endEventNumber == AggregateVersion.Latest()
+                       ? new AggregateVersion(long.MaxValue)
                        : endEventNumber;
         }
 
@@ -53,7 +53,7 @@ namespace Eventualize.Persistence
         /// <param name="currentPageStart"></param>
         /// <param name="currentPageEnd"></param>
         /// <param name="maxPageSize"></param>
-        private static void RestrictPageSize(long currentPageStart, ref long currentPageEnd, int maxPageSize)
+        private static void RestrictPageSize(AggregateVersion currentPageStart, ref AggregateVersion currentPageEnd, int maxPageSize)
         {
             if (currentPageEnd - currentPageStart > maxPageSize)
             {

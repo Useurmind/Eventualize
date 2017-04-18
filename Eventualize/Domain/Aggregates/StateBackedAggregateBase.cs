@@ -19,7 +19,7 @@ namespace Eventualize.Domain.Aggregates
         }
 
         protected StateBackedAggregateBase(Guid id)
-            : this(new TState() {Id = id, Version = AggregateVersion.NotCreated}, null)
+            : this(new TState() {Id = id, Version = AggregateVersion.NotCreated()}, null)
         {
             
         }
@@ -48,7 +48,7 @@ namespace Eventualize.Domain.Aggregates
             }
         }
 
-        public override long Version
+        public override AggregateVersion Version
         {
             get
             {

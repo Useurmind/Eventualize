@@ -35,14 +35,9 @@ namespace Eventualize.EventStore.Persistence
         {
         }
 
-        public IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, long start, long end)
+        public IEnumerable<IAggregateEvent> GetEvents(AggregateIdentity aggregateIdentity, AggregateVersion start, AggregateVersion end)
         {
             var streamName = AggregateStreamName.FromAggregateIdentity(aggregateIdentity);
-
-            if (end == AggregateVersion.Latest)
-            {
-                end = MaxPageSize;
-            }
 
             var count = (int)(end - start);
             if (count > MaxPageSize)
@@ -50,20 +45,20 @@ namespace Eventualize.EventStore.Persistence
                 throw new NotImplementedException($"EventStore supports only a maximum page size of {MaxPageSize} for lading events. Please configure your RepositoryOptions accordingly.");
             }
 
-            var resultSlice = this.connection.ReadStreamEventsForwardAsync(streamName.ToString(), start, count, true).Result;
+            var resultSlice = this.connection.ReadStreamEventsForwardAsync(streamName.ToString(), start.Value, count, true).Result;
 
             var domainEvents = resultSlice.Events.Select(resolvedEvent => this.eventConverter.GetDomainEvent(aggregateIdentity, resolvedEvent.Event));
 
             return domainEvents;
         }
 
-        public void AppendEvents(AggregateIdentity aggregateIdentity, long expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId)
+        public void AppendEvents(AggregateIdentity aggregateIdentity, AggregateVersion expectedAggregateVersion, IEnumerable<IEventData> newAggregateEvents, Guid replayId)
         {
             var streamName = AggregateStreamName.FromAggregateIdentity(aggregateIdentity);
             
             var eventDatas = newAggregateEvents.Select(x => this.eventConverter.GetEventData(x));
 
-            var expectedVersion = expectedAggregateVersion == AggregateVersion.NotCreated ? ExpectedVersion.NoStream : expectedAggregateVersion;
+            var expectedVersion = expectedAggregateVersion == AggregateVersion.NotCreated() ? ExpectedVersion.NoStream : expectedAggregateVersion.Value;
 
             var result = this.connection.AppendToStreamAsync(streamName.ToString(), expectedVersion, eventDatas).Result;
         }
