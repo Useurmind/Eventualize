@@ -8,6 +8,9 @@ using Eventualize.Interfaces.Domain.MetaModel;
 
 namespace Eventualize.Domain.MetaModel
 {
+    /// <summary>
+    /// This class implements then <see cref="IDomainIdentityProvider"/> for a given <see cref="IDomainMetaModel"/>.
+    /// </summary>
     public class DomainModelIdentityProvider : IDomainIdentityProvider
     {
         private IDomainMetaModel metaModel;
