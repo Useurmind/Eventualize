@@ -33,8 +33,9 @@ namespace Eventualize.Dapper.Materialization
         protected override void HandleAggregateEvent(TAggregate aggregate, IAggregateEvent materializationEvent)
         {
             var readModel = this.MapToReadModel(aggregate, materializationEvent);
+            readModel.Version = aggregate.Version.Value;
             readModel.LastEventDate = materializationEvent.CreationTime;
-            readModel.LastEventNumber = materializationEvent.StoreIndex;
+            readModel.LastEventNumber = materializationEvent.EventStreamIndex.Value;
             readModel.LastModifierId = materializationEvent.CreatorId.Value;
 
             using (var connection = this.getConnection())

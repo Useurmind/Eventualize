@@ -41,7 +41,7 @@ namespace Eventualize.Persistence
         {
             var eventList = this.GetAggregateEventList(aggregateIdentity);
 
-            var take = end == AggregateVersion.Latest() ? int.MaxValue : (int)end.Value;
+            var take = end == AggregateVersion.Latest() ? int.MaxValue : (int)(end.Value - start.Value + 1);
 
             return eventList.Skip((int)start.Value).Take(take);
         }

@@ -49,7 +49,7 @@ namespace Eventualize.Dapper.Materialization
             string versionCheckClause = GetVersionCheckClause(readModel);
 
             string command = $@"merge {tableName} as target
-using (select @{keyPropertyName}) AS source ({keyPropertyName})
+using (select @{keyPropertyName}, @LastEventNumber) AS source ({keyPropertyName}, LastEventNumber)
 on target.{keyPropertyName} = source.{keyPropertyName}
 when matched {versionCheckClause}
 then {mergeUpdateClause}

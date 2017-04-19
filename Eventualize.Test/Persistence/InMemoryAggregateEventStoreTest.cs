@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-using Eventualize.Domain;
-using Eventualize.Domain.MetaModel;
 using Eventualize.Interfaces.BaseTypes;
-using Eventualize.Interfaces.Domain;
-using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Persistence;
-using Eventualize.Persistence;
-using Eventualize.Security;
 using Eventualize.Test.TestDomain.FirstContext.MyFirstAggregates;
 
 using FluentAssertions;
@@ -25,13 +17,19 @@ namespace Eventualize.Test.Persistence
 {
     public class InMemoryAggregateEventStoreTest
     {
+        private TestContainer testContainer;
+
+        public InMemoryAggregateEventStoreTest()
+        {
+            this.testContainer = new TestContainer();
+        }
+
         [Fact]
         public void GetEventsReturnsEmptyListWhenStreamIsEmpty()
         {
-            var events = CreateEvents();
-            var aggregateIdentity = CreateAggregateIdentity();
-
-            var store = CreateStore();
+            var events = this.testContainer.CreateEvents<MyFirstEvent>();
+            var aggregateIdentity = this.testContainer.CreateAggregateIdentity<MyFirstAggregate>();
+            var store = this.testContainer.CreateStore();
 
             var foundEvents = store.GetEvents(aggregateIdentity, AggregateVersion.Start() + 1, AggregateVersion.Latest());
 
@@ -41,10 +39,9 @@ namespace Eventualize.Test.Persistence
         [Fact]
         public void GetEventsReturnsEmptyListWhenStartVersionIsToBig()
         {
-            var events = CreateEvents();
-            var aggregateIdentity = CreateAggregateIdentity();
-
-            var store = CreateStore();
+            var events = this.testContainer.CreateEvents<MyFirstEvent>();
+            var aggregateIdentity = this.testContainer.CreateAggregateIdentity<MyFirstAggregate>();
+            var store = this.testContainer.CreateStore();
 
             store.AppendEvents(aggregateIdentity, AggregateVersion.NotCreated(), events, Guid.NewGuid());
 
@@ -53,13 +50,15 @@ namespace Eventualize.Test.Persistence
             foundEvents.Should().BeEmpty();
         }
 
-        [Fact]
-        public void AppendEventsSucceedsWhenAddingEventToNotCreatedStream()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(2)]
+        [InlineData(10)]
+        public void AppendEventsSucceedsWhenAddingEventsToNotCreatedStream(int numberEvents)
         {
-            var events = CreateEvents();
-            var aggregateIdentity = CreateAggregateIdentity();
-
-            var store = CreateStore();
+            var events = this.testContainer.CreateEvents<MyFirstEvent>(numberEvents);
+            var aggregateIdentity = this.testContainer.CreateAggregateIdentity<MyFirstAggregate>();
+            var store = this.testContainer.CreateStore();
 
             store.AppendEvents(aggregateIdentity, AggregateVersion.NotCreated(), events, Guid.NewGuid());
 
@@ -68,28 +67,46 @@ namespace Eventualize.Test.Persistence
             foundEvents.Select(x => x.EventData).Should().BeEquivalentTo(events);
         }
 
+        [Theory]
+        [InlineData(1, 0, 0)]
+        [InlineData(2, 0, 1)]
+        [InlineData(10, 0, 5)]
+        [InlineData(10, 3, 5)]
+        [InlineData(10, 3, 15)]
+        [InlineData(10, 12, 15)]
+        public void GetEventsSucceedsWhenRetrievingWithSpecificVersions(int numberEvents, int startVersion, int endVersion)
+        {
+            var events = this.testContainer.CreateEvents<MyFirstEvent>(numberEvents);
+            var aggregateIdentity = this.testContainer.CreateAggregateIdentity<MyFirstAggregate>();
+            var store = this.testContainer.CreateStore();
+
+            store.AppendEvents(aggregateIdentity, AggregateVersion.NotCreated(), events, Guid.NewGuid());
+
+            var foundEvents = store.GetEvents(aggregateIdentity, new AggregateVersion(startVersion), new AggregateVersion(endVersion));
+
+            foundEvents.Select(x => x.EventData).Should().BeEquivalentTo(events.Skip(startVersion).Take(endVersion - startVersion + 1));
+        }
+
         [Fact]
         public void AppendEventsThrowsExpectedAggregateVersionExceptionWhenExpectingEventsInEmptyStream()
         {
-            var events = CreateEvents();
-            var aggregateIdentity = CreateAggregateIdentity();
-
-            var store = CreateStore();
+            var events = this.testContainer.CreateEvents<MyFirstEvent>();
+            var aggregateIdentity = this.testContainer.CreateAggregateIdentity<MyFirstAggregate>();
+            var store = this.testContainer.CreateStore();
 
             Assert.Throws<ExpectedAggregateVersionException>(
                 () =>
-                    {
-                        store.AppendEvents(aggregateIdentity, new AggregateVersion(3), events, Guid.NewGuid());
-                    });
+                {
+                    store.AppendEvents(aggregateIdentity, new AggregateVersion(3), events, Guid.NewGuid());
+                });
         }
 
         [Fact]
         public void AppendEventsThrowsExpectedAggregateVersionExceptionWhenExpectingWrongVersion()
         {
-            var events = CreateEvents();
-            var aggregateIdentity = CreateAggregateIdentity();
-
-            var store = CreateStore();
+            var events = this.testContainer.CreateEvents<MyFirstEvent>();
+            var aggregateIdentity = this.testContainer.CreateAggregateIdentity<MyFirstAggregate>();
+            var store = this.testContainer.CreateStore();
 
             store.AppendEvents(aggregateIdentity, AggregateVersion.NotCreated(), events, Guid.NewGuid());
             Assert.Throws<ExpectedAggregateVersionException>(
@@ -102,10 +119,9 @@ namespace Eventualize.Test.Persistence
         [Fact]
         public void AppendEventsThrowsExpectedAggregateVersionExceptionWhenExpectingThatStreamIsEmptyButIsNot()
         {
-            var events = CreateEvents();
-            var aggregateIdentity = CreateAggregateIdentity();
-
-            var store = CreateStore();
+            var events = this.testContainer.CreateEvents<MyFirstEvent>();
+            var aggregateIdentity = this.testContainer.CreateAggregateIdentity<MyFirstAggregate>();
+            var store = this.testContainer.CreateStore();
 
             store.AppendEvents(aggregateIdentity, AggregateVersion.NotCreated(), events, Guid.NewGuid());
             Assert.Throws<ExpectedAggregateVersionException>(
@@ -113,33 +129,6 @@ namespace Eventualize.Test.Persistence
                 {
                     store.AppendEvents(aggregateIdentity, AggregateVersion.NotCreated(), events, Guid.NewGuid());
                 });
-        }
-
-        private static IEnumerable<IEventData> CreateEvents(int number = 1)
-        {
-            return Enumerable.Range(0, number).Select(x => new MyFirstEvent()).ToArray();
-        }
-
-        private static AggregateIdentity CreateAggregateIdentity()
-        {
-            return GetDomainIdentityProvider().GetAggregateIdentity(new MyFirstAggregate());
-        }
-
-        private static InMemoryAggregateEventStore CreateStore()
-        {
-            return new InMemoryAggregateEventStore(GetDomainIdentityProvider());
-        }
-
-        private static DomainModelIdentityProvider GetDomainIdentityProvider()
-        {
-            return new DomainModelIdentityProvider(GetDomainModel());
-        }
-
-        private static IDomainMetaModel GetDomainModel()
-        {
-            EventualizeContext.Init(new UserId("MyUser"));
-            var domainModel = new ReflectionBasedMetaModelFactory(new[] { Assembly.GetExecutingAssembly() }).Build();
-            return domainModel;
         }
     }
 }

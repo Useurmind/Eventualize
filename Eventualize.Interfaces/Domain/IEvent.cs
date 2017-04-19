@@ -23,5 +23,7 @@ namespace Eventualize.Interfaces.Domain
         UserId CreatorId { get; }
 
         IEventData EventData { get; }
+
+        EventStreamIndex EventStreamIndex { get; }
     }
 }

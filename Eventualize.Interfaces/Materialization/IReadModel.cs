@@ -5,6 +5,8 @@ namespace Eventualize.Interfaces.Materialization
 {
     public interface IReadModel
     {
+        long Version { get; set; }
+
         long LastEventNumber { get; set; }
 
         DateTime LastEventDate { get; set; }

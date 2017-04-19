@@ -22,6 +22,10 @@ namespace Eventualize.Persistence
             while (currentPageEnd >= currentPageStart)
             {
                 var events = eventStore.GetEvents(aggregateIdentity, currentPageStart, currentPageEnd);
+                if (!events.Any())
+                {
+                    break;
+                }
                 
                 foreach (var @event in events)
                 {

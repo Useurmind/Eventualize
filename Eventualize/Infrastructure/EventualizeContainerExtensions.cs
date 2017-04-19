@@ -19,8 +19,35 @@ using Eventualize.Snapshots;
 
 namespace Eventualize.Infrastructure
 {
+    /// <summary>
+    /// Extensions to the container that perform whole registration operations.
+    /// </summary>
     public static class EventualizeContainerExtensions
     {
+        /// <summary>
+        /// Store the aggregates in an in memory event store (see <see cref="InMemoryAggregateEventStore"/>).
+        /// </summary>
+        /// <param name="containerBuilder"></param>
+        /// <returns></returns>
+        public static IEventualizeContainerBuilder StoreAggregatesInMemory(this IEventualizeContainerBuilder containerBuilder)
+        {
+            return containerBuilder.SetAggregateEventStoreFactory(c => new InMemoryAggregateEventStore(c.DomainIdentityProvider));
+        }
+
+        /// <summary>
+        /// Construct the domain model using a mix of reflection and attributes.
+        /// The domain model will follow the following rules:
+        /// - All classes that implement <see cref="IAggregate"/> or <see cref="IEventData"/> will be aggregates and events
+        /// - If an attribute of type <see cref="AggregateTypeNameAttribute"/>, <see cref="EventTypeNameAttribute"/>, <see cref="BoundedContextAttribute"/> is applied it will force the given string to the corresponding name
+        /// - Without attributes aggregates and events will be named according to their class name
+        /// - Without attribute aggregates/events will belong to a bounded context that is equivalent to the part of the namespace two levels above the aggregate/event
+        /// The last rule can be understood when thinking about aggregates as a collection of an aggregate, its state, and several events that it can raise/apply.
+        /// Therefore, we assume you put all those classes into one folder.
+        /// The folder above that folder defines the bounded context for the aggregates and events.
+        /// </summary>
+        /// <param name="containerBuilder"></param>
+        /// <param name="assemblies">The assemblies that should be scanned for aggregates and events.</param>
+        /// <returns></returns>
         public static IEventualizeContainerBuilder ConstructDomainModelViaReflection(this IEventualizeContainerBuilder containerBuilder, IEnumerable<Assembly> assemblies = null)
         {
             if (assemblies == null)

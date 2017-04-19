@@ -142,6 +142,7 @@
     <Compile Include="Domain\MetaModel\DomainMetaModelTest.cs" />
     <Compile Include="Persistence\InMemoryAggregateEventStoreTest.cs" />
     <Compile Include="Persistence\PagedEventLoaderTest.cs" />
+    <Compile Include="Persistence\TestContainer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestDomain\DomainNames.cs" />
     <Compile Include="TestDomain\FirstContext\MyFirstAggregates\MyFirstAggregate.cs" />

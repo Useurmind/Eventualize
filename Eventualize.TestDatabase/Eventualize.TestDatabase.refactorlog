@@ -14,4 +14,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="LastEvent" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="4c149fbc-c492-42a3-9764-dbe2e5dec53a" ChangeDateTime="04/19/2017 05:25:13">
+    <Property Name="ElementName" Value="[dbo].[Tasks].[LastEventStoreIndex]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[Tasks]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="LastEventNumber" />
+  </Operation>
 </Operations>

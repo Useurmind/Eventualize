@@ -18,7 +18,7 @@ namespace Eventualize.Domain.Events
             this.CreationTime = creationTime;
             this.CreatorId = creatorId;
             this.EventData = eventData;
-            this.StreamIndex = streamIndex;
+            this.EventStreamIndex = streamIndex;
         }
 
         public long StoreIndex { get; }
@@ -35,6 +35,6 @@ namespace Eventualize.Domain.Events
 
         public IEventData EventData { get; }
 
-        public EventStreamIndex StreamIndex { get; }
+        public EventStreamIndex EventStreamIndex { get; }
     }
 }
