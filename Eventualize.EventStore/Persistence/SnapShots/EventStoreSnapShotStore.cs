@@ -50,7 +50,22 @@ namespace Eventualize.EventStore.Persistence.SnapShots
             }
 
             var snapshotData = resultSlice.Events.Last().Event.Data;
-            return this.snapshotConverter.BuildSnapshot(snapShotTypeName, snapshotData);
+            var snapshot = this.snapshotConverter.BuildSnapshot(snapShotTypeName, snapshotData);
+
+            if (forVersion == AggregateVersion.Latest())
+            {
+                // for the latest version we always return the last snapshot
+                return snapshot;
+
+            }
+            else if(snapshot.Version > forVersion)
+            {
+                // in eventstore we only have the current snapshot
+                // if the target version is smaller, we cannot provide a snapshot
+                return null;
+            }
+
+            return snapshot;
         }
 
         public void SaveSnapshot(AggregateIdentity aggregateIdentity, ISnapShot snapShot)

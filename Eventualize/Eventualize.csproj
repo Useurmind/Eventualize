@@ -86,7 +86,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Aggregates\AggregateTypeNameAttribute.cs" />
-    <Compile Include="Domain\DomainModelIdentityProvider.cs" />
+    <Compile Include="Domain\MetaModel\DomainModelIdentityProvider.cs" />
     <Compile Include="Domain\Events\AggregateEvent.cs" />
     <Compile Include="Domain\Aggregates\SelfContainedAggregateBase.cs" />
     <Compile Include="Domain\Aggregates\StateBackedAggregateBase.cs" />

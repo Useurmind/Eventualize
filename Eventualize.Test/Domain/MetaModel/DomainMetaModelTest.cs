@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 using Eventualize.Domain.MetaModel;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Test.TestDomain.FirstContext.MyFirstAggregates;
+using Eventualize.Test.TestDomain.FirstContext.MySecondAggregates;
+using Eventualize.Test.TestDomain.SecondContext.MyThirdAggregate;
 
 using FluentAssertions;
 

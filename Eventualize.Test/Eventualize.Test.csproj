@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\Aggregates\AggregateBaseTest.cs" />
+    <Compile Include="Domain\MetaModel\DomainModelIdentityProviderTest.cs" />
     <Compile Include="Domain\MetaModel\ReflectionBasedMetaModelFactoryTest.cs" />
     <Compile Include="Domain\MetaModel\BoundedContextMetaModelTest.cs" />
     <Compile Include="Domain\MetaModel\DomainMetaModelTest.cs" />
