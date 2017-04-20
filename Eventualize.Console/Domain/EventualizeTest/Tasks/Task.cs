@@ -10,7 +10,7 @@ namespace Eventualize.Console.Domain.EventualizeTest.Tasks
     [AggregateTypeName("Task")]
     public class Task : StateBackedAggregateBase<TaskState>
     {
-        public Task( )
+        public Task()
         {
         }
 
@@ -18,7 +18,7 @@ namespace Eventualize.Console.Domain.EventualizeTest.Tasks
         {
         }
 
-        public Task(string title): this(Guid.NewGuid())
+        public Task(string title) : this(Guid.NewGuid())
         {
             this.SetTitleAfterCreate(title);
         }
@@ -30,17 +30,19 @@ namespace Eventualize.Console.Domain.EventualizeTest.Tasks
         private void SetTitleAfterCreate(string title)
         {
             this.RaiseEvent(new TaskCreatedEvent()
-                                {
-                                    Title = title
-                                });
+            {
+                TaskId = this.Id,
+                Title = title
+            });
         }
 
         public void Describe(string description)
         {
             this.RaiseEvent(new TaskDescriptionAddedEvent()
-                                {
-                                    Description = description
-                                });
+            {
+                TaskId = this.Id,
+                Description = description
+            });
         }
 
         private void Apply(TaskCreatedEvent @event)

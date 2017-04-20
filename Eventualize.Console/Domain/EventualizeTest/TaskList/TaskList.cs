@@ -4,6 +4,7 @@ using System.Linq;
 
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
+using Eventualize.Interfaces.BaseTypes;
 
 namespace Eventualize.Console.Domain.EventualizeTest.TaskList
 {

@@ -5,6 +5,7 @@ using System.Reflection;
 using Eventualize.Infrastructure;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Materialization.Progress;
 using Eventualize.Persistence;
 
 namespace Eventualize.Materialization.Progress

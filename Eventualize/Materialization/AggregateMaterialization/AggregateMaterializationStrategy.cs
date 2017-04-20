@@ -11,7 +11,7 @@ using Eventualize.Persistence;
 
 namespace Eventualize.Materialization.AggregateMaterialization
 {
-    public class AggregateMaterializationDistributor : IAggregateMaterializationStrategy
+    public class AggregateMaterializationStrategy : IAggregateMaterializationStrategy
     {
         private IEnumerable<IAggregateMaterializer> materializersForAllTypes;
         private Dictionary<string, IEnumerable<IAggregateMaterializer>> materializerByAggregateType;
@@ -19,7 +19,7 @@ namespace Eventualize.Materialization.AggregateMaterialization
 
         private IDomainIdentityProvider domainIdentityProvider;
 
-        public AggregateMaterializationDistributor(IAggregateRepository aggregateRepository, IDomainIdentityProvider domainIdentityProvider, IEnumerable<IAggregateMaterializer> aggregateMaterializers)
+        public AggregateMaterializationStrategy(IAggregateRepository aggregateRepository, IDomainIdentityProvider domainIdentityProvider, IEnumerable<IAggregateMaterializer> aggregateMaterializers)
         {
             this.aggregateRepository = aggregateRepository;
             this.domainIdentityProvider = domainIdentityProvider;
@@ -43,11 +43,14 @@ namespace Eventualize.Materialization.AggregateMaterialization
 
         public void HandleEvent(IAggregateEvent materializationEvent)
         {
-            IEnumerable<IAggregateMaterializer> materializers = Enumerable.Empty<IAggregateMaterializer>();
+            IEnumerable<IAggregateMaterializer> materializers;
 
-            this.materializerByAggregateType.TryGetValue(
-                materializationEvent.AggregateIdentity.AggregateTypeName.Value,
-                out materializers);
+            if (!this.materializerByAggregateType.TryGetValue(
+                    materializationEvent.AggregateIdentity.AggregateTypeName.Value,
+                    out materializers))
+            {
+                materializers = Enumerable.Empty<IAggregateMaterializer>();
+            }
             
             if(materializers.Any() || this.materializersForAllTypes.Any())
             {

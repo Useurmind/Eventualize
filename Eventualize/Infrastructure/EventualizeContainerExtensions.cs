@@ -10,8 +10,10 @@ using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Materialization.Fluent;
 using Eventualize.Materialization;
 using Eventualize.Materialization.AggregateMaterialization;
+using Eventualize.Materialization.Fluent;
 using Eventualize.Materialization.Progress;
 using Eventualize.Persistence;
 using Eventualize.Security;
@@ -101,12 +103,20 @@ namespace Eventualize.Infrastructure
                                        })
                                    .SetSerializerFactory(c => new JsonSerializer())
                                    .SetLoggerFactory(c => new ConsoleLogger())
-                                   .SetRepositoryFactory(c => new AggregateRepository(c.AggregateEventStore, c.DomainIdentityProvider, c.AggregateFactory, c.SnapShotStore, c.Resolve<RepositoryOptions>()));
+                                   .SetRepositoryFactory(c => new AggregateRepository(c.AggregateEventStore, c.DomainIdentityProvider, c.AggregateFactory, c.SnapShotStore, c.Resolve<RepositoryOptions>()))
+                                   .RegisterSingleInstance<IMaterializationStrategy>(c => new FluentProjectionMaterializionStrategy(
+                                       c.Resolve<IEnumerable<IEventMaterializationAction>>(),
+                                       c.Resolve<IEnumerable<IEventMaterializationActionHandler>>()));
+        }
+
+        public static IMaterializationFactory Materialize(this IEventualizeContainerBuilder containerBuilder)
+        {
+            return new MaterializationFactory(containerBuilder);
         }
 
         public static IEventualizeContainerBuilder MaterializeInMemory(this IEventualizeContainerBuilder containerBuilder)
         {
-            return containerBuilder.AddAggregateMaterializationStrategyFactory(c => new InMemoryMaterialization(c.AggregateFactory));
+            return containerBuilder.AddAggregateMaterializationStrategyFactory(c => new InMemoryMaterializationStrategy(c.AggregateFactory));
         }
 
         public static IEventualizeContainerBuilder StoreMaterializationProgessInFileSystem(
@@ -117,7 +127,7 @@ namespace Eventualize.Infrastructure
 
         public static IEventualizeContainerBuilder MaterializePerAggregate(this IEventualizeContainerBuilder containerBuilder)
         {
-            return containerBuilder.AddAggregateMaterializationStrategyFactory(c => new AggregateMaterializationDistributor(c.AggregateRepository, c.DomainIdentityProvider, c.Resolve<IEnumerable<IAggregateMaterializer>>()));
+            return containerBuilder.AddAggregateMaterializationStrategyFactory(c => new AggregateMaterializationStrategy(c.AggregateRepository, c.DomainIdentityProvider, c.Resolve<IEnumerable<IAggregateMaterializer>>()));
         }
     }
 }

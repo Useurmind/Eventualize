@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Eventualize.Dapper.Materialization
 {
-    [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+    [AttributeUsage(AttributeTargets.Class|AttributeTargets.Interface, Inherited = false, AllowMultiple = false)]
     public sealed class TableAttribute : Attribute
     {
         public TableAttribute(string schemaName, string tableName)

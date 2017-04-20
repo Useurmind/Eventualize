@@ -12,13 +12,13 @@ using Eventualize.Persistence;
 
 namespace Eventualize.Materialization.AggregateMaterialization
 {
-    public class InMemoryMaterialization : IAggregateMaterializationStrategy
+    public class InMemoryMaterializationStrategy : IAggregateMaterializationStrategy
     {
         private ConcurrentDictionary<Guid, IAggregate> aggregates = new ConcurrentDictionary<Guid, IAggregate>();
 
         private IAggregateFactory aggregateFactory;
 
-        public InMemoryMaterialization(IAggregateFactory aggregateFactory)
+        public InMemoryMaterializationStrategy(IAggregateFactory aggregateFactory)
         {
             this.aggregateFactory = aggregateFactory;
         }

@@ -13,6 +13,7 @@ using Eventualize.EventStore.Persistence;
 using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Materialization.Progress;
 using Eventualize.Materialization;
 using Eventualize.Materialization.AggregateMaterialization;
 using Eventualize.Materialization.Progress;

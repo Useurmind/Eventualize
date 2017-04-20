@@ -1,6 +1,7 @@
 using System.Linq;
 
 using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Materialization.Progress;
 
 namespace Eventualize.Materialization.Progress
 {

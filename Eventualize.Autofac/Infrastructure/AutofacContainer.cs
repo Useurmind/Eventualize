@@ -10,6 +10,7 @@ using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Materialization.Progress;
 using Eventualize.Interfaces.Persistence;
 using Eventualize.Interfaces.Snapshots;
 

@@ -23,6 +23,7 @@ using Eventualize.Console.Domain;
 using Eventualize.Console.Domain.EventualizeTest.TaskList;
 using Eventualize.Console.Domain.EventualizeTest.Tasks;
 using Eventualize.Console.ReadModel;
+using Eventualize.Dapper.Infrastructure;
 using Eventualize.Dapper.Materialization;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
@@ -47,7 +48,7 @@ namespace Eventualize.Console
     {
         private static IAggregateRepository aggregateRepository;
 
-        private static InMemoryMaterialization materializationStrategy;
+        private static InMemoryMaterializationStrategy materializationStrategy;
 
         private static IContainer container;
 
@@ -82,17 +83,17 @@ namespace Eventualize.Console
         private static IContainer SetupContainer(bool forEventStore)
         {
             var builder = new ContainerBuilder();
-
-            builder.Register(c => new Func<IDbConnection>(() => new SqlConnection(@"Server=.\SQLEXPRESS;Database=EventualizeTest;Integrated Security=True;")))
-                   .As<Func<IDbConnection>>();
-
-            builder.Register(
-                c =>
-                    new SimpleSingleAggregateMaterializer<Task, TaskReadModel>(c.Resolve<Func<IDbConnection>>())).As<IAggregateMaterializer>();
+            
+            //builder.Register(
+            //    c =>
+            //        new DapperSqlTableMaterializer<Task, TaskReadModel>(c.Resolve<Func<IDbConnection>>())).As<IAggregateMaterializer>();
 
             builder.Eventualize(
                 b =>
                 {
+                    b.ConnectDapperToSqlServer(@"Server=.\SQLEXPRESS;Database=EventualizeTest;Integrated Security=True;");
+                    b.FluentMaterializationWithDapper();
+
                     b.ConstructDomainModelViaReflection();
                     b.StoreMaterializationProgessInFileSystem();
                     b.SetDefaults(Assembly.GetExecutingAssembly());
@@ -100,6 +101,18 @@ namespace Eventualize.Console
                     b.MaterializePerAggregate();
                     b.MaterializeSnapShots<Task>();
                     b.MaterializeSnapShots<TaskList>();
+
+                    b.Materialize().Model<ITaskReadModel>()
+                    .InsertOn<TaskCreatedEvent>()
+                    .Set(
+                        (p, e) =>
+                        {
+                            p.Id = e.TaskId;
+                            p.Title = e.Title;
+                        })
+                        .UpdateOn<TaskDescriptionAddedEvent>()
+                        .Set((p, e) => p.Description = e.Description)
+                        .Where((p,e) => p.Id == e.TaskId);
                 });
 
             if (forEventStore)
@@ -236,7 +249,7 @@ namespace Eventualize.Console
 
             using (var connection = container.Resolve<Func<IDbConnection>>()())
             {
-                var tasks = connection.Query<TaskReadModel>($"select * from {typeof(TaskReadModel).GetTableName()}");
+                var tasks = connection.Query<ITaskReadModel>($"select * from {typeof(ITaskReadModel).GetTableName()}");
 
                 foreach (var task in tasks)
                 {

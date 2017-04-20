@@ -3,14 +3,17 @@ using System.Linq;
 
 namespace Eventualize.Interfaces.Materialization
 {
-    public interface IReadModel
+    public interface IProjectionModel
     {
-        long Version { get; set; }
-
         long LastEventNumber { get; set; }
 
         DateTime LastEventDate { get; set; }
 
         string LastModifierId { get; set; }
+    }
+
+    public interface IReadModel : IProjectionModel
+    {
+        long Version { get; set; }
     }
 }

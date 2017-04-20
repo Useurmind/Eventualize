@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 using Dapper;
 
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Materialization.Fluent;
 
 namespace Eventualize.Dapper.Materialization
 {
@@ -17,9 +20,32 @@ namespace Eventualize.Dapper.Materialization
             return readModel.GetType().GetTableName();
         }
 
+        public static string GetTableName(this IEventMaterializationAction eventMaterializationAction)
+        {
+            return eventMaterializationAction.ProjectionModelType.GetTableName();
+        }
+
         public static string GetTableName(this Type readModelType)
         {
             return readModelType.GetCustomAttribute<TableAttribute>().FullQualifiedName;
+        }
+
+        public static void ApplyKnownProperties(this object projectionModel, IEvent @event)
+        {
+            var asProjectionModel = projectionModel as IProjectionModel;
+            if (asProjectionModel != null)
+            {
+                asProjectionModel.LastEventDate = @event.CreationTime;
+                asProjectionModel.LastEventNumber = @event.EventStreamIndex.Value;
+                asProjectionModel.LastModifierId = @event.CreatorId.Value;
+            }
+
+            var asReadModel = projectionModel as IReadModel;
+            var asAggregateEvent = @event as IAggregateEvent;
+            if (asReadModel != null)
+            {
+                asReadModel.Version = asAggregateEvent != null ? asAggregateEvent.EventStreamIndex.ToAggregateVersion().Value : -1;
+            }
         }
 
         public static PropertyInfo GetKeyProperty(this IReadModel readModel)
@@ -87,12 +113,35 @@ then {mergeInsertClause};
 
         private static string GetMergeInsertClause(IReadModel readModel)
         {
-            var nonKeyProperties = readModel.GetType().GetProperties();
-            var columns = string.Join(", ", nonKeyProperties.Select(x => x.Name));
-            var values = string.Join(", ", nonKeyProperties.Select(x => $"@{x.Name}"));
+            var columnsAndValues = GetInsertColumnsAndValues(readModel);
+            
+            return $"insert {columnsAndValues}";
+        }
+
+        public static string GetUpdateColumnsAndValues(this object projectionModel)
+        {
+            var nonKeyProperties = projectionModel.GetType().GetProperties();
+            return GetUpdateColumnsAndValues(nonKeyProperties);
+        }
+
+        public static string GetInsertColumnsAndValues(this object projectionModel)
+        {
+            var nonKeyProperties = projectionModel.GetType().GetProperties();
+            return GetInsertColumnsAndValues(nonKeyProperties);
+        }
+
+        public static string GetInsertColumnsAndValues(IEnumerable<PropertyInfo> properties)
+        {
+            var columns = string.Join(", ", properties.Select(x => x.Name));
+            var values = string.Join(", ", properties.Select(x => $"@{x.Name}"));
 
 
-            return $"insert ({columns}) values ({values})";
+            return $"({columns}) values ({values})";
+        }
+
+        public static string GetUpdateColumnsAndValues(IEnumerable<PropertyInfo> properties)
+        {
+            return string.Join(", ", properties.Select(x => $"{x.Name} = @{x.Name}"));
         }
 
         private static IEnumerable<PropertyInfo> GetNonKeyProperties(this IReadModel readModel)

@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Eventualize.Interfaces.Materialization
+namespace Eventualize.Interfaces.BaseTypes
 {
     /// <summary>
     /// This type represents the progess of the materialization process.

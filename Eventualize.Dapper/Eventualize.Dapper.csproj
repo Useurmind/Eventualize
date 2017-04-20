@@ -49,6 +49,10 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.0.0\lib\net45\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Dapper, Version=1.50.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.1.50.2\lib\net451\Dapper.dll</HintPath>
       <Private>True</Private>
@@ -63,13 +67,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Infrastructure\ContainerExtensions.cs" />
+    <Compile Include="Materialization\DapperDeleteEventMaterializationActionHandler.cs" />
+    <Compile Include="Materialization\DapperInsertEventMaterializationActionHandler.cs" />
+    <Compile Include="Materialization\DapperMergeEventMaterializationActionHandler.cs" />
+    <Compile Include="Materialization\DapperUpdateEventMaterializationActionHandler.cs" />
     <Compile Include="Materialization\KeyAttribute.cs" />
+    <Compile Include="Materialization\KeyCompareExpressionVisitor.cs" />
     <Compile Include="Materialization\ReadModelExtensions.cs" />
-    <Compile Include="Materialization\SimpleSingleAggregateMaterializer.cs" />
+    <Compile Include="Materialization\M2NMaterializer.cs" />
+    <Compile Include="Materialization\DapperSqlTableMaterializer.cs" />
     <Compile Include="Materialization\TableAttribute.cs" />
+    <Compile Include="Materialization\UpdatedPropertiesExpressionVisitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Eventualize.Interfaces.Materialization
+namespace Eventualize.Interfaces.Materialization.Progress
 {
     public interface IMaterializationProgessStore
     {

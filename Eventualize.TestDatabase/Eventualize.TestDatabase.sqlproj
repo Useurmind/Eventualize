@@ -60,6 +60,8 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="Tasks.sql" />
+    <Build Include="TaskLists.sql" />
+    <Build Include="TaskListEntries.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Compare_SQLEXPRESS.scmp" />

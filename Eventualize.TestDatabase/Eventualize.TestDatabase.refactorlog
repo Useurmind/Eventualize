@@ -21,4 +21,39 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="LastEventNumber" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="c01cd09b-48e0-4c02-8dea-f16be471a94c" ChangeDateTime="04/19/2017 10:58:00">
+    <Property Name="ElementName" Value="[dbo].[TaskLists].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TaskLists]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="bbc5f53f-c718-40eb-b1cb-d020e1f6ac0b" ChangeDateTime="04/19/2017 10:58:04">
+    <Property Name="ElementName" Value="[dbo].[TaskListEntries].[Id]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TaskListEntries]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PK" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="855a585b-9fca-4f6b-b788-892c5da14cb3" ChangeDateTime="04/19/2017 10:58:14">
+    <Property Name="ElementName" Value="[dbo].[TaskListEntries].[TaskListId]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TaskListEntries]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TaskListName" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="7f194c91-a7d5-4943-be8d-7980db327a03" ChangeDateTime="04/19/2017 10:58:32">
+    <Property Name="ElementName" Value="[dbo].[TaskListEntries].[TaskListName]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TaskListEntries]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TaskListID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="0631965d-4253-45b3-8579-5083dca18759" ChangeDateTime="04/19/2017 10:58:35">
+    <Property Name="ElementName" Value="[dbo].[TaskListEntries].[TaskListID]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[TaskListEntries]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="TaskListId" />
+  </Operation>
 </Operations>

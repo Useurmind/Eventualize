@@ -141,6 +141,7 @@
     <Compile Include="Domain\MetaModel\ReflectionBasedMetaModelFactoryTest.cs" />
     <Compile Include="Domain\MetaModel\BoundedContextMetaModelTest.cs" />
     <Compile Include="Domain\MetaModel\DomainMetaModelTest.cs" />
+    <Compile Include="Materialization\Fluent\MaterializationFactoryTest.cs" />
     <Compile Include="Persistence\InMemoryAggregateEventStoreTest.cs" />
     <Compile Include="Persistence\PagedEventLoaderTest.cs" />
     <Compile Include="Persistence\TestContainer.cs" />

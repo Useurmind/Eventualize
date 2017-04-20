@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[TaskListEntries]
+(
+	[PK] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [TaskListId] UNIQUEIDENTIFIER NULL, 
+    [TaskId] UNIQUEIDENTIFIER NULL, 
+    [Order] INT NULL
+)
