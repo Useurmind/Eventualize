@@ -12,7 +12,7 @@ namespace Eventualize.EventStore.Persistence
 {
     public interface IEventStoreEventConverter
     {
-        IAggregateEvent GetDomainEvent(AggregateIdentity aggregateIdentity, RecordedEvent recordedEvent);
+        IAggregateEvent GetDomainEvent(AggregateIdentity aggregateIdentity, RecordedEvent recordedEvent, long storeIndex);
 
         IEvent GetDomainEvent(RecordedEvent recordedEvent, BoundedContextName boundedContextName);
 

@@ -25,6 +25,7 @@ using Eventualize.Console.Domain.EventualizeTest.Tasks;
 using Eventualize.Console.ReadModel;
 using Eventualize.Dapper.Infrastructure;
 using Eventualize.Dapper.Materialization;
+using Eventualize.Dapper.Queries;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.EventStore.Infrastructure;
@@ -249,7 +250,7 @@ namespace Eventualize.Console
 
             using (var connection = container.Resolve<Func<IDbConnection>>()())
             {
-                var tasks = connection.Query<ITaskReadModel>($"select * from {typeof(ITaskReadModel).GetTableName()}");
+                var tasks = connection.QueryInterface<ITaskReadModel>($"select * from {typeof(ITaskReadModel).GetTableName()}");
 
                 foreach (var task in tasks)
                 {

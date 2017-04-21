@@ -4,7 +4,9 @@ using System.Linq;
 
 using Dapper;
 
+using Eventualize.Dapper.Proxies;
 using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Materialization.Fluent;
 
 namespace Eventualize.Dapper.Materialization
@@ -29,8 +31,18 @@ namespace Eventualize.Dapper.Materialization
             eventAction.ApplyEventProperties(projectionModel, @event.EventData);
             
             var columnsAndValues = ReadModelExtensions.GetInsertColumnsAndValues(interceptor.ModifiedProperties);
+            var keyProperties = projectionModel.GetKeyProperties();
+            var allKeyPropertyNames = string.Join(", ", keyProperties.Select(x => x.Name));
+            var allKeyPropertyParams = string.Join(", ", keyProperties.Select(x => $"@{x.Name}"));
+            var allKeyCompare = string.Join(" and ", keyProperties.Select(x => $"target.{x.Name} = source.{x.Name}"));
 
-            this.getConnection().Execute($"insert into {tableName} {columnsAndValues}", projectionModel);
+            var statement = $@"merge {tableName} as target
+using (select {allKeyPropertyParams}) AS source ({allKeyPropertyNames})
+on {allKeyCompare}
+when not matched
+then insert {columnsAndValues};";
+
+            this.getConnection().Execute(statement, projectionModel);
         }
     }
 }

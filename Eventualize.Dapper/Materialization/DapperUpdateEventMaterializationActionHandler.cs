@@ -4,7 +4,9 @@ using System.Linq;
 
 using Dapper;
 
+using Eventualize.Dapper.Proxies;
 using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Materialization.Fluent;
 
 namespace Eventualize.Dapper.Materialization
@@ -30,6 +32,7 @@ namespace Eventualize.Dapper.Materialization
 
             var keyCompare = new KeyCompareExpressionVisitor(eventAction.ProjectionModelType, eventAction.EventType).ComputeKeyComparision(eventAction.KeyComparissonExpression);
             var columnsAndValues = ReadModelExtensions.GetUpdateColumnsAndValues(interceptor.ModifiedProperties);
+            var indempotenceCondition = $" and {projectionModel.GetUpdateIndempotenceCondition(tableName)}";
 
             var parameters = new DynamicParameters(projectionModel);
             foreach (var eventKeys in keyCompare.EventKeyProperties)
@@ -37,7 +40,7 @@ namespace Eventualize.Dapper.Materialization
                 parameters.Add(eventKeys.ParameterName, eventKeys.Property.GetValue(@event.EventData));
             }
 
-            this.getConnection().Execute($"update {tableName} set {columnsAndValues} where {keyCompare.KeyCompareClause}", parameters);
+            this.getConnection().Execute($"update {tableName} set {columnsAndValues} where {keyCompare.KeyCompareClause}{indempotenceCondition}", parameters);
         }
     }
 }

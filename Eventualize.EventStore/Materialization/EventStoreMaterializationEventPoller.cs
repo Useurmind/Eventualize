@@ -10,6 +10,7 @@ using EventStore.ClientAPI;
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.EventStore.Persistence;
+using Eventualize.EventStore.Projections;
 using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Materialization;
@@ -23,10 +24,10 @@ namespace Eventualize.EventStore.Materialization
 {
     public class EventStoreAllStreamPosition
     {
-        public EventStoreAllStreamPosition(Position position )
+        public EventStoreAllStreamPosition(Position position)
         {
             this.CommitPosition = position.CommitPosition;
-            this.PreparePosition =position.PreparePosition;
+            this.PreparePosition = position.PreparePosition;
         }
 
         public Position ToPosition()
@@ -49,13 +50,13 @@ namespace Eventualize.EventStore.Materialization
 
         private IEnumerable<IMaterializationStrategy> materializationStrategies;
 
-        private EventStoreAllCatchUpSubscription subscription;
-
         private IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies;
 
         private IMaterializationProgess materializationProgess;
 
-        public EventStoreMaterializationEventPoller(IAggregateFactory aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, IEnumerable<IMaterializationStrategy> materializationStrategies, 
+        private EventStoreStreamCatchUpSubscription subscription;
+
+        public EventStoreMaterializationEventPoller(IAggregateFactory aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, IEnumerable<IMaterializationStrategy> materializationStrategies,
             IMaterializationProgess materializationProgess, IEnumerable<IAggregateMaterializationStrategy> aggregateMaterializationStrategies)
         {
             this.connection = connection;
@@ -68,43 +69,34 @@ namespace Eventualize.EventStore.Materialization
 
         public void Run()
         {
-            var currentProgess = this.materializationProgess.Get<EventStoreAllStreamPosition>();
+            var currentProgess = this.materializationProgess.Get<long?>();
 
-            this.subscription = this.connection.SubscribeToAllFrom(
-                currentProgess == null ? Position.Start : currentProgess.ToPosition(),
+            this.subscription = this.connection.SubscribeToStreamFrom(
+                new ProjectionStreamName().ToString(),
+                currentProgess,
                 new CatchUpSubscriptionSettings(100, 50, false, true),
                 (subscription, resolvedevent) =>
                 {
                     var recordedEvent = resolvedevent.Event;
-                    if (AggregateStreamName.IsAggregateStreamName(recordedEvent.EventStreamId))
+                    if (recordedEvent == null)
                     {
-                        var streamName = AggregateStreamName.FromStreamName(recordedEvent.EventStreamId);
-                        var aggregateEvent = eventConverter.GetDomainEvent(streamName.GetAggregateIdentity(), recordedEvent);
-
-                        foreach (var aStrat in this.aggregateMaterializationStrategies)
-                        {
-                            aStrat.HandleEvent(aggregateEvent);
-                        }
-
-                        foreach (var strat in this.materializationStrategies)
-                        {
-                            strat.HandleEvent(aggregateEvent);
-                        }
-                    }
-                    else
-                    {
-                        return;
-
-                        // we do not support this yet
-                        //var @event = eventConverter.GetDomainEvent(recordedEvent);
-
-                        //foreach (var strat in this.materializationStrategies)
-                        //{
-                        //    strat.HandleEvent(@event);
-                        //}
+                        throw new Exception();
                     }
 
-                    this.materializationProgess.Set(new EventStoreAllStreamPosition(resolvedevent.OriginalPosition.Value));
+                    var streamName = AggregateStreamName.FromStreamName(recordedEvent.EventStreamId);
+                    var aggregateEvent = eventConverter.GetDomainEvent(streamName.GetAggregateIdentity(), recordedEvent, resolvedevent.OriginalEventNumber);
+
+                    foreach (var aStrat in this.aggregateMaterializationStrategies)
+                    {
+                        aStrat.HandleEvent(aggregateEvent);
+                    }
+
+                    foreach (var strat in this.materializationStrategies)
+                    {
+                        strat.HandleEvent(aggregateEvent);
+                    }
+
+                    this.materializationProgess.Set(resolvedevent.OriginalEventNumber);
                 });
         }
 

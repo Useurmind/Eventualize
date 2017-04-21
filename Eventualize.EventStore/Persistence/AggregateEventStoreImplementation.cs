@@ -47,7 +47,7 @@ namespace Eventualize.EventStore.Persistence
 
             var resultSlice = this.connection.ReadStreamEventsForwardAsync(streamName.ToString(), start.Value, count, true).Result;
 
-            var domainEvents = resultSlice.Events.Select(resolvedEvent => this.eventConverter.GetDomainEvent(aggregateIdentity, resolvedEvent.Event));
+            var domainEvents = resultSlice.Events.Select(resolvedEvent => this.eventConverter.GetDomainEvent(aggregateIdentity, resolvedEvent.Event, -1));
 
             return domainEvents;
         }

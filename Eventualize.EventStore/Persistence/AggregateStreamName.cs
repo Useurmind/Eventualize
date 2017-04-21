@@ -47,9 +47,9 @@ namespace Eventualize.EventStore.Persistence
             return new AggregateStreamName(aggregateIdentity.BoundedContextName, aggregateIdentity.AggregateTypeName, aggregateIdentity.Id);
         }
 
-        public static bool IsAggregateStreamName(string streamId, BoundedContextName eventNameSpace)
+        public static bool IsAggregateStreamName(string streamId, BoundedContextName boundedContextName)
         {
-            return Regex.IsMatch(streamId, "^" + AggregatePrefix + eventNameSpace.Value + @"-[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
+            return Regex.IsMatch(streamId, "^" + GetBoundedContextPrefix(boundedContextName) + @"[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
         }
 
         public static bool IsAggregateStreamName(string streamId)
@@ -57,9 +57,14 @@ namespace Eventualize.EventStore.Persistence
             return Regex.IsMatch(streamId, "^" + AggregatePrefix + @"[^\-]*-[^\-]*-[{(]?[0-9A-F]{8}[-]?([0-9A-F]{4}[-]?){3}[0-9A-F]{12}[)}]?$", RegexOptions.IgnoreCase);
         }
 
+        public static string GetBoundedContextPrefix(BoundedContextName boundedContextName)
+        {
+            return $"{AggregatePrefix}{boundedContextName.Value}-";
+        }
+
         public string ToString()
         {
-            return $"{AggregatePrefix}{this.BoundedContextName.Value}-{this.AggregateTypeName.Value}-{this.AggregateId}";
+            return $"{GetBoundedContextPrefix(this.BoundedContextName)}{this.AggregateTypeName.Value}-{this.AggregateId}";
         }
 
         public AggregateIdentity GetAggregateIdentity()

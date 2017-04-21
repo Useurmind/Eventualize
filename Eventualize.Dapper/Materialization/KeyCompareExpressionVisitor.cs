@@ -1,6 +1,5 @@
 ﻿using System;
 using System.CodeDom;
-using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -9,25 +8,6 @@ using System.Threading.Tasks;
 
 namespace Eventualize.Dapper.Materialization
 {
-    public class EventKeyProperty
-    {
-        public PropertyInfo Property { get; set; }
-
-        public string ParameterName { get; set; }
-    }
-
-    public class KeyComparer
-    {
-        public string KeyCompareClause { get; set; }
-
-        public IList<EventKeyProperty> EventKeyProperties { get; set; }
-
-        public KeyComparer()
-        {
-            this.EventKeyProperties = new List<EventKeyProperty>();
-        }
-    }
-
     public class KeyCompareExpressionVisitor
     {
         private Type projectionModelType;

@@ -72,14 +72,21 @@
     <Compile Include="Materialization\DapperInsertEventMaterializationActionHandler.cs" />
     <Compile Include="Materialization\DapperMergeEventMaterializationActionHandler.cs" />
     <Compile Include="Materialization\DapperUpdateEventMaterializationActionHandler.cs" />
+    <Compile Include="Materialization\DefaultAutoMap.cs" />
+    <Compile Include="Materialization\EventKeyProperty.cs" />
+    <Compile Include="Materialization\IReadModelMapping.cs" />
     <Compile Include="Materialization\KeyAttribute.cs" />
     <Compile Include="Materialization\KeyCompareExpressionVisitor.cs" />
+    <Compile Include="Materialization\KeyComparer.cs" />
+    <Compile Include="Materialization\MappingFactory.cs" />
+    <Compile Include="Proxies\ProjectionModelProxyFactory.cs" />
     <Compile Include="Materialization\ReadModelExtensions.cs" />
     <Compile Include="Materialization\M2NMaterializer.cs" />
     <Compile Include="Materialization\DapperSqlTableMaterializer.cs" />
     <Compile Include="Materialization\TableAttribute.cs" />
-    <Compile Include="Materialization\UpdatedPropertiesExpressionVisitor.cs" />
+    <Compile Include="Proxies\ProjectionPropertyModificationInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Queries\QueryExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

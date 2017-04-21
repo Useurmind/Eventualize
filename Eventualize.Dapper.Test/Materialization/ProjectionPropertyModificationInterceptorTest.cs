@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Eventualize.Dapper.Materialization;
+using Eventualize.Dapper.Proxies;
 using Eventualize.Domain.Events;
 using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Materialization;

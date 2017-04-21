@@ -36,7 +36,7 @@ namespace Eventualize.Dapper.Materialization
             if (asProjectionModel != null)
             {
                 asProjectionModel.LastEventDate = @event.CreationTime;
-                asProjectionModel.LastEventNumber = @event.EventStreamIndex.Value;
+                asProjectionModel.LastEventNumber = @event.StoreIndex;
                 asProjectionModel.LastModifierId = @event.CreatorId.Value;
             }
 
@@ -48,12 +48,16 @@ namespace Eventualize.Dapper.Materialization
             }
         }
 
-        public static PropertyInfo GetKeyProperty(this IReadModel readModel)
+        public static PropertyInfo GetKeyProperty(this object readModel)
         {
             return readModel.GetType().GetProperties().First(p => p.GetCustomAttribute<KeyAttribute>() != null);
         }
+        public static IEnumerable<PropertyInfo> GetKeyProperties(this object readModel)
+        {
+            return readModel.GetType().GetProperties().Where(p => p.GetCustomAttribute<KeyAttribute>() != null);
+        }
 
-        public static PropertyInfo GetEventNumberProperty(this IReadModel readModel)
+        public static PropertyInfo GetEventNumberProperty(this IProjectionModel readModel)
         {
             return readModel.GetType().GetProperties().First(p => p.Name == "LastEventNumber");
         }
@@ -142,6 +146,41 @@ then {mergeInsertClause};
         public static string GetUpdateColumnsAndValues(IEnumerable<PropertyInfo> properties)
         {
             return string.Join(", ", properties.Select(x => $"{x.Name} = @{x.Name}"));
+        }
+
+        public static string GetInsertIndempotenceCondition(this object model, string tableName)
+        {
+            var asProjectionModel = model as IProjectionModel;
+            if (asProjectionModel == null)
+            {
+                return string.Empty;
+            }
+
+            var keyCompareClause = asProjectionModel.GetKeyCompareClause();
+
+            return $"NOT EXISTS (select 1 from {tableName} where {keyCompareClause})";
+        }
+
+        public static string GetUpdateIndempotenceCondition(this object model, string tableName)
+        {
+            var asProjectionModel = model as IProjectionModel;
+            if (asProjectionModel == null)
+            {
+                return string.Empty;
+            }
+
+            var eventNumberProperty = asProjectionModel.GetEventNumberProperty();
+
+            return $"{eventNumberProperty.Name} < @{eventNumberProperty.Name}";
+        }
+
+        public static string GetKeyCompareClause(this object model)
+        {
+            var keyProperties = model.GetKeyProperties();
+
+            var keyCompares = keyProperties.Select(x => $"{x.Name} = @{x.Name}");
+
+            return string.Join(" and ", keyCompares);
         }
 
         private static IEnumerable<PropertyInfo> GetNonKeyProperties(this IReadModel readModel)

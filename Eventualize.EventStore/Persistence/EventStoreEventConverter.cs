@@ -35,13 +35,13 @@ namespace Eventualize.EventStore.Persistence
             this.serializer = serializer;
         }
 
-        public IAggregateEvent GetDomainEvent(AggregateIdentity aggregateIdentity, RecordedEvent recordedEvent)
+        public IAggregateEvent GetDomainEvent(AggregateIdentity aggregateIdentity, RecordedEvent recordedEvent, long storeIndex)
         {
             var eventData = this.eventConverter.DeserializeEventData(recordedEvent.EventType, recordedEvent.EventId, recordedEvent.Data);
             var metaData = (EventMetaData)this.serializer.Deserialize(typeof(EventMetaData), recordedEvent.Metadata);
 
             return new AggregateEvent(
-                storeIndex: -1,
+                storeIndex: storeIndex,
                 boundedContextName: aggregateIdentity.BoundedContextName,
                eventId: recordedEvent.EventId,
                eventTypeName: new EventTypeName(recordedEvent.EventType),
