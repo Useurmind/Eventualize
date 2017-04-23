@@ -24,5 +24,12 @@ namespace Eventualize.EventStore.Test.Projections
         /// </summary>
         /// <param name="boundedContextName">The name of the bounded context.</param>
         void EnsureProjectionFor(BoundedContextName boundedContextName);
+
+        /// <summary>
+        /// Ensures that there is a projection that merges all events from the given aggregate type in the given bounded context.
+        /// </summary>
+        /// <param name="boundedContextName">The name of the bounded context.</param>
+        /// <param name="aggregateTypeName">The name of the aggregate type.</param>
+        void EnsureProjectionFor(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName);
     }
 }

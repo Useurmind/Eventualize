@@ -62,9 +62,14 @@ namespace Eventualize.EventStore.Persistence
             return $"{AggregatePrefix}{boundedContextName.Value}-";
         }
 
+        public static string GetAggregateTypePrefix(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName)
+        {
+            return $"{GetBoundedContextPrefix(boundedContextName)}{aggregateTypeName.Value}-";
+        }
+
         public string ToString()
         {
-            return $"{GetBoundedContextPrefix(this.BoundedContextName)}{this.AggregateTypeName.Value}-{this.AggregateId}";
+            return $"{GetAggregateTypePrefix(this.BoundedContextName, this.AggregateTypeName)}{this.AggregateId}";
         }
 
         public AggregateIdentity GetAggregateIdentity()

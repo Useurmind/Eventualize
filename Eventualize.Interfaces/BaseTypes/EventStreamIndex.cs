@@ -30,6 +30,11 @@ namespace Eventualize.Interfaces.BaseTypes
             return !obj1.Equals(obj2);
         }
 
+        public static EventStreamIndex Start()
+        {
+            return new EventStreamIndex(-1);
+        }
+
         /// <summary>
         /// The event stream index corresponds to the aggregate version if the event is part of an aggregate.
         /// </summary>

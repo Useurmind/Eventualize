@@ -18,29 +18,31 @@ namespace Eventualize.Persistence
         }
 
         /// <inheritdoc />
-        public IEventSource FromAll()
+        public IEventSource FromAll(EventStreamIndex? afterEventIndex=null)
         {
-            return this.eventStore;
+            return this.eventStore.SkipAfter(afterEventIndex);
         }
 
         /// <inheritdoc />
-        public IEventSource FromBoundedContext(BoundedContextName boundedContextName)
+        public IEventSource FromBoundedContext(BoundedContextName boundedContextName, EventStreamIndex? afterEventIndex = null)
         {
-            return this.eventStore.Where(x => x.BoundedContextName == boundedContextName);
+            return this.eventStore.SkipAfter(afterEventIndex)
+                .Where(x => x.BoundedContextName == boundedContextName);
         }
 
         /// <inheritdoc />
-        public IAggregateEventSource FromAggregateType(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName)
+        public IAggregateEventSource FromAggregateType(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName, EventStreamIndex? afterEventIndex = null)
         {
-            return this.eventStore.AsAggregateEventSource().Where(x => x.BoundedContextName == boundedContextName && x.AggregateIdentity.AggregateTypeName == aggregateTypeName);
+            return this.eventStore.SkipAfter(afterEventIndex)
+                .AsAggregateEventSource().Where(x => x.BoundedContextName == boundedContextName && x.AggregateIdentity.AggregateTypeName == aggregateTypeName);
         }
 
         /// <inheritdoc />
-        public IEventSource FromEventType(BoundedContextName boundedContextName, EventTypeName eventTypeName)
+        public IEventSource FromEventType(BoundedContextName boundedContextName, EventTypeName eventTypeName, EventStreamIndex? afterEventIndex = null)
         {
             return
-                this.eventStore.Where(
-                    x => x.BoundedContextName == boundedContextName && x.EventTypeName == eventTypeName);
+                this.eventStore.SkipAfter(afterEventIndex)
+                .Where(x => x.BoundedContextName == boundedContextName && x.EventTypeName == eventTypeName);
         }
     }
 }

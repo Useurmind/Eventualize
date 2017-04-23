@@ -11,10 +11,13 @@ namespace Eventualize.EventStore.Projections
 {
     public class ProjectionStreamName
     {
-        public ProjectionStreamName(BoundedContextName? boundedContextName=null)
+        public ProjectionStreamName(BoundedContextName? boundedContextName=null, AggregateTypeName? aggregateTypeName=null)
         {
             this.BoundedContextName = boundedContextName;
+            this.AggregateTypeName = aggregateTypeName;
         }
+
+        public AggregateTypeName? AggregateTypeName { get; }
 
         public BoundedContextName? BoundedContextName { get; }
 
@@ -22,7 +25,11 @@ namespace Eventualize.EventStore.Projections
 
         public override string ToString()
         {
-            if (this.BoundedContextName.HasValue)
+            if (this.BoundedContextName.HasValue && this.AggregateTypeName.HasValue)
+            {
+                return $"{ProjectionPrefix}{AggregateStreamName.AggregatePrefix}{this.BoundedContextName.Value}-{this.AggregateTypeName.Value}";
+            }
+            else if (this.BoundedContextName.HasValue)
             {
                 return $"{ProjectionPrefix}{AggregateStreamName.AggregatePrefix}{this.BoundedContextName.Value}";
             }

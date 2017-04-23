@@ -67,6 +67,19 @@ namespace Eventualize.EventStore.Test.Projections
                 });
         }
 
+        /// <inheritdoc />
+        public void EnsureProjectionFor(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName)
+        {
+            var projectionName = new ProjectionStreamName(boundedContextName, aggregateTypeName);
+            this.ExecuteOnlyIfProjectionDoesNotExist(
+                projectionName,
+                p =>
+                {
+                    var streamPrefix = AggregateStreamName.GetAggregateTypePrefix(boundedContextName, aggregateTypeName);
+                    this.CreateProjectionForStreamsStartingWith(p, streamPrefix);
+                });
+        }
+
         private void ExecuteOnlyIfProjectionDoesNotExist(ProjectionStreamName projectionName, Action<string> action)
         {
             var existingProjections = this.projectionsManager.ListContinuousAsync(this.userCredentials).Result;
