@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ using Eventualize.Domain.Events;
 using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Persistence;
+using Eventualize.Materialization.ReactiveStreams;
 using Eventualize.Security;
 
 namespace Eventualize.Persistence
@@ -17,23 +20,25 @@ namespace Eventualize.Persistence
     /// Its main purpose is unit testing. 
     /// This class is not intended for productive use at the moment.
     /// </summary>
-    public class InMemoryAggregateEventStore : IAggregateEventStore
+    public class InMemoryAggregateEventStore : IAggregateEventStore, IEventSource
     {
         private long nextStoreIndex = 0;
         private IDictionary<AggregateIdentity, LinkedList<IAggregateEvent>> eventsByAggregate;
 
         private IDomainIdentityProvider domainIdentityProvider;
 
+        private ISubject<IEvent> eventSubject;
+
         public InMemoryAggregateEventStore(IDomainIdentityProvider domainIdentityProvider)
         {
             this.eventsByAggregate = new Dictionary<AggregateIdentity, LinkedList<IAggregateEvent>>();
             this.domainIdentityProvider = domainIdentityProvider;
+            this.eventSubject = new Subject<IEvent>();
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-
         }
 
         /// <inheritdoc />
@@ -62,7 +67,8 @@ namespace Eventualize.Persistence
             }
             else if (eventList.Any() && expectedAggregateVersion != new AggregateVersion(eventList.Count - 1))
             {
-                throw new ExpectedAggregateVersionException($"Exptected stream with {expectedAggregateVersion.Value + 1} events but found {eventList.Count} events");
+                throw new ExpectedAggregateVersionException(
+                    $"Exptected stream with {expectedAggregateVersion.Value + 1} events but found {eventList.Count} events");
             }
 
             foreach (var eventData in newAggregateEvents)
@@ -79,6 +85,18 @@ namespace Eventualize.Persistence
                         new EventStreamIndex(eventList.Count),
                         aggregateIdentity));
             }
+
+            this.PublishNewEvents(newAggregateEvents, eventList);
+        }
+
+        private void PublishNewEvents(IEnumerable<IEventData> newAggregateEvents, LinkedList<IAggregateEvent> eventList)
+        {
+            var newEvents = eventList.Skip(eventList.Count - newAggregateEvents.Count());
+
+            foreach (var newEvent in newEvents)
+            {
+                this.eventSubject.OnNext(newEvent);
+            }
         }
 
         private LinkedList<IAggregateEvent> GetAggregateEventList(AggregateIdentity aggregateIdentity)
@@ -91,6 +109,11 @@ namespace Eventualize.Persistence
             }
 
             return eventList;
+        }
+
+        public IDisposable Subscribe(IObserver<IEvent> observer)
+        {
+            return this.eventSubject.Subscribe(observer);
         }
     }
 }
