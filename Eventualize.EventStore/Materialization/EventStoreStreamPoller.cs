@@ -13,32 +13,39 @@ namespace Eventualize.EventStore.Materialization
 {
     public class EventStoreStreamPoller : IEventSource
     {
-        private IAggregateFactory aggregateFactory;
-
         private IEventStoreConnection connection;
 
         private IEventStoreEventConverter eventConverter;
 
         private EventStoreStreamCatchUpSubscription subscription;
 
-        private EventStreamIndex? startAfterEventIndex;
+        private EventStreamIndex startAfterEventIndex;
 
         private string streamName;
         
-        public EventStoreStreamPoller(IAggregateFactory aggregateFactory, IEventStoreEventConverter eventConverter, IEventStoreConnection connection, EventStreamIndex? startAfterEventIndex, string streamName)
+        public EventStoreStreamPoller(IEventStoreEventConverter eventConverter, IEventStoreConnection connection, string streamName)
         {
             this.connection = connection;
-            this.aggregateFactory = aggregateFactory;
             this.eventConverter = eventConverter;
-            this.startAfterEventIndex = startAfterEventIndex;
+            this.startAfterEventIndex = EventStreamIndex.Start();
             this.streamName = streamName;
+        }
+
+        public void AddAdditionalEventStreamIndex(EventStreamIndex? newEventIndex)
+        {
+            if (!newEventIndex.HasValue)
+            {
+                newEventIndex = EventStreamIndex.Start();
+            }
+
+            this.startAfterEventIndex = EventStreamIndex.Min(this.startAfterEventIndex, newEventIndex.Value);
         }
 
         public IDisposable Subscribe(IObserver<IEvent> observer)
         {
             this.subscription = this.connection.SubscribeToStreamFrom(
                 this.streamName,
-                this.startAfterEventIndex.HasValue ? this.startAfterEventIndex.Value.Value : (long?)null,
+                this.startAfterEventIndex == EventStreamIndex.Start() ? (long?)null : this.startAfterEventIndex.Value,
                 new CatchUpSubscriptionSettings(100, 50, false, true),
                 (subscription, resolvedevent) =>
                     {

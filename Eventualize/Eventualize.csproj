@@ -123,11 +123,16 @@
     <Compile Include="Materialization\Fluent\MaterializationFactory.cs" />
     <Compile Include="Materialization\Fluent\MergeEventMaterializationAction.cs" />
     <Compile Include="Materialization\Fluent\UpdateEventMaterializationAction.cs" />
+    <Compile Include="Materialization\ReactiveStreams\EventController\EventController.cs" />
     <Compile Include="Materialization\ReactiveStreams\EventSourceExtensions.cs" />
+    <Compile Include="Materialization\ReactiveStreams\EventSourceProvider.cs" />
+    <Compile Include="Materialization\ReactiveStreams\EventSourceSubscriptions.cs" />
     <Compile Include="Materialization\ReactiveStreams\IAggregateEventSource.cs" />
-    <Compile Include="Materialization\ReactiveStreams\IEventSink.cs" />
     <Compile Include="Materialization\ReactiveStreams\IEventSource.cs" />
     <Compile Include="Materialization\ReactiveStreams\IEventSourceFactory.cs" />
+    <Compile Include="Materialization\ReactiveStreams\IEventSourceProvider.cs" />
+    <Compile Include="Materialization\ReactiveStreams\ISubscribeToEventStreams.cs" />
+    <Compile Include="Materialization\ReactiveStreams\StreamRegistrationProcess.cs" />
     <Compile Include="Materialization\ReactiveStreams\WrapperAggregateEventSource.cs" />
     <Compile Include="Materialization\ReactiveStreams\WrapperEventSource.cs" />
     <Compile Include="Persistence\InMemoryAggregateEventStore.cs" />

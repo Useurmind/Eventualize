@@ -5,48 +5,37 @@ using Eventualize.Interfaces.BaseTypes;
 namespace Eventualize.Materialization.ReactiveStreams
 {
     /// <summary>
-    /// This factory creates event sources for different purposes.
-    /// Before any events are delivered you have to call <see cref="ConnectAll"/> on the factory.
-    /// After that no registrations should take place anymore.
+    /// This is the <see cref="IEventSourceFactory"/>
     /// </summary>
-    public interface IEventSourceFactory
+    public interface IEventSourceProvider
     {
         /// <summary>
         /// Get an event source that delivers all events from the underlying store.
         /// </summary>
-        /// <param name="afterEventIndex">The index from which to start (the event with this index will not be included).</param>
         /// <returns></returns>
-        IEventSource FromAll(EventStreamIndex? afterEventIndex = null);
+        IEventSource FromAll();
 
         /// <summary>
         /// Get an event source that delivers all events from the underlying store which belong to a specific bounded context.
         /// </summary>
         /// <param name="boundedContextName">The name of the bounded context for which the events should be delivered.</param>
-        /// <param name="afterEventIndex">The index from which to start (the event with this index will not be included).</param>
         /// <returns></returns>
-        IEventSource FromBoundedContext(BoundedContextName boundedContextName, EventStreamIndex? afterEventIndex = null);
+        IEventSource FromBoundedContext(BoundedContextName boundedContextName);
 
         /// <summary>
         /// Get an event source that delivers all events from the underlying store which belong to a specific bounded context and aggregate type.
         /// </summary>
         /// <param name="boundedContextName">The name of the bounded context for which the events should be delivered.</param>
         /// <param name="aggregateTypeName">The name of the aggregate type for which the events should be delivered.</param>
-        /// <param name="afterEventIndex">The index from which to start (the event with this index will not be included).</param>
         /// <returns></returns>
-        IAggregateEventSource FromAggregateType(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName, EventStreamIndex? afterEventIndex = null);
+        IAggregateEventSource FromAggregateType(BoundedContextName boundedContextName, AggregateTypeName aggregateTypeName);
 
         /// <summary>
         /// Get an event source that delivers all events from the underlying store which belong to a specific bounded context and event type (across aggregates if so). 
         /// </summary>
         /// <param name="boundedContextName">The name of the bounded context for which the events should be delivered.</param>
         /// <param name="eventTypeName">The name of the event type that should be delivered.</param>
-        /// <param name="afterEventIndex">The index from which to start (the event with this index will not be included).</param>
         /// <returns></returns>
-        IEventSource FromEventType(BoundedContextName boundedContextName, EventTypeName eventTypeName, EventStreamIndex? afterEventIndex = null);
-
-        /// <summary>
-        /// Start all event sources to deliver their events to their subscribers.
-        /// </summary>
-        void ConnectAll();
+        IEventSource FromEventType(BoundedContextName boundedContextName, EventTypeName eventTypeName);
     }
 }

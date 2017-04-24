@@ -37,37 +37,45 @@ namespace Eventualize.EventStore.Persistence
 
         public IAggregateEvent GetDomainEvent(AggregateIdentity aggregateIdentity, RecordedEvent recordedEvent, long storeIndex)
         {
-            var eventData = this.eventConverter.DeserializeEventData(recordedEvent.EventType, recordedEvent.EventId, recordedEvent.Data);
+            var eventTypeName = new EventTypeName(recordedEvent.EventType);
+            var eventData = this.eventConverter.DeserializeEventData(aggregateIdentity.BoundedContextName, eventTypeName, recordedEvent.EventId, recordedEvent.Data);
             var metaData = (EventMetaData)this.serializer.Deserialize(typeof(EventMetaData), recordedEvent.Metadata);
 
-            return new AggregateEvent(
-                storeIndex: storeIndex,
-                boundedContextName: aggregateIdentity.BoundedContextName,
-               eventId: recordedEvent.EventId,
-               eventTypeName: new EventTypeName(recordedEvent.EventType),
-               creationTime: recordedEvent.Created,
-               creatorId: new UserId(metaData.CreatorId),
-               eventData: eventData,
-               aggregateIdentity: aggregateIdentity,
-               eventStreamIndex: new EventStreamIndex(recordedEvent.EventNumber)
-                );
+            var genericEventType = typeof(AggregateEvent<>).MakeGenericType(eventData.GetType());
+
+            return (IAggregateEvent)Activator.CreateInstance(
+                genericEventType,
+                storeIndex, // storeIndex
+                aggregateIdentity.BoundedContextName, // boundedContextName
+                recordedEvent.EventId, // eventId
+                eventTypeName, // eventTypeName
+                recordedEvent.Created, // creationTime
+                new UserId(metaData.CreatorId), // creatorId
+                eventData, // eventData
+                aggregateIdentity, // aggregateIdentity 
+                new EventStreamIndex(recordedEvent.EventNumber) // eventStreamIndex
+            );
         }
 
         public IEvent GetDomainEvent(RecordedEvent recordedEvent, BoundedContextName boundedContextName)
         {
-            var eventData = this.eventConverter.DeserializeEventData(recordedEvent.EventType, recordedEvent.EventId, recordedEvent.Data);
+            var eventTypeName = new EventTypeName(recordedEvent.EventType);
+            var eventData = this.eventConverter.DeserializeEventData(boundedContextName, eventTypeName, recordedEvent.EventId, recordedEvent.Data);
             var metaData = (EventMetaData)this.serializer.Deserialize(typeof(EventMetaData), recordedEvent.Metadata);
 
-            return new Event(
-                storeIndex: -1,
-                boundedContextName: boundedContextName,
-               eventId: recordedEvent.EventId,
-               eventTypeName: new EventTypeName(recordedEvent.EventType), 
-               creationTime: recordedEvent.Created,
-               creatorId: new UserId(metaData.CreatorId),
-               eventData: eventData,
-               streamIndex: new EventStreamIndex(recordedEvent.EventNumber)
-                );
+            var genericEventType = typeof(Event<>).MakeGenericType(eventData.GetType());
+
+            return (IAggregateEvent)Activator.CreateInstance(
+                genericEventType,
+                -1, // storeIndex
+                boundedContextName, // boundedContextName
+                recordedEvent.EventId, // eventId
+                eventTypeName, // eventTypeName
+                recordedEvent.Created, // creationTime
+                new UserId(metaData.CreatorId), // creatorId
+                eventData, // eventData
+                new EventStreamIndex(recordedEvent.EventNumber) // eventStreamIndex
+            );
         }
 
         public EventData GetEventData(IEventData eventData)

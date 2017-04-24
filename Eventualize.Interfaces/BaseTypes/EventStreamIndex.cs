@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 
 namespace Eventualize.Interfaces.BaseTypes
@@ -33,6 +34,11 @@ namespace Eventualize.Interfaces.BaseTypes
         public static EventStreamIndex Start()
         {
             return new EventStreamIndex(-1);
+        }
+
+        public static EventStreamIndex Min(EventStreamIndex one, EventStreamIndex two)
+        {
+            return new EventStreamIndex(Math.Min(one.Value, two.Value));
         }
 
         /// <summary>

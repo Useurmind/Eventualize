@@ -31,4 +31,6 @@ namespace Eventualize.Snapshots
 
         public ChosenAggregateTypes ChosenAggregateTypes { get { return new ChosenAggregateTypes(); } }
     }
+
+
 }

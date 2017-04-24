@@ -8,4 +8,9 @@ namespace Eventualize.Interfaces.Domain
     {
         AggregateIdentity AggregateIdentity { get; }
     }
+
+    public interface IAggregateEvent<TData> : IAggregateEvent, IEvent<TData>
+        where TData : IEventData
+    {
+    }
 }

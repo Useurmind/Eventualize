@@ -1,16 +1,46 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Reactive;
 
 using Eventualize.Domain;
 using Eventualize.Domain.Aggregates;
 using Eventualize.Domain.Events;
+using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Materialization;
+using Eventualize.Interfaces.Materialization.Progress;
 using Eventualize.Interfaces.Persistence;
+using Eventualize.Materialization.ReactiveStreams;
 using Eventualize.Persistence;
 
 namespace Eventualize.Materialization.AggregateMaterialization
 {
+    public class AggregateMaterializationSubscriber : ISubscribeToEventStreams
+    {
+        private IMaterializationProgess progress;
+
+        private IAggregateMaterializationStrategy aggregateMaterializationStrategy;
+
+        public AggregateMaterializationSubscriber(IMaterializationProgess progress, IAggregateMaterializationStrategy aggregateMaterializationStrategy)
+        {
+            this.progress = progress;
+            this.aggregateMaterializationStrategy = aggregateMaterializationStrategy;
+        }
+
+        public async Task<EventStreamIndex?> GetLastHandledEventIndexAsync()
+        {
+            return await this.progress.GetAsync<EventStreamIndex?>();
+        }
+
+        public void SubscribeStreams(IEventSourceProvider eventSourceProvider)
+        {
+            eventSourceProvider.FromAll()
+                               .AsAggregateEventSource()
+                               .SubscribeWith(this.aggregateMaterializationStrategy);
+        }
+    }
+
     public class AggregateMaterializationStrategy : IAggregateMaterializationStrategy
     {
         private IEnumerable<IAggregateMaterializer> materializersForAllTypes;

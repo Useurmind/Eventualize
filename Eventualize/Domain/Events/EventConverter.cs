@@ -5,7 +5,9 @@ using System.Reflection;
 
 using Eventualize.Domain.Aggregates;
 using Eventualize.Infrastructure;
+using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Persistence;
 
@@ -13,32 +15,21 @@ namespace Eventualize.Domain.Events
 {
     public class EventConverter : IEventConverter
     {
-        private TypeRegister eventTypeRegister;
         private ISerializer serializer;
 
-        public EventConverter(ISerializer serializer)
+        private IDomainMetaModel domainMetaModel;
+
+        public EventConverter(ISerializer serializer, IDomainMetaModel domainMetaModel)
         {
-            this.eventTypeRegister = new TypeRegister();
+            this.domainMetaModel = domainMetaModel;
             this.serializer = serializer;
         }
 
-        public void ScanEventTypes(IEnumerable<Assembly> assemblies)
+        public IEventData DeserializeEventData(BoundedContextName boundedContextName, EventTypeName eventTypeName, Guid id, byte[] data)
         {
-            foreach (var assembly in assemblies)
-            {
-                this.ScanEventTypes(assembly);
-            }
-        }
-
-        public void ScanEventTypes(Assembly assembly)
-        {
-            this.eventTypeRegister.ScanTypes(assembly, t => t.GetCustomAttribute<EventTypeNameAttribute>() != null, t => t.GetCustomAttribute<EventTypeNameAttribute>().Name);
-        }
-
-        public IEventData DeserializeEventData(string eventTypeName, Guid id, byte[] data)
-        {
-            Type eventType = this.eventTypeRegister.GetType(eventTypeName, () => $"Could not find type for event {eventTypeName} with id {id}");
-            return (IEventData)this.serializer.Deserialize(eventType, data);
+            var eventMetaModel = this.domainMetaModel.GetBoundedContext(boundedContextName).GetEventType(eventTypeName);
+            
+            return (IEventData)this.serializer.Deserialize(eventMetaModel.ModelType, data);
         }
 
         public byte[] SerializeEventData(IEventData eventData)

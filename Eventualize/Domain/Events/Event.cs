@@ -7,9 +7,10 @@ using Eventualize.Interfaces.Domain;
 
 namespace Eventualize.Domain.Events
 {
-    public class Event : IEvent
+    public class Event<TData> : IEvent<TData>
+        where TData : IEventData
     {
-        public Event(long storeIndex, BoundedContextName boundedContextName, Guid eventId, EventTypeName eventTypeName, DateTime creationTime, UserId creatorId, IEventData eventData, EventStreamIndex streamIndex)
+        public Event(long storeIndex, BoundedContextName boundedContextName, Guid eventId, EventTypeName eventTypeName, DateTime creationTime, UserId creatorId, TData eventData, EventStreamIndex streamIndex)
         {
             this.StoreIndex = storeIndex;
             this.BoundedContextName = boundedContextName;
@@ -33,7 +34,15 @@ namespace Eventualize.Domain.Events
 
         public UserId CreatorId { get; }
 
-        public IEventData EventData { get; }
+        IEventData IEvent.EventData
+        {
+            get
+            {
+                return this.EventData;
+            }
+        }
+
+        public TData EventData { get; }
 
         public EventStreamIndex EventStreamIndex { get; }
     }

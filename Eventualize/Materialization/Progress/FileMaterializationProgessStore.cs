@@ -1,6 +1,8 @@
+using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 
 using Eventualize.Infrastructure;
 using Eventualize.Interfaces.Infrastructure;
@@ -36,6 +38,24 @@ namespace Eventualize.Materialization.Progress
             }
 
             return (T)this.serializer.Deserialize(typeof(T), File.ReadAllBytes(filePath));
+        }
+
+        public async Task<T> GetProgessAsync<T>(string key)
+        {
+            var filePath = this.GetFilePath(key);
+            if (!File.Exists(filePath))
+            {
+                return default(T);
+            }
+
+            byte[] buff = null;
+            using (var file = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+            {
+                buff = new byte[file.Length];
+                await file.ReadAsync(buff, 0, (int)file.Length);
+            }
+
+            return (T)this.serializer.Deserialize(typeof(T), buff);
         }
 
         public void SaveProgess<T>(string key, T currentProgess)

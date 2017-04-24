@@ -26,4 +26,9 @@ namespace Eventualize.Interfaces.Domain
 
         EventStreamIndex EventStreamIndex { get; }
     }
+
+    public interface IEvent<TData> : IEvent
+    {
+        TData EventData { get; }
+    }
 }

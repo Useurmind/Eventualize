@@ -7,9 +7,10 @@ using Eventualize.Interfaces.Domain;
 
 namespace Eventualize.Domain.Events
 {
-    public class AggregateEvent : Event, IAggregateEvent
+    public class AggregateEvent<TData> : Event<TData>, IAggregateEvent<TData>
+        where TData : IEventData
     {
-        public AggregateEvent(long storeIndex, BoundedContextName boundedContextName, Guid eventId, EventTypeName eventTypeName, DateTime creationTime, UserId creatorId, IEventData eventData, EventStreamIndex eventStreamIndex, AggregateIdentity aggregateIdentity)
+        public AggregateEvent(long storeIndex, BoundedContextName boundedContextName, Guid eventId, EventTypeName eventTypeName, DateTime creationTime, UserId creatorId, TData eventData, EventStreamIndex eventStreamIndex, AggregateIdentity aggregateIdentity)
             : base(storeIndex, boundedContextName, eventId, eventTypeName, creationTime, creatorId, eventData, eventStreamIndex)
         {
             this.AggregateIdentity = aggregateIdentity;

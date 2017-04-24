@@ -17,6 +17,11 @@ namespace Eventualize.Persistence
             this.eventStore = eventStore;
         }
 
+        public void ConnectAll()
+        {
+            // no connection necessary
+        }
+
         /// <inheritdoc />
         public IEventSource FromAll(EventStreamIndex? afterEventIndex=null)
         {

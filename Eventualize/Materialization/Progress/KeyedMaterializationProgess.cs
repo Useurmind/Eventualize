@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 
 using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Materialization.Progress;
@@ -20,6 +21,11 @@ namespace Eventualize.Materialization.Progress
         public T Get<T>()
         {
             return this.store.GetProgess<T>(this.key);
+        }
+
+        public async Task<T> GetAsync<T>()
+        {
+            return await this.store.GetProgessAsync<T>(this.key);
         }
 
         public void Set<T>(T currentProgess)
