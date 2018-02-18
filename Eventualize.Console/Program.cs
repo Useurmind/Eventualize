@@ -97,7 +97,8 @@ namespace Eventualize.Console
 
                     b.ConstructDomainModelViaReflection();
                     b.StoreMaterializationProgessInFileSystem();
-                    b.SetDefaults(Assembly.GetExecutingAssembly());
+                    // TODO ERROR asd
+                    b.SetDefaults(null, Assembly.GetExecutingAssembly());
                     b.DeriveIdentitiesFromAttributes();
                     b.MaterializePerAggregate();
                     b.MaterializeSnapShots<Task>();

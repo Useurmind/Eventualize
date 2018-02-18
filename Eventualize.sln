@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.15
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventualize", "Eventualize\Eventualize.csproj", "{81FF36DE-C711-4FD5-B158-74502A8A2F71}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventualize.Interfaces", "Eventualize.Interfaces\Eventualize.Interfaces.csproj", "{D1FD5B08-9DA7-46E1-ABF4-0F309AB9C9B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventualize.Dapper.Test", "Eventualize.Dapper.Test\Eventualize.Dapper.Test.csproj", "{F00FA3AE-E487-4A44-906B-859390BFC41D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Eventualize.Projection", "Eventualize.Projection\Eventualize.Projection.csproj", "{73BB206A-6CC5-424C-8100-250267005DDE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -130,6 +132,14 @@ Global
 		{F00FA3AE-E487-4A44-906B-859390BFC41D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F00FA3AE-E487-4A44-906B-859390BFC41D}.Release|x64.ActiveCfg = Release|Any CPU
 		{F00FA3AE-E487-4A44-906B-859390BFC41D}.Release|x64.Build.0 = Release|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Debug|x64.Build.0 = Debug|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Release|x64.ActiveCfg = Release|Any CPU
+		{73BB206A-6CC5-424C-8100-250267005DDE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,5 +156,9 @@ Global
 		{CD5D15E0-F931-4A95-AD58-D8CDB928F76A} = {8C00C8A4-C19B-4FEF-934F-94C8B988B7A8}
 		{D1FD5B08-9DA7-46E1-ABF4-0F309AB9C9B2} = {D9AAC564-A316-48F6-984E-C70E7245A0B1}
 		{F00FA3AE-E487-4A44-906B-859390BFC41D} = {8C00C8A4-C19B-4FEF-934F-94C8B988B7A8}
+		{73BB206A-6CC5-424C-8100-250267005DDE} = {D9AAC564-A316-48F6-984E-C70E7245A0B1}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {18449A80-C59C-464C-A11D-CA5A29566085}
 	EndGlobalSection
 EndGlobal

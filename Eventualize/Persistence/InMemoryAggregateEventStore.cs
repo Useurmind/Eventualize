@@ -73,17 +73,22 @@ namespace Eventualize.Persistence
 
             foreach (var eventData in newAggregateEvents)
             {
-                eventList.AddLast(
-                    new AggregateEvent(
-                        (long)this.nextStoreIndex++,
-                        aggregateIdentity.BoundedContextName,
-                        replayId,
-                        this.domainIdentityProvider.GetEventTypeName(eventData),
-                        DateTime.Now,
-                        EventualizeContext.Current.CurrentUser.UserId,
-                        eventData,
-                        new EventStreamIndex(eventList.Count),
-                        aggregateIdentity));
+                var genericEventType = typeof(AggregateEvent<>).MakeGenericType(eventData.GetType());
+
+                var aggregateEvent = (IAggregateEvent)Activator.CreateInstance(
+                    genericEventType,
+                    (long)this.nextStoreIndex++,
+                    aggregateIdentity.BoundedContextName, // boundedContextName
+                    replayId, // eventId
+                    this.domainIdentityProvider.GetEventTypeName(eventData), // eventTypeName
+                    DateTime.Now, // creationTime
+                    EventualizeContext.Current.CurrentUser.UserId, // creatorId
+                    eventData, // eventData
+                    aggregateIdentity, // aggregateIdentity 
+                    new EventStreamIndex(eventList.Count) // eventStreamIndex
+                );
+
+                eventList.AddLast(aggregateEvent);
             }
 
             this.PublishNewEvents(newAggregateEvents, eventList);

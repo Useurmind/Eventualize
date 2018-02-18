@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -10,6 +11,7 @@ using Eventualize.Dapper.Materialization;
 using Eventualize.Dapper.Proxies;
 using Eventualize.Domain.Events;
 using Eventualize.Interfaces.BaseTypes;
+using Eventualize.Interfaces.Domain;
 using Eventualize.Interfaces.Materialization;
 
 using FluentAssertions;
@@ -20,6 +22,11 @@ namespace Eventualize.Dapper.Test.Materialization
 {
     public class ProjectionPropertyModificationInterceptorTest
     {
+        public class EventData : IEventData
+        {
+            
+        }
+
         public interface ITestProjectionModel : IProjectionModel
         {
             Guid Id { get; set; }
@@ -52,7 +59,7 @@ namespace Eventualize.Dapper.Test.Materialization
         [Fact]
         public void BaseInterfacePropertiesWork()
         {
-            var testEvent = new Event(
+            var testEvent = new Event<EventData>(
                 0,
                 new BoundedContextName("a"),
                 Guid.NewGuid(),

@@ -8,6 +8,7 @@ using Eventualize.Domain.Events;
 using Eventualize.Domain.MetaModel;
 using Eventualize.Interfaces.BaseTypes;
 using Eventualize.Interfaces.Domain;
+using Eventualize.Interfaces.Domain.MetaModel;
 using Eventualize.Interfaces.Infrastructure;
 using Eventualize.Interfaces.Materialization;
 using Eventualize.Interfaces.Materialization.Fluent;
@@ -77,7 +78,7 @@ namespace Eventualize.Infrastructure
             return containerBuilder.SetDomainIdentityProviderFactory(x => new DomainModelIdentityProvider(x.DomainMetaModel));
         }
 
-        public static IEventualizeContainerBuilder SetDefaults(this IEventualizeContainerBuilder containerBuilder, params Assembly[] domainAssemblies)
+        public static IEventualizeContainerBuilder SetDefaults(this IEventualizeContainerBuilder containerBuilder, IDomainMetaModel domainMetaModel, params Assembly[] domainAssemblies)
         {
             containerBuilder.RegisterSingleInstance(c => new RepositoryOptions() { PageSize = 1024 });
 
@@ -97,8 +98,7 @@ namespace Eventualize.Infrastructure
                                    .SetEventConverterFactory(
                                        c =>
                                        {
-                                           var eventConverter = new EventConverter(c.Serializer);
-                                           eventConverter.ScanEventTypes(domainAssemblies);
+                                           var eventConverter = new EventConverter(c.Serializer, domainMetaModel);
                                            return eventConverter;
                                        })
                                    .SetSerializerFactory(c => new JsonSerializer())
